@@ -1,0 +1,17 @@
+version: '1'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tapmiweb
+    ports:
+      - 3014:80 
+ # app:
+ #   build:
+ #     context: ./
+ #     dockerfile: app.dockerfile
+ #   volumes:
+ #    - ./:/var/www
+
+
