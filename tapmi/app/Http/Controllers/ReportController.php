@@ -2039,7 +2039,7 @@ class ReportController extends Controller
 			}
 		endif;
 
-		return response()->json($data);
+		return response()->json( $data );
 	}
 
 	/*
