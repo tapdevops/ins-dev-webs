@@ -36,7 +36,7 @@ class UserController extends Controller {
 	#   		 								  				        ▁ ▂ ▄ ▅ ▆ ▇ █ INDEX
 	# -------------------------------------------------------------------------------------
 	public function index() {
-
+		dd();
 		$allowed_role = array( "ADMIN" );
 		$data['active_menu'] = $this->active_menu;
 
@@ -53,7 +53,8 @@ class UserController extends Controller {
 						$data['master_user'][$i]['REF_ROLE'] = $q['REF_ROLE'];
 						$data['master_user'][$i]['JOB'] = $q['JOB'];
 						$data['master_user'][$i]['FULLNAME'] = $q['FULLNAME'];
-
+						// $data['master_user'][$i]['APK_VERSION'] = $q['APK_VERSION']
+						// $data['master_user'][$i]['APK_DATE'] = $q['INSERT_TIME']
 						$i++;
 					}
 					
