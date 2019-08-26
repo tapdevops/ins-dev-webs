@@ -59,4 +59,6 @@ Route::group( [ 'middleware' => 'web' ], function() {
 	Route::get( '/cron/generate/inspeksi', 'ReportController@cron_generate_inspeksi' );
 	Route::get( '/cron/generate/token', 'ReportController@generate_token' );
 
+	Route::get( '/kafka/consumer', 'KafkaController@index' );
+
 });

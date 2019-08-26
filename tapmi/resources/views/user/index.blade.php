@@ -53,9 +53,10 @@
 				<th>User Role</th>
 				<th>Location</th>
 				<th>Ref Role</th>
-				<th>Actions</th>
 				<th>Apk Version</th>
 				<th>Apk Date</th>
+				<th>Actions</th>
+			
 			</tr>
 		</thead>
 		<tbody>
@@ -69,7 +70,7 @@
 					<td>{{ $q['LOCATION_CODE'] }}</td>
 					<td>{{ $q['REF_ROLE'] }}</td>
 					<td>{{ $q['APK_VERSION'] }}</td>
-					<td>{{ $q['INSERT_TIME'] }}</td>
+					<td>{{ $q['APK_DATE'] }}</td>
 					<td></td>
 				</tr>
 			@endforeach

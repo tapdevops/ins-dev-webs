@@ -225,6 +225,29 @@ class APIData extends Model
 		return $data;
 	}
 
+	# 												    	  ▁ ▂ ▄ ▅ ▆ ▇ █ USER - Find One
+	# -------------------------------------------------------------------------------------
+	public static function user_latest_apk_find_one($id = '', $token = 'session')
+	{
+
+		$data['items'] = array();
+		$data['items']['APK_VERSION'] = '';
+
+		if ($id != '') {
+			$url = self::url('url_api_ins_msa_auth') . '/api/v1.0/server/apk-version/' . $id;
+			$client = ($token == 'session' ? APISetup::ins_rest_client('GET', $url) : APISetup::ins_rest_client_manual('GET', $url));
+			if ($client['status'] == true) {
+				if (isset($client['data'])) {
+					// print_r($client['data']);
+					$data['items']['APK_VERSION'] = $client['data']['APK_VERSION'];
+				}
+			}
+		}
+
+		// return $url;
+		return $data;
+	}
+
 	# 											    ▁ ▂ ▄ ▅ ▆ ▇ █ USER AUTHORIZATION - Find
 	# -------------------------------------------------------------------------------------
 	public static function user_authorization_find($parameter = '')
