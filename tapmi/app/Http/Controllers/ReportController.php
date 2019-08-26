@@ -783,13 +783,13 @@ class ReportController extends Controller
 
 				$class_01 = '';
 				$kriteria_angka_01 = 0;
-				if ( isset( $class_block_01[$ablock['WERKS_AFD_BLOCK_CODE']] ) && $class_block_01[$ablock['WERKS_AFD_BLOCK_CODE']] != '' ) {
+				if (isset($class_block_01[$ablock['WERKS_AFD_BLOCK_CODE']]) && $class_block_01[$ablock['WERKS_AFD_BLOCK_CODE']] != '') {
 					$class_01 = $class_block_01[$ablock['WERKS_AFD_BLOCK_CODE']];
 					$kriteria_angka_01 = $kriteria[$class_01];
 				}
 				$report_data_block[$ablock['WERKS_AFD_BLOCK_CODE']]['NILAI_01'] = $class_01;
 				$report_data_block[$ablock['WERKS_AFD_BLOCK_CODE']]['ANGKA_01'] = $kriteria_angka_01;
-				
+
 				$class_02 = '';
 				$kriteria_angka_02 = 0;
 				if (isset($class_block_02[$ablock['WERKS_AFD_BLOCK_CODE']]) && $class_block_02[$ablock['WERKS_AFD_BLOCK_CODE']] != '') {
@@ -849,7 +849,6 @@ class ReportController extends Controller
 
 				$report_data_block[$ablock['WERKS_AFD_BLOCK_CODE']]['NILAI_07'] = $class_07;
 				$report_data_block[$ablock['WERKS_AFD_BLOCK_CODE']]['ANGKA_07'] = $kriteria_angka_07;
-
 			}
 
 			if (!empty($report_data_block)) {
@@ -1147,7 +1146,7 @@ class ReportController extends Controller
 
 			$results['report_data'] = $report_data_est_temp;
 			$results['periode'] = date('Ym', strtotime($periode . '01'));
-			
+
 			// print '<pre>';
 			// print_r( $results );
 			// print '</pre>';
@@ -1304,7 +1303,7 @@ class ReportController extends Controller
 			$data['finding_data'][$i]['BLOCK_NAME'] = $finding['BLOCK_NAME'];
 			$data['finding_data'][$i]['SPMON'] = $finding['SPMON'];
 			$data['finding_data'][$i]['MATURITY_STATUS'] = $finding['MATURITY_STATUS'];
-			#$data['finding_data'][$i]['FINDING_CATEGORY'] = $finding['FINDING_CATEGORY'];
+			$data['finding_data'][$i]['FINDING_CATEGORY'] = $finding['FINDING_CATEGORY'];
 			$data['finding_data'][$i]['FINDING_DESC'] = $finding['FINDING_DESC'];
 			$data['finding_data'][$i]['FINDING_PRIORITY'] = $finding['FINDING_PRIORITY'];
 			$data['finding_data'][$i]['DUE_DATE'] = $finding['DUE_DATE'];
@@ -1666,10 +1665,100 @@ class ReportController extends Controller
 	 |--------------------------------------------------------------------------
 	 | ...
 	 */
+	 // klik generate report
+	public function generate_kafka(Request $request){
+		var_dump(session('requesting'));
+		if(!session()->has('requesting')){
+			$requestObject = [
+				"data_source"=>[
+					[
+						"msa_name"=>"auth",
+						"model_name"=>"ViewContentInspeksi"
+					],
+					[
+						"msa_name"=>"auth",
+						"model_name"=>"ViewUserAuth",
+						"agg"=>["\$match"=>["USER_AUTH_CODE"=> "0103"]]
+					],
+					[
+						"msa_name"=>"inspection",
+						"model_name"=>"ViewInspectionModel",
+						"agg"=>[
+							"\$match"=>[
+								"WERKS"=> "4121",
+								"INSPECTION_DATE"=> [
+									"\$gte"=> "20190101000000",
+									"\$lte"=> "20190101235959"
+								],
+								"DELETE_USER"=> "",
+								
+							]
+						]
+					],
+					[
+						"msa_name"=>"hectare",
+						"model_name"=>"ViewLandUseModel",
+						"agg"=>["\$match"=>["WERKS_AFD_BLOCK_CODE"=> "4121F001"]]
+					]
+				],
+				"requester"=>"web",
+				"request_id"=>1
+			];
+
+			$config = \Kafka\ProducerConfig::getInstance();
+			$config->setMetadataRefreshIntervalMs(10000);
+			$config->setMetadataBrokerList('149.129.252.13:9192');
+			$config->setBrokerVersion('1.0.0');
+			$config->setRequiredAck(1);
+			$producer = new \Kafka\Producer();
+			$producer->send([
+				[
+					'topic' => 'kafkaRequest',
+					'value' => json_encode($requestObject)
+				],
+			]);
+			Session::put('requesting',$requestObject);
+			Session::save();
+		}
+		else if(session('flag')){
+			//generate report
+		}
+		else
+		{
+			$progress = session('kafkaProgress');
+			$requesting = session('requesting');
+			var_dump($progress);
+			//requesting - data soucre-nya udah komplit -> execute command buat jalanin spark-submit
+			let data_complete = true;
+			data_source_request[json_message.msa_name] = true;
+			for(let x in data_source_request){
+				if(data_source_request[x]==false){
+					data_complete = false;
+				}
+			}
+			/*if(data_complete){
+				var SSH = require('simple-ssh');
+
+				var ssh = new SSH({
+					host: '149.129.252.13',
+					user: 'root',
+					pass: 'T4pagri123'
+				});
+
+				ssh.exec('/root/spark/bin/spark-submit /root/pyspark/code/collecting.py requester=finding/request_id=1 > /root/pyspark/output/log.txt', {
+					out: function(stdout) {
+						
+						//bikin session flag lagi minta hasil query
+						console.log(stdout);
+					}
+				}).start();
+			}*/
+		}
+		return;
+	}
 	public function generate_inspeksi($data)
 	{
 		ini_set('memory_limit', '2G');
-
 		// $data['START_DATE'] = '20190501';
 		// $data['END_DATE'] = '20190531';
 		// print '<pre>';
@@ -2039,7 +2128,7 @@ class ReportController extends Controller
 			}
 		endif;
 
-		return response()->json($data);
+		return response()->json( $data );
 	}
 
 	/*
