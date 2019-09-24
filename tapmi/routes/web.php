@@ -46,7 +46,6 @@ Route::group( [ 'middleware' => 'web' ], function() {
 		Route::get( '/report/download', 'ReportController@download' );
 		Route::post( '/report/download', 'ReportController@download_proses' );
 		Route::post( '/report/generate', 'ReportController@generate_proses' );
-		Route::get( '/report/generate', 'ReportController@generate_kafka' );
 		Route::get( '/report/search-region', 'ReportController@search_region' );
 		Route::get( '/report/search-comp', 'ReportController@search_comp' );
 		Route::get( '/report/search-est', 'ReportController@search_est' );
@@ -58,7 +57,5 @@ Route::group( [ 'middleware' => 'web' ], function() {
 	// Cron URL
 	Route::get( '/cron/generate/inspeksi', 'ReportController@cron_generate_inspeksi' );
 	Route::get( '/cron/generate/token', 'ReportController@generate_token' );
-
-	Route::get( '/kafka/consumer', 'KafkaController@index' );
 
 });

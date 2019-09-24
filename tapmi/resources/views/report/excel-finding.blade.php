@@ -1,7 +1,6 @@
 <table>
 	<tr>
 		<th style="text-align:center;">Kode Finding</th>
-		<th style="text-align:center;">Jenis Temuan</th>
 		<th style="text-align:center;">Kode BA</th>
 		<th style="text-align:center;">Business Area</th>
 		<th style="text-align:center;">Kode AFD</th>
@@ -22,6 +21,7 @@
 		<th style="text-align:center;">Nama PIC</th>
 		<th style="text-align:center;">Deskripsi Temuan</th>
 		<th style="text-align:center;">Status Temuan</th>
+		<th style="text-align:center;">End Time</th>
 		<th style="text-align:center;">Progress (%)</th>
 		<th style="text-align:center;">Last Update</th>
 	</tr>
@@ -29,15 +29,6 @@
 	@foreach ( $finding_data as $finding )
 	<tr>
 		<td style="text-align:left;">{{ $finding['FINDING_CODE'] }}</td>
-		<td style="text-align:left;">
-			<?php
-			if (substr($finding['FINDING_CATEGORY'], 0, 1) == "C" && substr($finding['FINDING_CATEGORY'], 1, 1) == "A") {
-				echo "BLOK";
-			} elseif (substr($finding['FINDING_CATEGORY'], 0, 1) == "I" && substr($finding['FINDING_CATEGORY'], 1, 1) == "F") {
-				echo "INFRA";
-			}
-			?>
-		</td>
 		<td style="text-align:center;">{{ $finding['WERKS'] }}</td>
 		<td style="text-align:center;">{{ $finding['EST_NAME'] }}</td>
 		<td style="text-align:center;">{{ $finding['AFD_CODE'] }}</td>
@@ -58,6 +49,7 @@
 		<td style="text-align:left;">{{ $finding['PIC']['FULLNAME'] }}</td>
 		<td style="text-align:left;">{{ $finding['FINDING_DESC'] }}</td>
 		<td style="text-align:center;">{{ $finding['STATUS'] }}</td>
+		<td style="text-align:center;">{{ $finding['END_TIME'] }}</td>
 		@if ( $finding['PROGRESS'] == null )
 		<td style="text-align:center;">0 %</td>
 		@else

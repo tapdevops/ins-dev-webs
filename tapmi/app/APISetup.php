@@ -24,17 +24,19 @@ class APISetup extends Model
 	public static function url()
 	{
 
-		$env = 'dev';
+		$env = 'qa';
+
 
 		$data = array(
 			"dev" => array(
 				"msa" => array(
 					"ins" => array(
-						"auth" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-auth",
+						"auth" => "http://app.tap-agri.com/mobileinspection/ins-msa-auth",
 						"hectarestatement" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-hectarestatement",
 						"finding" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-finding",
-						"inspection" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-inspection",
-						"report" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-reports",
+						"inspection" => "http://app.tap-agri.com/mobileinspection/ins-msa-inspection",
+						// "report" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-reports",
+						"report" => "http://app.tap-agri.com/mobileinspection/ins-msa-reports",
 						"ebccvalidation" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-ebccval"
 					)
 				)

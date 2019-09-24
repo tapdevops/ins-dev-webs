@@ -53,10 +53,9 @@
 				<th>User Role</th>
 				<th>Location</th>
 				<th>Ref Role</th>
-				<th>Apk Version</th>
-				<th>Apk Date</th>
+				<th>APK Version</th>
+				<th>APK Date</th>
 				<th>Actions</th>
-			
 			</tr>
 		</thead>
 		<tbody>
