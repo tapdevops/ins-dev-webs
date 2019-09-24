@@ -78,7 +78,7 @@ return [
             'prefix' => '',
         ],
 		
-		'oracle' => [
+		'mobile_ins_dev' => [
 			'driver'   => 'oracle',
 			'tns'      =>  '',
 			'host'     => '10.20.1.111',
