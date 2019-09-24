@@ -4,14 +4,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class EBCCValidation extends Command
+class INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'Kafka:EBCCValidation';
+    protected $signature = 'Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D';
 
     /**
      * The console command description.
@@ -37,6 +37,6 @@ class EBCCValidation extends Command
      */
     public function handle()
     {
-        app('App\Http\Controllers\KafkaController')->run();
+        app('App\Http\Controllers\KafkaController')->RUN_INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D();
     }
 }

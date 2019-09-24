@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\EBCCValidation::class,
+        \App\Console\Commands\INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H::class,
+        \App\Console\Commands\INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D::class,
     ];
 
     /**
