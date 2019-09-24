@@ -77,6 +77,18 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
+		
+		'oracle' => [
+			'driver'   => 'oracle',
+			'tns'      =>  '',
+			'host'     => '10.20.1.111',
+			'port'     => '1521',
+			'database' => 'tapapps',
+			'username' => 'mobile_inspection',
+			'password' => 'mobile_inspection',
+			'charset'  => 'AL32UTF8',
+			'prefix'   => '',
+		],
 
     ],
 
