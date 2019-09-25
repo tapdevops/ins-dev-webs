@@ -53,11 +53,11 @@ class KafkaController extends Controller
 				if( $last_offset !== false ){
 					if($last_offset==null){
 						if( (int)$message->offset >= $last_offset ){
-							$this->insert_h( $payload, (int)$message->offset );
+							return $this->insert_h( $payload, (int)$message->offset );
 						}	
 					}else{
 						if( (int)$message->offset > $last_offset ){
-							$this->insert_h( $payload, (int)$message->offset );
+							return $this->insert_h( $payload, (int)$message->offset );
 						}	
 					}
 				}
@@ -88,11 +88,11 @@ class KafkaController extends Controller
 				if( $last_offset !== false ){
 					if($last_offset==null){
 						if( (int)$message->offset >= $last_offset ){
-							$this->insert_d( $payload, (int)$message->offset );
+							return $this->insert_d( $payload, (int)$message->offset );
 						}	
 					}else{
 						if( (int)$message->offset > $last_offset ){
-							$this->insert_d( $payload, (int)$message->offset );
+							return $this->insert_d( $payload, (int)$message->offset );
 						}	
 					}
 				}
@@ -154,11 +154,12 @@ class KafkaController extends Controller
 											WHERE
 												TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H'");
 			$this->db_mobile_ins->commit();
-			
+			return 'Insert Success';
 		}catch (\Throwable $e) {
+			return 'Insert Failde: '.$e->getMessage();
 			// return response()->json( $e->getMessage() );
         }catch (\Exception $e) {
-			//
+			return 'Insert Failde: '.$e->getMessage();
 		}
 	}
 	
@@ -195,10 +196,12 @@ class KafkaController extends Controller
 											WHERE
 												TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'");
 			$this->db_mobile_ins->commit();
+			return 'Insert Success';
 		}catch (\Throwable $e) {
+			return 'Insert Failde: '.$e->getMessage();
 			// return response()->json( $e->getMessage() );
         }catch (\Exception $e) {
-			//
+			return 'Insert Failde: '.$e->getMessage();
 		}
 	}
 	

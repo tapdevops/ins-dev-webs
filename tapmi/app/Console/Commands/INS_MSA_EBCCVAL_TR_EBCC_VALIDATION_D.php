@@ -37,6 +37,7 @@ class INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D extends Command
      */
     public function handle()
     {
-        app('App\Http\Controllers\KafkaController')->RUN_INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D();
+        $exe = app('App\Http\Controllers\KafkaController')->RUN_INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D();
+		echo $exe;
     }
 }
