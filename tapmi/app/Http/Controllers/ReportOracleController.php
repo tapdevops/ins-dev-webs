@@ -30,14 +30,17 @@ class ReportOracleController extends Controller
 		return view('orareport.download', $data);
 	}
 	
-	public function download_proses()
+	public function download_proses(Request $request)
 	{
 		$RO = new ReportOracle;
-		$data = $RO->EBCC_VALIDATION_ESTATE();
+		$type = $request->REPORT_TYPE;
+		
+		// dd($type);
+		if( $type == 'EBCC_VALIDATION_ESTATE' ){
+			$data = $RO->EBCC_VALIDATION_ESTATE();
+		}
 		
 		$results['data'] = $data;
-		
-		// dd($results);
 		
 		Excel::create('Report-Sampling-EBCC', function ($excel) use ($results) {
 			$excel->sheet('Sampling EBCC', function ($sheet) use ($results) {
