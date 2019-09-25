@@ -104,12 +104,6 @@ class KafkaController extends Controller
 	
 	public function insert_h($payload, $offset)
 	{
-		$prm = array('EBCC_VALIDATION_CODE', 'WERKS', 'AFD_CODE', 'BLOCK_CODE', 'NO_TPH', 'STATUS_TPH_SCAN', 'ALASAN_MANUAL', 'LAT_TPH', 'LON_TPH', 'DELIVERY_CODE', 'STATUS_DELIVERY_CODE', 'INSERT_USER', 'INSERT_TIME', 'STATUS_SYNC', 'SYNC_TIME', 'UPDATE_USER', 'UPDATE_TIME');
-		
-		$object = (object) $payload;
-		foreach($prm as $prm){
-			$val[$prm] = $object->$prm;
-		}
 		
 		try{
 			$sql = "INSERT INTO MOBILE_INSPECTION.TR_EBCC_VALIDATION_H ( 
@@ -131,22 +125,22 @@ class KafkaController extends Controller
 							UPDATE_USER, 
 							UPDATE_TIME ) 
 							VALUES (
-								'{$val['EBCC_VALIDATION_CODE']}', 
-								'{$val['WERKS']}', 
-								'{$val['AFD_CODE']}', 
-								'{$val['BLOCK_CODE']}', 
-								'{$val['NO_TPH']}', 
-								'{$val['STATUS_TPH_SCAN']}', 
-								'{$val['ALASAN_MANUAL']}', 
-								'{$val['LAT_TPH']}', 
-								'{$val['LON_TPH']}', 
-								'{$val['DELIVERY_CODE']}', 
-								'{$val['STATUS_DELIVERY_CODE']}', 
-								'{$val['INSERT_USER']}', 
-								to_date('{$val['INSERT_TIME']}','YYYYMMDDHH24MISS'), 
-								'{$val['STATUS_SYNC']}', 
-								to_date('{$val['SYNC_TIME']}','YYYYMMDDHH24MISS'), 
-								'{$val['UPDATE_USER']}', 
+								'{$payload['EBVTC']}', 
+								'{$payload['WERKS']}', 
+								'{$payload['AFD_CODE']}', 
+								'{$payload['BLOCK_CODE']}', 
+								'{$payload['NO_TPH']}', 
+								'{$payload['STPHS']}', 
+								'{$payload['ALSNM']}', 
+								'{$payload['LAT_TPH']}', 
+								'{$payload['LON_TPH']}', 
+								'{$payload['DLVCD']}', 
+								'{$payload['SDLVC']}', 
+								'{$payload['INSUR']}', 
+								to_date('{$payload['INSTM']}','YYYYMMDDHH24MISS'), 
+								'{$payload['SSYNC']}', 
+								to_date('{$payload['STIME']}','YYYYMMDDHH24MISS'), 
+								'{$payload['UPTUR']}', 
 								null )";
 			$this->db_mobile_ins->statement($sql);
 			$this->db_mobile_ins->commit();
@@ -170,11 +164,6 @@ class KafkaController extends Controller
 	
 	public function insert_d($payload, $offset)
 	{
-		$prm = array('EBCC_VALIDATION_CODE','ID_KUALITAS','JUMLAH','INSERT_USER','INSERT_TIME','STATUS_SYNC','SYNC_TIME');
-		$object = (object) $payload;
-		foreach($prm as $prm){
-			$val[$prm] = $object->$prm;
-		}
 		
 		$sql = " INSERT INTO MOBILE_INSPECTION.TR_EBCC_VALIDATION_D ( 
 							EBCC_VALIDATION_CODE, 
@@ -185,13 +174,13 @@ class KafkaController extends Controller
 							STATUS_SYNC, 
 							SYNC_TIME ) 
 							VALUES ( 
-								'{$val['EBCC_VALIDATION_CODE']}', 
-								'{$val['ID_KUALITAS']}', 
-								'{$val['JUMLAH']}', 
-								'{$val['INSERT_USER']}', 
-								to_date('{$val['INSERT_TIME']}','YYYYMMDDHH24MISS'), 
-								'{$val['STATUS_SYNC']}',
-								to_date('{$val['SYNC_TIME']}','YYYYMMDDHH24MISS') )";
+								'{$payload['EBVTC']}', 
+								'{$payload['IDKLT']}', 
+								'{$payload['JML']}', 
+								'{$payload['INSUR']}', 
+								to_date('{$payload['INSTM']}','YYYYMMDDHH24MISS'), 
+								'{$payload['SSYNC']}',
+								to_date('{$payload['STIME']}','YYYYMMDDHH24MISS') )";
 		
 		try{
 			$this->db_mobile_ins->statement($sql);
