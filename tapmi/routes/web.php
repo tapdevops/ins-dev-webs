@@ -52,6 +52,13 @@ Route::group( [ 'middleware' => 'web' ], function() {
 		Route::get( '/report/search-afd', 'ReportController@search_afd' );
 		Route::get( '/report/search-block', 'ReportController@search_block' );
 		Route::get( '/data/user-search', 'DataController@user_search_find' );
+		
+		#ora report
+		Route::group(['prefix'=>'report_oracle'], function () {
+			Route::get('download', ['as'=>'orareport.download', 'uses'=>'ReportOracleController@download']);
+			Route::get('download_proses', ['as'=>'orareport.download_proses', 'uses'=>'ReportOracleController@download_proses']);
+			
+		});
 	});
 
 	// Cron URL
