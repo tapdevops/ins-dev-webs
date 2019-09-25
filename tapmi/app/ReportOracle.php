@@ -16,6 +16,23 @@ class ReportOracle extends Model
 		$this->db_mobile_ins = ($this->env == 'production' ? DB::connection('mobile_ins') : DB::connection('mobile_ins_dev'));
 	}
 	
+    public function EBCC_VALIDATION_ESTATE_HEAD()
+	{
+		$get = $this->db_mobile_ins->select("
+				SELECT
+					KUALITAS.NAMA_KUALITAS
+				FROM
+					TAP_DW.T_KUALITAS_PANEN@PRODDW_LINK KUALITAS
+				WHERE
+					KUALITAS.ACTIVE_STATUS = 'YES'
+				ORDER BY 
+					KUALITAS.GROUP_KUALITAS ASC,
+					KUALITAS.UOM ASC,
+					KUALITAS.NAMA_KUALITAS ASC
+		");
+		return $get;
+	}
+	
     public function EBCC_VALIDATION_ESTATE()
 	{
 		$get = $this->db_mobile_ins->select("
@@ -64,22 +81,22 @@ class ReportOracle extends Model
 						PIVOT (
 							SUM( JUMLAH )
 							FOR ID_KUALITAS IN ( 
-								1, 
-								2, 
-								3, 
-								4, 
-								5, 
-								6, 
-								7, 
-								8, 
-								9, 
-								10, 
-								11, 
-								12, 
-								13, 
-								14, 
-								15, 
-								16 
+								1 as ID_KUALITAS_1, 
+								2 as ID_KUALITAS_2, 
+								3 as ID_KUALITAS_3, 
+								4 as ID_KUALITAS_4, 
+								5 as ID_KUALITAS_5, 
+								6 as ID_KUALITAS_6, 
+								7 as ID_KUALITAS_7, 
+								8 as ID_KUALITAS_8, 
+								9 as ID_KUALITAS_9, 
+								10 as ID_KUALITAS_10, 
+								11 as ID_KUALITAS_11, 
+								12 as ID_KUALITAS_12, 
+								13 as ID_KUALITAS_13, 
+								14 as ID_KUALITAS_14, 
+								15 as ID_KUALITAS_15, 
+								16 as ID_KUALITAS_16 
 							)
 						)
 						WHERE EBCC_VALIDATION_CODE IS NOT NULL

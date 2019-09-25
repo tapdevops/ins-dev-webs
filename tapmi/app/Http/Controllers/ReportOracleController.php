@@ -37,10 +37,9 @@ class ReportOracleController extends Controller
 		
 		// dd($type);
 		if( $type == 'EBCC_VALIDATION_ESTATE' ){
-			$data = $RO->EBCC_VALIDATION_ESTATE();
+			$results['head'] = $RO->EBCC_VALIDATION_ESTATE_HEAD();
+			$results['data'] = $RO->EBCC_VALIDATION_ESTATE();
 		}
-		
-		$results['data'] = $data;
 		
 		Excel::create('Report-Sampling-EBCC', function ($excel) use ($results) {
 			$excel->sheet('Sampling EBCC', function ($sheet) use ($results) {
