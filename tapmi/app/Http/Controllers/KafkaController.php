@@ -53,11 +53,11 @@ class KafkaController extends Controller
 				if( $last_offset !== false ){
 					if($last_offset==null){
 						if( (int)$message->offset >= $last_offset ){
-							return $this->insert_h( $payload, (int)$message->offset );
+							echo $this->insert_h( $payload, (int)$message->offset );
 						}	
 					}else{
 						if( (int)$message->offset > $last_offset ){
-							return $this->insert_h( $payload, (int)$message->offset );
+							echo $this->insert_h( $payload, (int)$message->offset );
 						}	
 					}
 				}
@@ -88,11 +88,11 @@ class KafkaController extends Controller
 				if( $last_offset !== false ){
 					if($last_offset==null){
 						if( (int)$message->offset >= $last_offset ){
-							return $this->insert_d( $payload, (int)$message->offset );
+							echo $this->insert_d( $payload, (int)$message->offset );
 						}	
 					}else{
 						if( (int)$message->offset > $last_offset ){
-							return $this->insert_d( $payload, (int)$message->offset );
+							echo $this->insert_d( $payload, (int)$message->offset );
 						}	
 					}
 				}
