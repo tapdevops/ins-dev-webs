@@ -35,7 +35,7 @@ class KafkaController extends Controller
 	{
 		$topic = "INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H";
 		$Kafka = new RdKafka\Consumer();
-		$Kafka->setLogLevel(LOG_DEBUG);
+		// $Kafka->setLogLevel(LOG_DEBUG);
 		$Kafka->addBrokers( "149.129.252.13" );
 		$Topic = $Kafka->newTopic( $topic );
 		$Topic->consumeStart( 0, RD_KAFKA_OFFSET_BEGINNING );
@@ -71,7 +71,7 @@ class KafkaController extends Controller
 	{
 		$topic = "INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D";
 		$Kafka = new RdKafka\Consumer();
-		$Kafka->setLogLevel(LOG_DEBUG);
+		// $Kafka->setLogLevel(LOG_DEBUG);
 		$Kafka->addBrokers( "149.129.252.13" );
 		$Topic = $Kafka->newTopic( $topic );
 		$Topic->consumeStart( 0, RD_KAFKA_OFFSET_BEGINNING );
