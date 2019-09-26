@@ -46,7 +46,7 @@ class ReportOracle extends Model
 		}
 		
 		$where .= $START_DATE ? " and EBCC_HEADER.SYNC_TIME >= TO_TIMESTAMP('$START_DATE 00:00:00','DD-MM-YYYY HH24:MI:SS')  ": "";
-		$where .= $END_DATE ? " and EBCC_HEADER.SYNC_TIME <= TO_TIMESTAMP('$END_DATE 59:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
+		$where .= $END_DATE ? " and EBCC_HEADER.SYNC_TIME <= TO_TIMESTAMP('$END_DATE 23:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
 		$where .= $REGION_CODE ? " and EST.REGION_CODE = '$REGION_CODE'  ": "";
 		$where .= $COMP_CODE ? " and EST.COMP_CODE = '$COMP_CODE'  ": "";
 		$where .= $BA_CODE ? " and EBCC_HEADER.WERKS = '$BA_CODE'  ": "";
