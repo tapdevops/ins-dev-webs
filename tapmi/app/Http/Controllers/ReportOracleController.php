@@ -43,9 +43,9 @@ class ReportOracleController extends Controller
 		$AFD_CODE = $request->AFD_CODE ?? null;
 		$BLOCK_CODE = $request->BLOCK_CODE ?? null;
 		
-		if( $REPORT_TYPE == 'EBCC_VALIDATION_ESTATE' ){
+		if( $REPORT_TYPE == 'EBCC_VALIDATION_ESTATE' || $REPORT_TYPE == 'EBCC_VALIDATION_MILL' ){
 			$results['head'] = $RO->EBCC_VALIDATION_ESTATE_HEAD();
-			$results['data'] = $RO->EBCC_VALIDATION_ESTATE(
+			$results['data'] = $RO->EBCC_VALIDATION(
 									$REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE
 								);
 		}

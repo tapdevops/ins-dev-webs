@@ -33,7 +33,7 @@ class ReportOracle extends Model
 		return $get;
 	}
 	
-    public function EBCC_VALIDATION_ESTATE($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)
+    public function EBCC_VALIDATION($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)
 	{
 		$where = "";
 		
