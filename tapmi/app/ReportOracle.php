@@ -33,9 +33,27 @@ class ReportOracle extends Model
 		return $get;
 	}
 	
-    public function EBCC_VALIDATION_ESTATE()
+    public function EBCC_VALIDATION_ESTATE($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)
 	{
-		$get = $this->db_mobile_ins->select("
+		$where = "";
+		
+		if($REPORT_TYPE){
+			if($REPORT_TYPE=='EBCC_VALIDATION_ESTATE'){
+				$where .= " and SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'";
+			}else{
+				$where .= " and SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'";
+			}
+		}
+		
+		$where .= $START_DATE ? " and EBCC_HEADER.SYNC_TIME >= TO_TIMESTAMP('$START_DATE 00:00:00','DD-MM-YYYY HH24:MI:SS')  ": "";
+		$where .= $END_DATE ? " and EBCC_HEADER.SYNC_TIME <= TO_TIMESTAMP('$END_DATE 59:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
+		$where .= $REGION_CODE ? " and EST.REGION_CODE = '$REGION_CODE'  ": "";
+		$where .= $COMP_CODE ? " and EST.COMP_CODE = '$COMP_CODE'  ": "";
+		$where .= $BA_CODE ? " and EBCC_HEADER.WERKS = '$BA_CODE'  ": "";
+		$where .= $AFD_CODE ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE = '$AFD_CODE'  ": "";
+		$where .= $BLOCK_CODE ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE||EBCC_HEADER.BLOCK_CODE = '$BLOCK_CODE'  ": "";
+		
+		$sql = "
 				SELECT
 					EBCC_HEADER.EBCC_VALIDATION_CODE,
 					EST.WERKS,
@@ -102,9 +120,11 @@ class ReportOracle extends Model
 						WHERE EBCC_VALIDATION_CODE IS NOT NULL
 					) EBCC_DETAIL ON
 						EBCC_DETAIL.EBCC_VALIDATION_CODE = EBCC_HEADER.EBCC_VALIDATION_CODE
-				WHERE
-					SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'
-		");
+				WHERE 1=1
+				$where
+		";
+		
+		$get = $this->db_mobile_ins->select($sql);
 		return $get;
 	}
 }
