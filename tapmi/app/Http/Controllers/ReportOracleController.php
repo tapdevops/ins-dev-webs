@@ -33,14 +33,14 @@ class ReportOracleController extends Controller
 	public function download_proses(Request $request)
 	{
 		$RO = new ReportOracle;
-		$REPORT_TYPE = $request->REPORT_TYPE == '' ? $request->REPORT_TYPE :  null;
-		$START_DATE = $request->START_DATE == '' ? $request->START_DATE : null;
-		$END_DATE = $request->END_DATE == '' ? $request->END_DATE : null;
-		$REGION_CODE = $request->REGION_CODE == '' ? $request->REGION_CODE : null;
-		$COMP_CODE = $request->COMP_CODE == '' ? $request->COMP_CODE : null;
-		$BA_CODE = $request->BA_CODE == '' ? $request->BA_CODE : null;
-		$AFD_CODE = $request->AFD_CODE == '' ? $request->AFD_CODE : null;
-		$BLOCK_CODE = $request->BLOCK_CODE == '' ? $request->BLOCK_CODE : null;
+		$REPORT_TYPE = $request->REPORT_TYPE != '' ? $request->REPORT_TYPE :  null;
+		$START_DATE = $request->START_DATE != '' ? $request->START_DATE : null;
+		$END_DATE = $request->END_DATE != '' ? $request->END_DATE : null;
+		$REGION_CODE = $request->REGION_CODE != '' ? $request->REGION_CODE : null;
+		$COMP_CODE = $request->COMP_CODE != '' ? $request->COMP_CODE : null;
+		$BA_CODE = $request->BA_CODE != '' ? $request->BA_CODE : null;
+		$AFD_CODE = $request->AFD_CODE != '' ? $request->AFD_CODE : null;
+		$BLOCK_CODE = $request->BLOCK_CODE != '' ? $request->BLOCK_CODE : null;
 		
 		if( $REPORT_TYPE == 'EBCC_VALIDATION_ESTATE' || $REPORT_TYPE == 'EBCC_VALIDATION_MILL' ){
 			$results['head'] = $RO->EBCC_VALIDATION_ESTATE_HEAD();
