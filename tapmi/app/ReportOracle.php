@@ -136,9 +136,9 @@ class ReportOracle extends Model
 		$where .= $END_DATE ? " and EBCC_DATE_TIME <= TO_TIMESTAMP('$END_DATE 23:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
 		// $where .= $REGION_CODE ? " and EST.REGION_CODE = '$REGION_CODE'  ": "";
 		// $where .= $COMP_CODE ? " and EST.COMP_CODE = '$COMP_CODE'  ": "";
-		$where .= $BA_CODE ? " and EBCC_HEADER.WERKS = '$BA_CODE'  ": "";
-		$where .= $AFD_CODE ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE = '$AFD_CODE'  ": "";
-		$where .= $BLOCK_CODE ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE||EBCC_HEADER.BLOCK_CODE = '$BLOCK_CODE'  ": "";
+		$where .= $BA_CODE ? " and EBCC_WERKS = '$BA_CODE'  ": "";
+		$where .= $AFD_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE = '$AFD_CODE'  ": "";
+		$where .= $BLOCK_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE||EBCC_BLOCK_CODE = '$BLOCK_CODE'  ": "";
 		
 		$sql = "
 				SELECT 
@@ -273,7 +273,7 @@ class ReportOracle extends Model
 									SUBBLOCK.BLOCK_CODE AS EBCC_BLOCK_CODE,
 									SUBBLOCK.BLOCK_NAME AS EBCC_BLOCK_NAME,
 									EBCC.TPH_CODE AS EBCC_TPH_CODE,
-									-- EBCC.DELIVERY_TICKET as EBCC_DELIVERY_TICKET,
+									
 									NVL ( SUM ( EBCC.JML_BM), 0) AS EBCC_JML_BM,
 									NVL ( SUM ( EBCC.JML_BK), 0) AS EBCC_JML_BK,
 									NVL ( SUM ( EBCC.JML_MS), 0) AS EBCC_JML_MS,
@@ -308,7 +308,7 @@ class ReportOracle extends Model
 												THEN HPK.QTYS
 												ELSE 0
 											END AS JJG_PANEN
-											-- 'http://tap-motion.tap-agri.com/ebcc/array/uploads/'||HP.PICTURE_NAME AS IMAGE_NAME
+											
 										FROM 
 											(
 												SELECT 
@@ -320,7 +320,7 @@ class ReportOracle extends Model
 												WHERE 
 													1 = 1
 													AND TO_CHAR (TANGGAL_RENCANA, 'DD-MM-RRRR') = '08-07-2019'
-													--AND TANGGAL_RENCANA BETWEEN TO_DATE ('01-07-2019', 'DD-MM-RRRR') AND  TO_DATE ( '01-07-2019', 'DD-MM-RRRR')
+													
 											) HRP
 											LEFT JOIN EBCC.T_DETAIL_RENCANA_PANEN@PRODDB_LINK DRP ON HRP.ID_RENCANA = DRP.ID_RENCANA
 											LEFT JOIN EBCC.T_HASIL_PANEN@PRODDB_LINK HP ON HP.ID_RENCANA = DRP.ID_RENCANA AND HP.NO_REKAP_BCC = DRP.NO_REKAP_BCC
@@ -339,8 +339,7 @@ class ReportOracle extends Model
 																QTY
 															FROM 
 																MOBILE_ESTATE.T_HASILPANEN_KUALTAS@PRODDB_LINK
-															-- Note:
-															-- Untuk membatasi jumlah row agar query cepat.
+															
 															WHERE ROWNUM < 10
 														) 
 														PIVOT 
@@ -379,7 +378,7 @@ class ReportOracle extends Model
 												EMPLOYEE_POSITION
 											FROM 
 												TAP_DW.TM_EMPLOYEE_HRIS@PRODDW_LINK
-											-- WHERE ROWNUM < 10
+											
 											UNION
 											SELECT 
 												NIK,
@@ -393,7 +392,7 @@ class ReportOracle extends Model
 												JOB_CODE
 											FROM
 												TAP_DW.TM_EMPLOYEE_SAP@DWH_LINK
-											-- WHERE ROWNUM < 10
+											
 										) EMP_EBCC 
 											ON EMP_EBCC.EMPLOYEE_NIK = EBCC.NIK_KERANI_BUAH 
 											AND EBCC.DATE_TIME BETWEEN EMP_EBCC.START_VALID AND  EMP_EBCC.END_VALID
@@ -422,7 +421,6 @@ class ReportOracle extends Model
 				WHERE 1=1
 				$where
 		";
-		
 		$get = $this->db_mobile_ins->select($sql);
 		return $get;
 	}

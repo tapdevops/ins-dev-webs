@@ -48,16 +48,18 @@ class ReportOracleController extends Controller
 									$REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE
 								);
 			$file_name 		 = 'Report-Sampling-EBCC';
-		}else if( $REPORT_TYPE == 'EBCC_COMAPRE' ){
+			$results['view'] = 'orareport.excel-ebcc-validation';
+		}else if( $REPORT_TYPE == 'EBCC_COMPARE' ){
+			
 			$results['data'] = $RO->EBCC_COMPARE(
 									$REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE
 								);
 			$file_name 		 = 'Report-EBCC-Compare';
+			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
-		
 		Excel::create($file_name, function ($excel) use ($results) {
 			$excel->sheet('Sampling EBCC', function ($sheet) use ($results) {
-				$sheet->loadView('orareport.excel-ebcc-validation', $results);
+				$sheet->loadView($results['view'], $results);
 			});
 		})->export('xls');
 	}
