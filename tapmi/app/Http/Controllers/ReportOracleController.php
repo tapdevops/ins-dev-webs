@@ -41,7 +41,7 @@ class ReportOracleController extends Controller
 		$BA_CODE = $request->BA_CODE != '' ? $request->BA_CODE : null;
 		$AFD_CODE = $request->AFD_CODE != '' ? $request->AFD_CODE : null;
 		$BLOCK_CODE = $request->BLOCK_CODE != '' ? $request->BLOCK_CODE : null;
-		
+		$file_name = null;
 		if( $REPORT_TYPE == 'EBCC_VALIDATION_ESTATE' || $REPORT_TYPE == 'EBCC_VALIDATION_MILL' ){
 			$results['head'] = $RO->EBCC_VALIDATION_ESTATE_HEAD();
 			$results['data'] = $RO->EBCC_VALIDATION(
@@ -53,13 +53,34 @@ class ReportOracleController extends Controller
 			$results['data'] = $RO->EBCC_COMPARE(
 									$REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE
 								);
+		
+			foreach((array)$results['data'][0] as $k=> $col){
+				$hd[] = array(
+					'original'=>$k,
+					'forexcel'=>ucwords(str_replace(array('val_','ebcc_'),array('',''),$k))
+				);
+			}
+			$results['head'] =  $hd;
 			$file_name 		 = 'Report-EBCC-Compare';
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
-		Excel::create($file_name, function ($excel) use ($results) {
-			$excel->sheet('Sampling EBCC', function ($sheet) use ($results) {
-				$sheet->loadView($results['view'], $results);
-			});
-		})->export('xls');
+		
+		foreach ( $results['data'] as $dt ){
+			$dt = (array) $dt;
+			$tmp[] = $dt;
+			foreach($results['head'] as $hd){
+				$sip[] = $dt[ $hd['original'] ];
+			}
+			
+		}
+		
+		
+		if($file_name){
+			Excel::create($file_name, function ($excel) use ($results) {
+				$excel->sheet('Sampling EBCC', function ($sheet) use ($results) {
+					$sheet->loadView($results['view'], $results);
+				});
+			})->export('xls');
+		}
 	}
 }

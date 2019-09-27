@@ -1,5 +1,9 @@
 <table>
 	<tr>
+		@foreach($head as $hd)
+		<th style="text-align: left;back">{{ $hd['forexcel'] }}</th>
+		@endforeach
+		<!-- 
 		<th style="text-align: left;back">VAL_EBCC_CODE</th>
 		<th style="text-align: left;back">VAL_WERKS</th>
 		<th style="text-align: left;back">VAL_NIK_VALIDATOR</th>
@@ -40,58 +44,19 @@
 		<th style="text-align: left;back">EBCCJML_BA</th>
 		<th style="text-align: left;back">EBCC_JML_BRD</th>
 		<th style="text-align: left;back">EBCC_JJG_PANEN</th>
+		-->
 		
 		
 	</tr>
-	@if ( count( $data ) > 0 )
-	@foreach ( $data as $dt )
-	@php
-		$dt = (array) $dt;
-		
-	@endphp
-	<tr>
-		<td style="text-align: left;">{{ $dt['val_ebcc_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_werks'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_nik_validator'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_nama_validator'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jabatan_validator'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_date_time'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_afd_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_block_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_block_name'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_tph_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_delivery_ticket'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_bm'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_bk'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_ms'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_or'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_bb'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_jk'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_ba'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jml_brd'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_jjg_panen'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_id_rencana'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_no_bcc'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_werks'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_nik_kerani_buah'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_nama_kerani_buah'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jabatan_kerani_buah'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_date_time'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_afd_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_block_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_block_name'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_tph_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_bm'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_bk'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_ms'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_or'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_bb'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_jk'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebccjml_ba'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jml_brd'] }}</td>
-		<td style="text-align: left;">{{ $dt['ebcc_jjg_panen'] }}</td>
-
-	</tr>
-	@endforeach
-	@endif
+	<?php 
+		foreach ( $data as $dt ){
+			echo '<tr>';
+			$dt = (array) $dt;
+			$tmp[] = $dt;
+			foreach($head as $hd){
+				echo '<td style="text-align: left;">'.$dt[ $hd['original'] ].'</td>';
+			}
+			echo '</tr>';
+		}
+	?>
 </table>

@@ -78,7 +78,7 @@
 			<div class="col-lg-6">
 				<label>Pilih Region <span class="text-danger">*</span></label>
 				<select class="form-control m-select2 mi-select2" onchange="return ajaxSelect( 'comp', this.value )" id="select-region" name="REGION_CODE" data-placeholder="...">
-					<option></option>
+					<option>Semua Data</option>
 					@foreach ( $region_data['data'] as $region )
 					<option value="{{ $region['REGION_CODE'] }}">{{ $region['REGION_CODE'].' - '.$region['REGION_NAME'] }}</option>
 					@endforeach
