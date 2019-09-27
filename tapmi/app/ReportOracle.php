@@ -186,7 +186,19 @@ class ReportOracle extends Model
 					EBCC.EBCC_JML_JK AS \"EBCC_JK (jjg)\",
 					EBCC.EBCCJML_BA AS \"EBCC_BA (jjg)\",
 					EBCC.EBCC_JML_BRD AS \"EBCC_BRD (jjg)\",
-					EBCC.EBCC_JJG_PANEN AS \"EBCC_Total Janjang Panen\"
+					EBCC.EBCC_JJG_PANEN AS \"EBCC_Total Janjang Panen\",
+					
+					'' AS \"Lihat Foto\",
+					CASE
+						WHEN EBCC.EBCC_JJG_PANEN = EBCC_VALIDATION.VAL_JJG_PANEN
+						THEN 'MATCH'
+						ELSE 'NOT MATCH'
+					END AS \"Akurasi Sampling EBCC\",
+					CASE
+						WHEN EBCC.EBCC_JJG_PANEN = EBCC_VALIDATION.VAL_JJG_PANEN
+						THEN NVL( EBCC.EBCC_JJG_PANEN, 0 ) - NVL( EBCC_VALIDATION.VAL_JJG_PANEN, 0 )
+						ELSE 0
+					END AS \"Akurasi Kualitas MS\"
 				FROM
 					(
 						SELECT 
