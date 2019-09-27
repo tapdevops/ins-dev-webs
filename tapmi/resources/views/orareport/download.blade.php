@@ -37,6 +37,7 @@
 					<option value="EBCC_VALIDATION_ESTATE">SAMPLING EBCC ESTATE</option>
 					<option value="EBCC_VALIDATION_MILL">SAMPLING EBCC MILL</option>
 					<option value="CLASS_BLOCK_AFD_ESTATE">CLASS, BLOCK, AFD, &amp; ESTATE</option>
+					<option value="EBCC_COMPARE">EBCC COMPARE</option>
 				</select>
 			</div>
 		</div>
