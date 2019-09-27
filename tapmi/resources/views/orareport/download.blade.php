@@ -78,6 +78,7 @@
 			<div class="col-lg-6">
 				<label>Pilih Region <span class="text-danger">*</span></label>
 				<select class="form-control m-select2 mi-select2" onchange="return ajaxSelect( 'comp', this.value )" id="select-region" name="REGION_CODE" data-placeholder="...">
+					<option></option>
 					@foreach ( $region_data['data'] as $region )
 					<option value="{{ $region['REGION_CODE'] }}">{{ $region['REGION_CODE'].' - '.$region['REGION_NAME'] }}</option>
 					@endforeach
@@ -210,7 +211,14 @@
 			target = "#select-block";
 			url = "{{ url('report/search-block?q=') }}";
 		}
-
+		
+		$('body').waitMe({
+			effect: '',
+			text: 'Memperbaharui data...',
+			bg: '',
+			color: '#3d3d3d'
+		});
+		
 		$.get(url + value, function(jsondata) {
 				console.log("JSONDATA :");
 				console.log(jsondata)
@@ -223,9 +231,13 @@
 						$(target).append('<option value="' + each.id + '">' + each.id + ' - ' + each.text + '</option>');
 					}
 				}
+				$(target).select2();
+				$('body').waitMe('hide');
+				
 			}, "JSON")
 			.fail(function() {
 				alert("error");
+				$('body').waitMe('hide');
 			});
 	}
 

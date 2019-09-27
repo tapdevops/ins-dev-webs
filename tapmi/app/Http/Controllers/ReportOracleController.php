@@ -49,8 +49,7 @@ class ReportOracleController extends Controller
 								);
 			$file_name 		 = 'Report-Sampling-EBCC';
 			$results['view'] = 'orareport.excel-ebcc-validation';
-		}else if( $REPORT_TYPE == 'EBCC_COMPARE' ){
-			
+		}else if( $REPORT_TYPE == 'EBCC_COMPARE' ){			
 			$results['data'] = $RO->EBCC_COMPARE(
 									$REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE
 								);
