@@ -389,7 +389,7 @@ class ReportOracle extends Model
 															QTY
 														FROM 
 															MOBILE_ESTATE.T_HASILPANEN_KUALTAS@PRODDB_LINK
-														WHERE ROWNUM < 2
+														WHERE ROWNUM < 10
 													) 
 													PIVOT 
 													(
