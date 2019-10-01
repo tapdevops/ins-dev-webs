@@ -14,7 +14,7 @@
 		-
 	</li>
 	<li class="m-nav__item">
-		<a href="{{ url( 'report/download' ) }}" class="m-nav__link">
+		<a href="{{ url( 'report-oracle/download' ) }}" class="m-nav__link">
 			<span class="m-nav__link-text">
 				Download
 			</span>
@@ -24,7 +24,7 @@
 @endsection
 
 @section( 'content' )
-<form id="form" method="post" action="{{ url( '/report_oracle/download' ) }}" class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
+<form id="form" method="post" action="{{ url( '/report-oracle/download' ) }}" class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}">
 	<div class="m-portlet__body">
 
