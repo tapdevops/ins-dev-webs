@@ -54,7 +54,7 @@ Route::group( [ 'middleware' => 'web' ], function() {
 		Route::get( '/data/user-search', 'DataController@user_search_find' );
 		
 		#ora report
-		Route::group(['prefix'=>'report_oracle'], function () {
+		Route::group(['prefix'=>'report-oracle'], function () {
 			Route::get('download', ['as'=>'orareport.download', 'uses'=>'ReportOracleController@download']);
 			Route::post('download', ['as'=>'orareport.download_proses', 'uses'=>'ReportOracleController@download_proses']);
 			
