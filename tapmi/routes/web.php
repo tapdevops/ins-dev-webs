@@ -66,3 +66,5 @@ Route::group( [ 'middleware' => 'web' ], function() {
 	Route::get( '/cron/generate/token', 'ReportController@generate_token' );
 
 });
+
+Route::get( '/preview/compare-ebcc', 'ReportOracleController@view_page_report_ebcc_compare' );

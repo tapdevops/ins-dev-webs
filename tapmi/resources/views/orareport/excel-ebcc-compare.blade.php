@@ -1,8 +1,10 @@
 <table>
 	<tr>
-		@foreach($head as $hd)
-		<th style="text-align: left;back">{{ $hd['forexcel'] }}</th>
-		@endforeach
+		@if ( !empty( $head ) )
+			@foreach($head as $hd)
+				<th style="text-align: left;back">{{ $hd['forexcel'] }}</th>
+			@endforeach
+		@endif
 		<!-- 
 		<th style="text-align: left;back">VAL_EBCC_CODE</th>
 		<th style="text-align: left;back">VAL_WERKS</th>
@@ -48,15 +50,17 @@
 		
 		
 	</tr>
-	<?php 
-		foreach ( $data as $dt ){
-			echo '<tr>';
-			$dt = (array) $dt;
-			$tmp[] = $dt;
-			foreach($head as $hd){
-				echo '<td style="text-align: left;">'.$dt[ $hd['original'] ].'</td>';
+	@if ( !empty( $data ) )
+		<?php 
+			foreach ( $data as $dt ){
+				echo '<tr>';
+				$dt = (array) $dt;
+				$tmp[] = $dt;
+				foreach($head as $hd){
+					echo '<td style="text-align: left;">'.$dt[ $hd['original'] ].'</td>';
+				}
+				echo '</tr>';
 			}
-			echo '</tr>';
-		}
-	?>
+		?>
+	@endif
 </table>

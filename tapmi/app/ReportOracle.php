@@ -41,7 +41,7 @@ class ReportOracle extends Model
 			if($REPORT_TYPE=='EBCC_VALIDATION_ESTATE'){
 				$where .= " and SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'";
 			}else{
-				$where .= " and SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'";
+				$where .= " and SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'M'";
 			}
 		}
 		
@@ -130,6 +130,12 @@ class ReportOracle extends Model
 	
     public function EBCC_COMPARE($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)
 	{
+		if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' ) {
+			$REPORT_TYPE = 'V';
+		}
+		else if ( $REPORT_TYPE == 'EBCC_COMPARE_MILL' ) {
+			$REPORT_TYPE = 'M';
+		}
 		$where = "";
 		
 		$where .= $START_DATE ? " and EBCC_DATE_TIME >= TO_TIMESTAMP('$START_DATE 00:00:00','DD-MM-YYYY HH24:MI:SS')  ": "";
@@ -306,7 +312,7 @@ class ReportOracle extends Model
 										ON SUBBLOCK.WERKS = EBCC_HEADER.WERKS
 										AND SUBBLOCK.SUB_BLOCK_CODE = EBCC_HEADER.BLOCK_CODE
 								WHERE
-									SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'
+									SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = '{$REPORT_TYPE}'
 							) EBCC_VAL
 						GROUP BY
 							EBCC_VAL.VAL_EBCC_CODE,
