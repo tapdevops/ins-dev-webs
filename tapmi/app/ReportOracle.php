@@ -137,355 +137,258 @@ class ReportOracle extends Model
 			$REPORT_TYPE = 'M';
 		}
 		$where = "";
+		$where_ebcc = "";
+
+		$START_DATE = date( 'Y-m-d', strtotime( $START_DATE ) );
+		$END_DATE = date( 'Y-m-d', strtotime( $END_DATE ) );
 		
-		$where .= $START_DATE ? " and EBCC_DATE_TIME >= TO_TIMESTAMP('$START_DATE 00:00:00','DD-MM-YYYY HH24:MI:SS')  ": "";
-		$where .= $END_DATE ? " and EBCC_DATE_TIME <= TO_TIMESTAMP('$END_DATE 23:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
+		// $where .= $START_DATE ? " and EBCC_DATE_TIME >= TO_TIMESTAMP('$START_DATE 00:00:00','DD-MM-YYYY HH24:MI:SS')  ": "";
+		// $where .= $END_DATE ? " and EBCC_DATE_TIME <= TO_TIMESTAMP('$END_DATE 23:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
 		// $where .= $REGION_CODE ? " and EST.REGION_CODE = '$REGION_CODE'  ": "";
 		// $where .= $COMP_CODE ? " and EST.COMP_CODE = '$COMP_CODE'  ": "";
-		$where .= $BA_CODE ? " and EBCC_WERKS = '$BA_CODE'  ": "";
-		$where .= $AFD_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE = '$AFD_CODE'  ": "";
-		$where .= $BLOCK_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE||EBCC_BLOCK_CODE = '$BLOCK_CODE'  ": "";
+		$where .= $BA_CODE ? " AND EST.WERKS = '$BA_CODE'  ": "";
+		// $where .= $AFD_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE = '$AFD_CODE'  ": "";
+		// $where .= $BLOCK_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE||EBCC_BLOCK_CODE = '$BLOCK_CODE'  ": "";
+		// AND EST.WERKS = '4122'
+		// $where_ebcc .= $BA_CODE ? " and EBCC_WERKS = '$BA_CODE'  ": "";
+		// $where_ebcc .= $AFD_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE = '$AFD_CODE'  ": "";
+		// $where_ebcc .= $BLOCK_CODE ? " and EBCC_WERKS||EBCC_AFD_CODE||EBCC_BLOCK_CODE = '$BLOCK_CODE'  ": "";
 		
-		$sql = "
-				SELECT
-					EBCC_VALIDATION.VAL_DATE_TIME AS \"VAL_Tanggal\",
-					EBCC_VALIDATION.VAL_NIK_VALIDATOR AS \"VAL_NIK Pembuat\",
-					EBCC_VALIDATION.VAL_NAMA_VALIDATOR AS \"VAL_Nama Pembuat\",
-					EBCC_VALIDATION.VAL_JABATAN_VALIDATOR AS \"VAL_Jabatan Pembuat\",
-					EBCC_VALIDATION.VAL_WERKS AS \"VAL_Kode BA\",
-					EBCC_VALIDATION.VAL_EST_NAME AS \"VAL_Business Area\",
-					EBCC_VALIDATION.VAL_AFD_CODE AS \"VAL_Kode AFD\",
-					EBCC_VALIDATION.VAL_BLOCK_CODE AS \"VAL_Kode Block\",
-					EBCC_VALIDATION.VAL_BLOCK_NAME AS \"VAL_Block Deskripsi\",
-					EBCC_VALIDATION.VAL_TPH_CODE AS \"VAL_TPH\",
-					EBCC_VALIDATION.VAL_EBCC_CODE AS \"VAL_Kode Sampling EBCC\",					
-					CASE
-						WHEN EBCC_VALIDATION.VAL_STATUS_TPH_SCAN = 'AUTOMATIC'
-						THEN EBCC_VALIDATION.VAL_STATUS_TPH_SCAN
-						ELSE 
-							CASE
-								WHEN EBCC_VALIDATION.VAL_ALASAN_MANUAL = '1' THEN EBCC_VALIDATION.VAL_STATUS_TPH_SCAN || ' - QR Code TPH Hilang'
-								WHEN EBCC_VALIDATION.VAL_ALASAN_MANUAL = '2' THEN EBCC_VALIDATION.VAL_STATUS_TPH_SCAN || ' - Scan TPH Rusak'
-								ELSE EBCC_VALIDATION.VAL_STATUS_TPH_SCAN
-							END
-					END AS \"VAL_Status QR Code TPH\",					
-					EBCC_VALIDATION.VAL_JML_BM AS \"VAL_BM (jjg)\",
-					EBCC_VALIDATION.VAL_JML_BK AS \"VAL_BK (jjg)\",
-					EBCC_VALIDATION.VAL_JML_MS AS \"VAL_MS (jjg)\",
-					EBCC_VALIDATION.VAL_JML_OR AS \"VAL_OR (jjg)\",
-					EBCC_VALIDATION.VAL_JML_BB AS \"VAL_BB (jjg)\",
-					EBCC_VALIDATION.VAL_JML_JK AS \"VAL_JK (jjg)\",
-					EBCC_VALIDATION.VAL_JML_BA AS \"VAL_BA (jjg)\",
-					EBCC_VALIDATION.VAL_JML_BRD AS \"VAL_BRD (jjg)\",
-					EBCC_VALIDATION.VAL_JJG_PANEN AS \"VAL_Total Janjang Panen\",	
-					
-					EBCC.EBCC_NIK_KERANI_BUAH AS \"EBCC_NIK Krani Buah\",
-					EBCC.EBCC_NAMA_KERANI_BUAH AS \"EBCC_Nama Krani Buah\",
-					EBCC.EBCC_JABATAN_KERANI_BUAH AS \"EBCC_Jabatan Krani Buah\",
-					EBCC.EBCC_NO_BCC AS \"EBCC_No BCC\",
-					'' AS \"EBCC_Status QR Code TPH\",					
-					EBCC.EBCC_JML_BM AS \"EBCC_BM (jjg)\",
-					EBCC.EBCC_JML_BK AS \"EBCC_BK (jjg)\",
-					EBCC.EBCC_JML_MS AS \"EBCC_MS (jjg)\",
-					EBCC.EBCC_JML_OR AS \"EBCC_OR (jjg)\",
-					EBCC.EBCC_JML_BB AS \"EBCC_BB (jjg)\",
-					EBCC.EBCC_JML_JK AS \"EBCC_JK (jjg)\",
-					EBCC.EBCCJML_BA AS \"EBCC_BA (jjg)\",
-					EBCC.EBCC_JML_BRD AS \"EBCC_BRD (jjg)\",
-					EBCC.EBCC_JJG_PANEN AS \"EBCC_Total Janjang Panen\",
-					
-					'' AS \"Lihat Foto\",
-					CASE
-						WHEN EBCC.EBCC_JJG_PANEN = EBCC_VALIDATION.VAL_JJG_PANEN
-						THEN 'MATCH'
-						ELSE 'NOT MATCH'
-					END AS \"Akurasi Sampling EBCC\",
-					CASE
-						WHEN EBCC.EBCC_JJG_PANEN = EBCC_VALIDATION.VAL_JJG_PANEN
-						THEN NVL( EBCC.EBCC_JJG_PANEN, 0 ) - NVL( EBCC_VALIDATION.VAL_JJG_PANEN, 0 )
-						ELSE 0
-					END AS \"Akurasi Kualitas MS\"
-				FROM
-					(
-						SELECT 
-							EBCC_VAL.VAL_EBCC_CODE,
-							EBCC_VAL.VAL_WERKS,
-							EBCC_VAL.VAL_EST_NAME,
-							EBCC_VAL.VAL_NIK_VALIDATOR,
-							EBCC_VAL.VAL_NAMA_VALIDATOR,
-							EBCC_VAL.VAL_JABATAN_VALIDATOR,
-							EBCC_VAL.VAL_STATUS_TPH_SCAN,
-							EBCC_VAL.VAL_ALASAN_MANUAL,
-							EBCC_VAL.VAL_DATE_TIME,
-							EBCC_VAL.VAL_AFD_CODE,
-							EBCC_VAL.VAL_BLOCK_CODE,
-							EBCC_VAL.VAL_BLOCK_NAME,
-							EBCC_VAL.VAL_TPH_CODE,
-							EBCC_VAL.VAL_DELIVERY_TICKET,
-							NVL (SUM (EBCC_VAL.JML_BM), 0) AS VAL_JML_BM,
-							NVL (SUM (EBCC_VAL.JML_BK), 0) AS VAL_JML_BK,
-							NVL (SUM (EBCC_VAL.JML_MS), 0) AS VAL_JML_MS,
-							NVL (SUM (EBCC_VAL.JML_OR), 0) AS VAL_JML_OR,
-							NVL (SUM (EBCC_VAL.JML_BB), 0) AS VAL_JML_BB,
-							NVL (SUM (EBCC_VAL.JML_JK), 0) AS VAL_JML_JK,
-							NVL (SUM (EBCC_VAL.JML_BA), 0) AS VAL_JML_BA,
-							NVL (SUM (EBCC_VAL.JML_BRD), 0) AS VAL_JML_BRD,
-							NVL (SUM (EBCC_VAL.VAL_JJG_PANEN), 0) AS VAL_JJG_PANEN
-						FROM
-							(
+		$sql = "SELECT 
+		    EBCC_VAL.VAL_EBCC_CODE,
+		    EBCC_VAL.VAL_WERKS,
+		   	EBCC_VAL.VAL_EST_NAME,
+		    EBCC_VAL.VAL_NIK_VALIDATOR,
+		    EBCC_VAL.VAL_NAMA_VALIDATOR,
+		    EBCC_VAL.VAL_JABATAN_VALIDATOR,
+		    EBCC_VAL.VAL_STATUS_TPH_SCAN,
+		    EBCC_VAL.VAL_ALASAN_MANUAL,
+		    EBCC_VAL.VAL_AFD_CODE,
+		    EBCC_VAL.VAL_BLOCK_CODE,
+		    EBCC_VAL.VAL_DATE_TIME AS VAL_DATE_TIME,
+		    EBCC_VAL.VAL_BLOCK_NAME,
+		    EBCC_VAL.VAL_TPH_CODE,
+		    EBCC_VAL.VAL_DELIVERY_TICKET,
+		    NVL( SUM( EBCC_VAL.JML_BM ), 0 ) AS VAL_JML_BM,
+		    NVL( SUM( EBCC_VAL.JML_BK ), 0 ) AS VAL_JML_BK,
+		    NVL( SUM( EBCC_VAL.JML_MS ), 0 ) AS VAL_JML_MS,
+		    NVL( SUM( EBCC_VAL.JML_OR ), 0 ) AS VAL_JML_OR,
+		    NVL( SUM( EBCC_VAL.JML_BB ), 0 ) AS VAL_JML_BB,
+		    NVL( SUM( EBCC_VAL.JML_JK ), 0 ) AS VAL_JML_JK,
+		    NVL( SUM( EBCC_VAL.JML_BA ), 0 ) AS VAL_JML_BA,
+		    NVL( SUM( EBCC_VAL.JML_BRD ), 0 ) AS VAL_JML_BRD,
+		    NVL( SUM( EBCC_VAL.VAL_JJG_PANEN ), 0 ) AS VAL_JJG_PANEN
+		FROM
+		    (
+		        SELECT
+		            EBCC_HEADER.EBCC_VALIDATION_CODE AS VAL_EBCC_CODE,
+		            EST.WERKS AS VAL_WERKS,
+		            EST.EST_NAME AS VAL_EST_NAME,
+		            EBCC_HEADER.AFD_CODE AS VAL_AFD_CODE,
+		            CAST( EBCC_HEADER.SYNC_TIME AS DATE ) AS VAL_DATE_TIME,
+		            EBCC_HEADER.BLOCK_CODE AS VAL_BLOCK_CODE,
+		            EBCC_HEADER.STATUS_TPH_SCAN AS VAL_STATUS_TPH_SCAN,
+		            EBCC_HEADER.ALASAN_MANUAL AS VAL_ALASAN_MANUAL,
+		            EBCC_HEADER.NO_TPH AS VAL_TPH_CODE,
+		            EBCC_HEADER.DELIVERY_CODE AS VAL_DELIVERY_TICKET,
+		            USER_AUTH.EMPLOYEE_NIK AS VAL_NIK_VALIDATOR,
+		            HRIS.EMPLOYEE_FULLNAME AS VAL_NAMA_VALIDATOR,
+		            HRIS.EMPLOYEE_POSITION AS VAL_JABATAN_VALIDATOR,
+		            CASE
+		                WHEN PAR.KETERANGAN = 'BUNCH_HARVEST'
+		                THEN EBCC_DETAIL.QTYS
+		                ELSE 0
+		            END AS VAL_JJG_PANEN,
+		            EBCC_DETAIL.JML_BM,
+		            EBCC_DETAIL.JML_BK,
+		            EBCC_DETAIL.JML_MS,
+		            EBCC_DETAIL.JML_OR,
+		            EBCC_DETAIL.JML_BB,
+		            EBCC_DETAIL.JML_JK,
+		            EBCC_DETAIL.JML_BA,
+		            EBCC_DETAIL.JML_BRD,
+		            SUBBLOCK.BLOCK_NAME AS VAL_BLOCK_NAME
+		        FROM
+		            MOBILE_INSPECTION.TR_EBCC_VALIDATION_H EBCC_HEADER
+		            LEFT JOIN MOBILE_INSPECTION.TM_USER_AUTH USER_AUTH ON 
+		                USER_AUTH.USER_AUTH_CODE = EBCC_HEADER.INSERT_USER
+		            LEFT JOIN TAP_DW.TM_EMPLOYEE_HRIS@PRODDW_LINK HRIS ON
+		                HRIS.EMPLOYEE_NIK = USER_AUTH.EMPLOYEE_NIK
+		            LEFT JOIN TAP_DW.TM_EST@PRODDW_LINK EST ON 
+		                EST.WERKS = EBCC_HEADER.WERKS 
+		                AND SYSDATE BETWEEN EST.START_VALID AND EST.END_VALID
+		            LEFT JOIN (
+		                SELECT * FROM (
+		                    SELECT
+		                        KUALITAS.ID_KUALITAS AS IDK,
+		                        KUALITAS.ID_KUALITAS,
+		                        EBCC_DETAIL.EBCC_VALIDATION_CODE,
+		                        EBCC_DETAIL.JUMLAH,
+		                        EBCC_DETAIL.JUMLAH AS QTYS
+		                    FROM
+		                        TAP_DW.T_KUALITAS_PANEN@PRODDW_LINK KUALITAS
+		                        LEFT JOIN MOBILE_INSPECTION.TR_EBCC_VALIDATION_D EBCC_DETAIL ON EBCC_DETAIL.ID_KUALITAS = KUALITAS.ID_KUALITAS
+		                    WHERE
+		                        KUALITAS.ACTIVE_STATUS = 'YES'
+		                    ORDER BY 
+		                        KUALITAS.GROUP_KUALITAS ASC,
+		                        KUALITAS.UOM ASC,
+		                        KUALITAS.NAMA_KUALITAS ASC
+		                )
+		                PIVOT (
+		                    SUM( JUMLAH )
+		                    FOR IDK IN ( 
+		                        '1' AS JML_BM,
+		                        '2' AS JML_BK,
+		                        '3' AS JML_MS,
+		                        '4' AS JML_OR,
+		                        '6' AS JML_BB,
+		                        '15' AS JML_JK,
+		                        '16' AS JML_BA,
+		                        '5' AS JML_BRD
+		                    )
+		                )
+		                WHERE EBCC_VALIDATION_CODE IS NOT NULL
+		            ) EBCC_DETAIL ON
+		                EBCC_DETAIL.EBCC_VALIDATION_CODE = EBCC_HEADER.EBCC_VALIDATION_CODE
+		            LEFT JOIN EBCC.T_PARAMETER_BUNCH@PRODDB_LINK PAR 
+		                ON PAR.BA_CODE = EBCC_HEADER.WERKS 
+		                AND PAR.ID_KUALITAS = EBCC_DETAIL.ID_KUALITAS 
+		                AND PAR.KETERANGAN = 'BUNCH_HARVEST'
+		            LEFT JOIN TAP_DW.TM_SUB_BLOCK@DWH_LINK SUBBLOCK
+		                ON SUBBLOCK.WERKS = EBCC_HEADER.WERKS
+		                AND SUBBLOCK.SUB_BLOCK_CODE = EBCC_HEADER.BLOCK_CODE
+		        WHERE
+		            SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = 'V'
+		            AND EBCC_HEADER.SYNC_TIME BETWEEN TO_DATE( '$START_DATE', 'RRRR-MM-DD' ) AND TO_DATE( '$END_DATE', 'RRRR-MM-DD' )
+		            $where
+		    ) EBCC_VAL
+		GROUP BY
+		    EBCC_VAL.VAL_EBCC_CODE,
+		    EBCC_VAL.VAL_WERKS,
+		    EBCC_VAL.VAL_EST_NAME,
+		    EBCC_VAL.VAL_NIK_VALIDATOR,
+		    EBCC_VAL.VAL_NAMA_VALIDATOR,
+		    EBCC_VAL.VAL_JABATAN_VALIDATOR,
+		    EBCC_VAL.VAL_STATUS_TPH_SCAN,
+		    EBCC_VAL.VAL_ALASAN_MANUAL,
+		    EBCC_VAL.VAL_DATE_TIME,
+		    EBCC_VAL.VAL_AFD_CODE,
+		    EBCC_VAL.VAL_BLOCK_CODE,
+		    EBCC_VAL.VAL_BLOCK_NAME,
+		    EBCC_VAL.VAL_TPH_CODE,
+		    EBCC_VAL.VAL_DELIVERY_TICKET";
+
+		$get = $this->db_mobile_ins->select( $sql );
+
+		$joindata = array();
+
+		if ( !empty( $get ) ) {
+			$i = 0;
+			foreach ( $get as $ec ) {
+				$joindata[$i]['val_ebcc_code'] = $ec->val_ebcc_code;
+				$joindata[$i]['val_werks'] = $ec->val_werks;
+				$joindata[$i]['val_est_name'] = $ec->val_est_name;
+				$joindata[$i]['val_nik_validator'] = $ec->val_nik_validator;
+				$joindata[$i]['val_nama_validator'] = $ec->val_nama_validator;
+				$joindata[$i]['val_jabatan_validator'] = $ec->val_jabatan_validator;
+				$joindata[$i]['val_status_tph_scan'] = $ec->val_status_tph_scan;
+				$joindata[$i]['val_alasan_manual'] = $ec->val_alasan_manual;
+				$joindata[$i]['val_afd_code'] = $ec->val_afd_code;
+				$joindata[$i]['val_block_code'] = $ec->val_block_code;
+				$joindata[$i]['val_date_time'] = $ec->val_date_time;
+				$joindata[$i]['val_block_name'] = $ec->val_block_name;
+				$joindata[$i]['val_tph_code'] = $ec->val_tph_code;
+				$joindata[$i]['val_delivery_ticket'] = $ec->val_delivery_ticket;
+				$joindata[$i]['val_jml_bm'] = $ec->val_jml_bm;
+				$joindata[$i]['val_jml_bk'] = $ec->val_jml_bk;
+				$joindata[$i]['val_jml_ms'] = $ec->val_jml_ms;
+				$joindata[$i]['val_jml_or'] = $ec->val_jml_or;
+				$joindata[$i]['val_jml_bb'] = $ec->val_jml_bb;
+				$joindata[$i]['val_jml_jk'] = $ec->val_jml_jk;
+				$joindata[$i]['val_jml_ba'] = $ec->val_jml_ba;
+				$joindata[$i]['val_jml_brd'] = $ec->val_jml_brd;
+				$joindata[$i]['val_jjg_panen'] = $ec->val_jjg_panen;
+				$joindata[$i]['ebcc_jml_bm'] = '';
+				$joindata[$i]['ebcc_jml_bk'] = '';
+				$joindata[$i]['ebcc_jml_ms'] = '';
+				$joindata[$i]['ebcc_jml_or'] = '';
+				$joindata[$i]['ebcc_jml_bb'] = '';
+				$joindata[$i]['ebcc_jml_jk'] = '';
+				$joindata[$i]['ebcc_jml_ba'] = '';
+				$joindata[$i]['ebcc_jml_brd'] = '';
+				$joindata[$i]['ebcc_jjg_panen'] = '';
+				$joindata[$i]['ebcc_nik_kerani_buah'] = '';
+				$joindata[$i]['ebcc_nama_kerani_buah'] = '';
+				$joindata[$i]['ebcc_no_bcc'] = '';
+				$joindata[$i]['akurasi_kualitas_ms'] = '';
+				$joindata[$i]['match_status'] = 'NOT MATCH';
+				$date = date( 'd-m-Y', strtotime( $ec->val_date_time ) );
+				$sql = "SELECT F_GET_TEST( '{$ec->val_werks}', '{$ec->val_afd_code}', '{$ec->val_block_code}', '{$ec->val_tph_code}', '{$date}','{$date}' ) AS NO_BCC FROM DUAL";
+				$query = collect( $this->db_mobile_ins->select( $sql ) )->first();
+
+				if ( $query->no_bcc != null ) {
+					$sql_ebcc = "SELECT
+							HDP.ID_RENCANA,
+							HDP.TANGGAL_RENCANA,
+							HDP.NIK_KERANI_BUAH,
+							EMP_EBCC.EMP_NAME,
+							HDP.ID_BA_AFD_BLOK,
+							HDP.NO_REKAP_BCC,
+							HP.NO_TPH,
+							HP.NO_BCC,
+							NVL( EBCC.F_GET_HASIL_PANEN_BUNCH@PRODDB_LINK ( TBA.ID_BA, HP.NO_REKAP_BCC, HP.NO_BCC, 'BUNCH_HARVEST' ), 0 ) as JJG_PANEN,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 1), 0) AS EBCC_JML_BM,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 2), 0) AS EBCC_JML_BK,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 3), 0) AS EBCC_JML_MS,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 4), 0) AS EBCC_JML_OR,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 6), 0) AS EBCC_JML_BB,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 15), 0) AS EBCC_JML_JK,
+							NVL(EBCC.F_GET_HASIL_PANEN_NUMBERX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC, 16), 0) AS EBCC_JML_BA,   
+							NVL(EBCC.F_GET_HASIL_PANEN_BRDX@PRODDB_LINK (HDP.ID_RENCANA, HP.NO_REKAP_BCC, HP.NO_BCC), 0) AS EBCC_JML_BRD
+						FROM (
 								SELECT
-									EBCC_HEADER.EBCC_VALIDATION_CODE AS VAL_EBCC_CODE,
-									EST.WERKS AS VAL_WERKS,
-									EST.EST_NAME AS VAL_EST_NAME,
-									EBCC_HEADER.AFD_CODE AS VAL_AFD_CODE,
-									EBCC_HEADER.SYNC_TIME AS VAL_DATE_TIME,
-									EBCC_HEADER.BLOCK_CODE AS VAL_BLOCK_CODE,
-									EBCC_HEADER.STATUS_TPH_SCAN AS VAL_STATUS_TPH_SCAN,
-									EBCC_HEADER.ALASAN_MANUAL AS VAL_ALASAN_MANUAL,
-									EBCC_HEADER.NO_TPH AS VAL_TPH_CODE,
-									EBCC_HEADER.DELIVERY_CODE AS VAL_DELIVERY_TICKET,
-									USER_AUTH.EMPLOYEE_NIK AS VAL_NIK_VALIDATOR,
-									HRIS.EMPLOYEE_FULLNAME AS VAL_NAMA_VALIDATOR,
-									HRIS.EMPLOYEE_POSITION AS VAL_JABATAN_VALIDATOR,
-									CASE
-										WHEN PAR.KETERANGAN = 'BUNCH_HARVEST'
-										THEN EBCC_DETAIL.QTYS
-										ELSE 0
-									END AS VAL_JJG_PANEN,
-									EBCC_DETAIL.JML_BM,
-									EBCC_DETAIL.JML_BK,
-									EBCC_DETAIL.JML_MS,
-									EBCC_DETAIL.JML_OR,
-									EBCC_DETAIL.JML_BB,
-									EBCC_DETAIL.JML_JK,
-									EBCC_DETAIL.JML_BA,
-									EBCC_DETAIL.JML_BRD,
-									SUBBLOCK.BLOCK_NAME AS VAL_BLOCK_NAME
+									HRP.ID_RENCANA AS ID_RENCANA,
+									HRP.TANGGAL_RENCANA AS TANGGAL_RENCANA,
+									HRP.NIK_KERANI_BUAH AS NIK_KERANI_BUAH,
+									DRP.ID_BA_AFD_BLOK AS ID_BA_AFD_BLOK,
+									DRP.NO_REKAP_BCC AS NO_REKAP_BCC
 								FROM
-									MOBILE_INSPECTION.TR_EBCC_VALIDATION_H EBCC_HEADER
-									LEFT JOIN MOBILE_INSPECTION.TM_USER_AUTH USER_AUTH ON 
-										USER_AUTH.USER_AUTH_CODE = EBCC_HEADER.INSERT_USER
-									LEFT JOIN TAP_DW.TM_EMPLOYEE_HRIS@PRODDW_LINK HRIS ON
-										HRIS.EMPLOYEE_NIK = USER_AUTH.EMPLOYEE_NIK
-									LEFT JOIN TAP_DW.TM_EST@PRODDW_LINK EST ON 
-										EST.WERKS = EBCC_HEADER.WERKS 
-										AND SYSDATE BETWEEN EST.START_VALID AND EST.END_VALID
-									LEFT JOIN (
-										SELECT * FROM (
-											SELECT
-												KUALITAS.ID_KUALITAS AS IDK,
-												KUALITAS.ID_KUALITAS,
-												EBCC_DETAIL.EBCC_VALIDATION_CODE,
-												EBCC_DETAIL.JUMLAH,
-												EBCC_DETAIL.JUMLAH AS QTYS
-											FROM
-												TAP_DW.T_KUALITAS_PANEN@PRODDW_LINK KUALITAS
-												LEFT JOIN MOBILE_INSPECTION.TR_EBCC_VALIDATION_D EBCC_DETAIL ON EBCC_DETAIL.ID_KUALITAS = KUALITAS.ID_KUALITAS
-											WHERE
-												KUALITAS.ACTIVE_STATUS = 'YES'
-											ORDER BY 
-												KUALITAS.GROUP_KUALITAS ASC,
-												KUALITAS.UOM ASC,
-												KUALITAS.NAMA_KUALITAS ASC
-										)
-										PIVOT (
-											SUM( JUMLAH )
-											FOR IDK IN ( 
-												'1' AS JML_BM,
-												'2' AS JML_BK,
-												'3' AS JML_MS,
-												'4' AS JML_OR,
-												'6' AS JML_BB,
-												'15' AS JML_JK,
-												'16' AS JML_BA,
-												'5' AS JML_BRD
-											)
-										)
-										WHERE EBCC_VALIDATION_CODE IS NOT NULL
-									) EBCC_DETAIL ON
-										EBCC_DETAIL.EBCC_VALIDATION_CODE = EBCC_HEADER.EBCC_VALIDATION_CODE
-									LEFT JOIN EBCC.T_PARAMETER_BUNCH@PRODDB_LINK PAR 
-										ON PAR.BA_CODE = EBCC_HEADER.WERKS 
-										AND PAR.ID_KUALITAS = EBCC_DETAIL.ID_KUALITAS 
-										AND PAR.KETERANGAN = 'BUNCH_HARVEST'
-									LEFT JOIN TAP_DW.TM_SUB_BLOCK@DWH_LINK SUBBLOCK
-										ON SUBBLOCK.WERKS = EBCC_HEADER.WERKS
-										AND SUBBLOCK.SUB_BLOCK_CODE = EBCC_HEADER.BLOCK_CODE
-								WHERE
-									SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = '{$REPORT_TYPE}'
-							) EBCC_VAL
-						GROUP BY
-							EBCC_VAL.VAL_EBCC_CODE,
-							EBCC_VAL.VAL_WERKS,
-							EBCC_VAL.VAL_EST_NAME,
-							EBCC_VAL.VAL_NIK_VALIDATOR,
-							EBCC_VAL.VAL_NAMA_VALIDATOR,
-							EBCC_VAL.VAL_JABATAN_VALIDATOR,
-							EBCC_VAL.VAL_STATUS_TPH_SCAN,
-							EBCC_VAL.VAL_ALASAN_MANUAL,
-							EBCC_VAL.VAL_DATE_TIME,
-							EBCC_VAL.VAL_AFD_CODE,
-							EBCC_VAL.VAL_BLOCK_CODE,
-							EBCC_VAL.VAL_BLOCK_NAME,
-							EBCC_VAL.VAL_TPH_CODE,
-							EBCC_VAL.VAL_DELIVERY_TICKET
-					) EBCC_VALIDATION
-					LEFT JOIN
-						(
-							SELECT 
-								EBCC.ID_RENCANA AS EBCC_ID_RENCANA,
-								EBCC.NO_BCC AS EBCC_NO_BCC,
-								EBCC.WERKS AS EBCC_WERKS,
-								EBCC.NIK_KERANI_BUAH AS EBCC_NIK_KERANI_BUAH,
-								EMP_EBCC.EMPLOYEE_FULLNAME AS EBCC_NAMA_KERANI_BUAH,
-								EMP_EBCC.EMPLOYEE_POSITION AS EBCC_JABATAN_KERANI_BUAH,
-								EBCC.DATE_TIME AS EBCC_DATE_TIME,
-								EBCC.AFD_CODE AS EBCC_AFD_CODE,
-								SUBBLOCK.BLOCK_CODE AS EBCC_BLOCK_CODE,
-								SUBBLOCK.BLOCK_NAME AS EBCC_BLOCK_NAME,
-								EBCC.TPH_CODE AS EBCC_TPH_CODE,
-								NVL ( SUM ( EBCC.JML_BM), 0) AS EBCC_JML_BM,
-								NVL ( SUM ( EBCC.JML_BK), 0) AS EBCC_JML_BK,
-								NVL ( SUM ( EBCC.JML_MS), 0) AS EBCC_JML_MS,
-								NVL ( SUM ( EBCC.JML_OR), 0) AS EBCC_JML_OR,
-								NVL ( SUM ( EBCC.JML_BB), 0) AS EBCC_JML_BB,
-								NVL ( SUM ( EBCC.JML_JK), 0) AS EBCC_JML_JK,
-								NVL ( SUM ( EBCC.JML_BA), 0) AS EBCCJML_BA,
-								NVL ( SUM ( EBCC.JML_BRD), 0) AS EBCC_JML_BRD,
-								NVL ( SUM ( EBCC.JJG_PANEN), 0) AS EBCC_JJG_PANEN
-							FROM
-								(
-									SELECT 
-										HRP.ID_RENCANA,
-										HP.NO_BCC,
-										TA.ID_BA AS WERKS,
-										HRP.NIK_KERANI_BUAH,
-										HRP.TANGGAL_RENCANA AS DATE_TIME,
-										TA.ID_AFD AS AFD_CODE,
-										TB.ID_BLOK AS BLOCK_CODE,
-										HP.NO_TPH AS TPH_CODE,
-										HP.KODE_DELIVERY_TICKET AS DELIVERY_TICKET,
-										HPK.JML_BM,
-										HPK.JML_BK,
-										HPK.JML_MS,
-										HPK.JML_OR,
-										HPK.JML_BB,
-										HPK.JML_JK,
-										HPK.JML_BA,
-										HPK.JML_BRD,
-										CASE
-											WHEN PAR.KETERANGAN = 'BUNCH_HARVEST'
-											THEN HPK.QTYS
-											ELSE 0
-										END AS JJG_PANEN
-									FROM 
-										(
-											SELECT 
-												ID_RENCANA,
-												TANGGAL_RENCANA,
-												NIK_KERANI_BUAH
-											FROM 
-												EBCC.T_HEADER_RENCANA_PANEN@PRODDB_LINK
-											WHERE 
-												1 = 1
-												AND TO_CHAR (TANGGAL_RENCANA, 'DD-MM-RRRR') = '08-07-2019'
-										) HRP
-										LEFT JOIN EBCC.T_DETAIL_RENCANA_PANEN@PRODDB_LINK DRP ON HRP.ID_RENCANA = DRP.ID_RENCANA
-										LEFT JOIN EBCC.T_HASIL_PANEN@PRODDB_LINK HP ON HP.ID_RENCANA = DRP.ID_RENCANA AND HP.NO_REKAP_BCC = DRP.NO_REKAP_BCC
-										LEFT JOIN 
-											(
-												SELECT 
-													*
-												FROM 
-													(
-														SELECT 
-															ID_BCC,
-															ID_RENCANA,
-															ID_KUALITAS,
-															ID_KUALITAS AS IDK,
-															QTY AS QTYS,
-															QTY
-														FROM 
-															MOBILE_ESTATE.T_HASILPANEN_KUALTAS@PRODDB_LINK
-														WHERE ROWNUM < 10
-													) 
-													PIVOT 
-													(
-														SUM( QTY )
-														FOR ( IDK ) IN (
-														'1' AS JML_BM,
-														'2' AS JML_BK,
-														'3' AS JML_MS,
-														'4' AS JML_OR,
-														'6' AS JML_BB,
-														'15' AS JML_JK,
-														'16' AS JML_BA,
-														'5' AS JML_BRD
-													)
-												)
-											) HPK ON HP.NO_BCC = HPK.ID_BCC AND HP.ID_RENCANA = HPK.ID_RENCANA
-										LEFT JOIN EBCC.T_BLOK@PRODDB_LINK TB ON TB.ID_BA_AFD_BLOK = DRP.ID_BA_AFD_BLOK
-										LEFT JOIN EBCC.T_AFDELING@PRODDB_LINK TA ON TA.ID_BA_AFD = TB.ID_BA_AFD
-										LEFT JOIN EBCC.T_PARAMETER_BUNCH@PRODDB_LINK PAR ON PAR.BA_CODE = SUBSTR (DRP.ID_BA_AFD_BLOK, 1, 4) AND PAR.ID_KUALITAS = HPK.ID_KUALITAS AND PAR.KETERANGAN = 'BUNCH_HARVEST'
-									WHERE 
-										1 = 1 
-										AND TA.ID_BA = 4122
-								) EBCC
-								LEFT JOIN
-									(
-										SELECT 
-											EMPLOYEE_NIK,
-											EMPLOYEE_FULLNAME,
-											EMPLOYEE_JOINDATE AS START_VALID,
-											CASE
-												WHEN EMPLOYEE_RESIGNDATE IS NULL
-												THEN TO_DATE ('9999', 'RRRR')
-												ELSE EMPLOYEE_RESIGNDATE
-											END AS END_VALID,
-											EMPLOYEE_POSITION
-										FROM 
-											TAP_DW.TM_EMPLOYEE_HRIS@PRODDW_LINK
-										UNION
-										SELECT 
-											NIK,
-											EMPLOYEE_NAME,
-											START_VALID,
-											CASE
-												WHEN RES_DATE IS NULL AND END_VALID IS NULL THEN TO_DATE ('9999', 'RRRR')
-												WHEN RES_DATE IS NOT NULL THEN RES_DATE
-												ELSE END_VALID
-											END AS END_VALID,
-											JOB_CODE
-										FROM
-											TAP_DW.TM_EMPLOYEE_SAP@DWH_LINK
-									) EMP_EBCC 
-										ON EMP_EBCC.EMPLOYEE_NIK = EBCC.NIK_KERANI_BUAH 
-										AND EBCC.DATE_TIME BETWEEN EMP_EBCC.START_VALID AND  EMP_EBCC.END_VALID
-								LEFT JOIN TAP_DW.TM_SUB_BLOCK@DWH_LINK SUBBLOCK
-									ON SUBBLOCK.WERKS = EBCC.WERKS
-									AND SUBBLOCK.SUB_BLOCK_CODE = EBCC.BLOCK_CODE
-									AND EBCC.DATE_TIME BETWEEN SUBBLOCK.START_VALID AND  SUBBLOCK.END_VALID
-							GROUP BY 
-								EBCC.ID_RENCANA,
-								EBCC.NO_BCC,
-								EBCC.WERKS,
-								EBCC.NIK_KERANI_BUAH,
-								EMP_EBCC.EMPLOYEE_FULLNAME,
-								EMP_EBCC.EMPLOYEE_POSITION,
-								EBCC.DATE_TIME,
-								EBCC.AFD_CODE,
-								SUBBLOCK.BLOCK_CODE,
-								SUBBLOCK.BLOCK_NAME,
-								EBCC.TPH_CODE 
-						) EBCC
-							ON EBCC.EBCC_WERKS = EBCC_VALIDATION.VAL_WERKS
-							AND EBCC.EBCC_AFD_CODE = EBCC_VALIDATION.VAL_AFD_CODE
-							AND EBCC.EBCC_BLOCK_CODE = EBCC_VALIDATION.VAL_BLOCK_CODE
-							AND EBCC.EBCC_TPH_CODE = EBCC_VALIDATION.VAL_TPH_CODE
-				WHERE 1=1
-				$where
-		";
-		$get = $this->db_mobile_ins->select($sql);
-		return $get;
+									EBCC.T_HEADER_RENCANA_PANEN@PRODDB_LINK HRP 
+									LEFT JOIN EBCC.T_DETAIL_RENCANA_PANEN@PRODDB_LINK DRP ON HRP.ID_RENCANA = DRP.ID_RENCANA
+							) HDP
+							LEFT JOIN EBCC.T_HASIL_PANEN@PRODDB_LINK HP ON HP.ID_RENCANA = HDP.ID_RENCANA AND HP.NO_REKAP_BCC = HDP.NO_REKAP_BCC
+							LEFT JOIN EBCC.T_BLOK@PRODDB_LINK TB ON TB.ID_BA_AFD_BLOK = HDP.ID_BA_AFD_BLOK
+							LEFT JOIN EBCC.T_AFDELING@PRODDB_LINK TA ON TA.ID_BA_AFD = TB.ID_BA_AFD
+							LEFT JOIN EBCC.T_BUSSINESSAREA@PRODDB_LINK TBA ON TBA.ID_BA = TA.ID_BA
+							LEFT JOIN EBCC.T_EMPLOYEE@PRODDB_LINK EMP_EBCC ON EMP_EBCC.NIK = HDP.NIK_KERANI_BUAH 
+						WHERE
+							HP.NO_BCC = '{$query->no_bcc}'";
+							
+					$query_ebcc = collect( $this->db_mobile_ins->select( $sql_ebcc ) )->first();
+					$joindata[$i]['ebcc_nik_kerani_buah'] = $query_ebcc->nik_kerani_buah;
+					$joindata[$i]['ebcc_nama_kerani_buah'] = $query_ebcc->emp_name;
+					$joindata[$i]['ebcc_no_bcc'] = $query_ebcc->no_bcc;
+					$joindata[$i]['ebcc_jml_bm'] = $query_ebcc->ebcc_jml_bm;
+					$joindata[$i]['ebcc_jml_bk'] = $query_ebcc->ebcc_jml_bk;
+					$joindata[$i]['ebcc_jml_ms'] = $query_ebcc->ebcc_jml_ms;
+					$joindata[$i]['ebcc_jml_or'] = $query_ebcc->ebcc_jml_or;
+					$joindata[$i]['ebcc_jml_bb'] = $query_ebcc->ebcc_jml_bb;
+					$joindata[$i]['ebcc_jml_jk'] = $query_ebcc->ebcc_jml_jk;
+					$joindata[$i]['ebcc_jml_ba'] = $query_ebcc->ebcc_jml_ba;
+					$joindata[$i]['ebcc_jml_brd'] = $query_ebcc->ebcc_jml_brd;
+					$joindata[$i]['ebcc_jjg_panen'] = $query_ebcc->jjg_panen;
+					
+					$joindata[$i]['match_status'] = ( intval( $query_ebcc->jjg_panen ) == intval( $ec->val_jjg_panen ) ? 'MATCH' : 'NOT MATCH' );
+					$akurasi_kualitas_ms = intval( $query_ebcc->ebcc_jml_ms ) - intval( $ec->val_jml_ms );
+					$joindata[$i]['akurasi_kualitas_ms'] = ( $akurasi_kualitas_ms > 0 ? $akurasi_kualitas_ms : 0 );
+					// print '<pre>';
+					// print_r( $query_ebcc );
+					// print '</pre>';
+				}
+				$i++;
+			}
+		}
+		return $joindata;
 	}
 }
