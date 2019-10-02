@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Collection;
 
 use App\APISetup;
 use App\ReportOracle;
@@ -45,6 +46,13 @@ class ReportOracleController extends Controller
 		$results['head'] = array();
 		$results['data'] = array();
 
+
+		// print '<pre>';
+		// print_r($_POST);
+		// print '</pre>';
+		// print 'Hehehe';
+		// dd();
+
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		# REPORT EBCC VALIDATION ESTATE/MILL
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -69,33 +77,26 @@ class ReportOracleController extends Controller
 		else if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' || $REPORT_TYPE == 'EBCC_COMPARE_MILL' ) {	
 
 			$results['data'] = $RO->EBCC_COMPARE(
-									$REPORT_TYPE, 
-									$START_DATE, 
-									$END_DATE, 
-									$REGION_CODE, 
-									$COMP_CODE, 
-									$BA_CODE, 
-									$AFD_CODE, 
-									$BLOCK_CODE
-								);
+				$REPORT_TYPE, 
+				$START_DATE, 
+				$END_DATE, 
+				$REGION_CODE, 
+				$COMP_CODE, 
+				$BA_CODE, 
+				$AFD_CODE, 
+				$BLOCK_CODE
+			);
 			$hd = array();
-			if ( !empty( $results['data'] ) ) {
-				foreach((array)$results['data'][0] as $k=> $col){
-					$hd[] = array(
-						'original'=>$k,
-						'forexcel'=>ucwords(str_replace(array('val_','ebcc_'),array('',''),$k))
-					);
-				}
-			}
 			$results['head'] =  $hd;
 			$file_name 		 = 'Report-EBCC-Compare';
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
 
-		
+		// return view( $results['view'], $results );
+		// dd();
 
 		// print '<pre>';
-		// print_r( $results['data'] );
+		// print_r( $results );
 		// print '<pre>';
 		// dd();
 
