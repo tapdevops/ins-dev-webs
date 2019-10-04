@@ -86,8 +86,6 @@ class ReportOracleController extends Controller
 				$AFD_CODE, 
 				$BLOCK_CODE
 			);
-			$hd = array();
-			$results['head'] =  $hd;
 			$file_name 		 = 'Report-EBCC-Compare';
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
@@ -95,10 +93,10 @@ class ReportOracleController extends Controller
 		// return view( $results['view'], $results );
 		// dd();
 
-		// print '<pre>';
-		// print_r( $results );
-		// print '<pre>';
-		// dd();
+		print '<pre>';
+		print_r( $results );
+		print '<pre>';
+		dd();
 
 		// if ( !empty( $results['data'] ) ) {
 		// 	foreach ( $results['data'] as $dt ){

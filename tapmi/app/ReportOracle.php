@@ -141,6 +141,9 @@ class ReportOracle extends Model
 
 		$START_DATE = date( 'Y-m-d', strtotime( $START_DATE ) );
 		$END_DATE = date( 'Y-m-d', strtotime( $END_DATE ) );
+
+		// print $START_DATE.'/'.$END_DATE;
+		// dd();
 		
 		// $where .= $START_DATE ? " and EBCC_DATE_TIME >= TO_TIMESTAMP('$START_DATE 00:00:00','DD-MM-YYYY HH24:MI:SS')  ": "";
 		// $where .= $END_DATE ? " and EBCC_DATE_TIME <= TO_TIMESTAMP('$END_DATE 23:59:59','DD-MM-YYYY HH24:MI:SS')  ": "";		
@@ -283,6 +286,11 @@ class ReportOracle extends Model
 
 		$joindata = array();
 
+		// print '<pre>';
+		// print_r( $sql );
+		// print '</pre>';
+		// dd();
+
 		if ( !empty( $get ) ) {
 			$i = 0;
 			foreach ( $get as $ec ) {
@@ -382,13 +390,14 @@ class ReportOracle extends Model
 					$joindata[$i]['match_status'] = ( intval( $query_ebcc->jjg_panen ) == intval( $ec->val_jjg_panen ) ? 'MATCH' : 'NOT MATCH' );
 					$akurasi_kualitas_ms = intval( $query_ebcc->ebcc_jml_ms ) - intval( $ec->val_jml_ms );
 					$joindata[$i]['akurasi_kualitas_ms'] = ( $akurasi_kualitas_ms > 0 ? $akurasi_kualitas_ms : 0 );
-					// print '<pre>';
-					// print_r( $query_ebcc );
-					// print '</pre>';
 				}
 				$i++;
 			}
 		}
+
+		// print '<pre>';
+		// print_r( $sql );
+		// print '</pre>';
 		return $joindata;
 	}
 }
