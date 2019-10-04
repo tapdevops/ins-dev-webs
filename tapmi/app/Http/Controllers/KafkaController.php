@@ -108,6 +108,50 @@ class KafkaController extends Controller
 		}
 		
 	}
+
+
+	public function RUN_INS_MSA_AUTH_TM_USER_AUTH() {
+
+		// Kafka Config
+		$topic = "INS_MSA_AUTH_TM_USER_AUTH";
+		$Kafka = new RdKafka\Consumer();
+		# $Kafka->setLogLevel(LOG_DEBUG);
+		$Kafka->addBrokers( "149.129.221.137" );
+		$Topic = $Kafka->newTopic( $topic );
+		$Topic->consumeStart( 0, RD_KAFKA_OFFSET_BEGINNING );
+
+		while ( true ) {
+			$message = $Topic->consume( 0, 1000 );
+			if ( null === $message ) {
+				continue;
+			} 
+			else if ( $message->err ) {
+				echo $message->errstr(), "\n";
+				break;
+			} 
+			else {
+				$payload = json_decode( $message->payload, true );
+				$last_offset = $this->cek_offset_payload( $topic );
+				if ( $last_offset !== false ){
+					if ( $last_offset == null ) {
+						if ( (int)$message->offset >= $last_offset ) {
+							echo $this->insert_tm_user_auth( $payload, (int)$message->offset );
+						}	
+					}
+					else {
+						if ( (int)$message->offset > $last_offset ) {
+							echo $this->insert_tm_user_auth( $payload, (int)$message->offset );
+						}	
+					}
+				}
+			}
+		}
+		
+	}
+
+
+
+	
 	
 	public function insert_h( $payload, $offset ) {
 		
@@ -213,6 +257,59 @@ class KafkaController extends Controller
 			return 'Insert Failde: '.$e->getMessage();
 			// return response()->json( $e->getMessage() );
         }catch (\Exception $e) {
+			return 'Insert Failde: '.$e->getMessage();
+		}
+	}
+
+	public function insert_tm_user_auth( $payload, $offset ) {
+		$sql = "INSERT INTO 
+				MOBILE_INSPECTION.TM_USER_AUTH (
+					USER_AUTH_CODE,
+					EMPLOYEE_NIK,
+					USER_ROLE,
+					LOCATION_CODE,
+					REF_ROLE,
+					INSERT_USER,
+					INSERT_TIME,
+					UPDATE_USER,
+					UPDATE_TIME,
+					DELETE_USER,
+					DELETE_TIME
+				) 
+			VALUES (
+				'{$payload['URACD']}',
+				'{$payload['EMNIK']}',
+				'{$payload['URROL']}',
+				'{$payload['LOCCD']}',
+				'{$payload['RROLE']}',
+				null,
+				null,
+				null,
+				null,
+				null,
+				null
+		)";
+
+		try{
+			$this->db_mobile_ins->statement($sql);
+			$this->db_mobile_ins->commit();
+			
+			//update offset payloads			
+			$this->db_mobile_ins->statement("UPDATE 
+												MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
+											SET
+												OFFSET = $offset,
+												EXECUTE_DATE = SYSDATE
+											WHERE
+												TOPIC_NAME = 'INS_MSA_AUTH_TM_USER_AUTH'");
+			$this->db_mobile_ins->commit();
+			return 'Insert Success';
+		} 
+		catch ( \Throwable $e ) {
+			return 'Insert Failde: '.$e->getMessage();
+			// return response()->json( $e->getMessage() );
+        }
+        catch ( \Exception $e ) {
 			return 'Insert Failde: '.$e->getMessage();
 		}
 	}
