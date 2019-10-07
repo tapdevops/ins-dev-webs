@@ -34,7 +34,7 @@ class APISetup extends Model
 						"auth" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-auth",
 						"hectarestatement" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-hectarestatement",
 						"finding" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-finding",
-						"inspection" => "http://app.tap-agri.com/mobileinspection/ins-msa-inspection",
+						"inspection" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-inspection",
 						// "report" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-reports",
 						"report" => "http://app.tap-agri.com/mobileinspection/ins-msa-reports",
 						"ebccvalidation" => "http://app.tap-agri.com/mobileinspectiondev/ins-msa-dev-ebccval"
