@@ -156,6 +156,8 @@ class KafkaController extends Controller
 	public function insert_h( $payload, $offset ) {
 		
 		try {
+			$INSTM = date( 'YmdHis', strtotime( $payload['INSTM'] ) );
+			$STIME = date( 'YmdHis', strtotime( $payload['STIME'] ) );
 			$sql = "INSERT INTO 
 					MOBILE_INSPECTION.TR_EBCC_VALIDATION_H ( 
 						EBCC_VALIDATION_CODE, 
@@ -189,9 +191,9 @@ class KafkaController extends Controller
 					'{$payload['DLVCD']}', 
 					'{$payload['SDLVC']}', 
 					'{$payload['INSUR']}', 
-					to_date('{date( 'YmdHis', strtotime( $payload['INSTM'] ) )}','YYYYMMDDHH24MISS'), 
+					to_date('$INSTM','YYYYMMDDHH24MISS'), 
 					'{$payload['SSYNC']}', 
-					to_date('{date( 'YmdHis', strtotime( $payload['STIME'] ) )}','YYYYMMDDHH24MISS'), 
+					to_date('$STIME','YYYYMMDDHH24MISS'), 
 					'{$payload['UPTUR']}', 
 					null 
 				)";
