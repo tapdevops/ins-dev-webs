@@ -15,8 +15,8 @@
 		<th style="text-align: left;back">Long</th>
 		<th style="text-align: left;back">Delivery Code</th>
 		<th style="text-align: left;back">Status Delivery Code</th>
-		@foreach($head as $head)
-		<th style="text-align: left;back">{{ $head->nama_kualitas }}</th>
+		@foreach($head as $hd)
+		<th style="text-align: left;back">{{ $hd->nama_kualitas }}</th>
 		@endforeach
 		
 		
@@ -43,6 +43,11 @@
 		<td style="text-align: left;">{{ $dt['lon_tph'] }}</td>
 		<td style="text-align: left;">{{ $dt['delivery_code'] }}</td>
 		<td style="text-align: left;">{{ $dt['status_delivery_code'] }}</td>
+		
+		@foreach($head as $hd)
+		<td style="text-align: left;">{{ @$dt['id_kualitas_'.$hd->id_kualitas] }}</td>
+		@endforeach
+		{{--
 		<td style="text-align: left;">{{ $dt['id_kualitas_1'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_2'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_3'] }}</td>
@@ -59,6 +64,7 @@
 		<td style="text-align: left;">{{ $dt['id_kualitas_14'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_15'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_16'] }}</td>
+		--}}
 
 	</tr>
 	@endforeach
