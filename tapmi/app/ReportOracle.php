@@ -170,7 +170,16 @@ class ReportOracle extends Model
 		    EBCC_VAL.VAL_NAMA_VALIDATOR,
 		    EBCC_VAL.VAL_JABATAN_VALIDATOR,
 		    EBCC_VAL.VAL_STATUS_TPH_SCAN,
-		    EBCC_VAL.VAL_ALASAN_MANUAL,
+		    -- TAMBAHAN QUERY
+		    CASE
+		    	WHEN EBCC_VAL.VAL_ALASAN_MANUAL IS NULL THEN 'AUTOMATIC'
+		    	ELSE
+		    		CASE
+		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'QR Codenya Hilang'
+		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'Tanya pak sentot'
+		    	END
+		    END AS VAL_ALASAN_MANUAL,
+		    -- END TAMBAHAN QUERY
 		    EBCC_VAL.VAL_AFD_CODE,
 		    EBCC_VAL.VAL_BLOCK_CODE,
 		    EBCC_VAL.VAL_DATE_TIME AS VAL_DATE_TIME,
@@ -337,6 +346,7 @@ class ReportOracle extends Model
 				$joindata[$i]['akurasi_kualitas_ms'] = '';
 				$joindata[$i]['match_status'] = 'NOT MATCH';
 				$date = date( 'd-m-Y', strtotime( $ec->val_date_time ) );
+				# Vi, setelah data inputan ALASAN_MANUAL keluar, km ganti F_GET_TEST jadi F_GET_EBCC_COMPARE ya vi, di oracle sm di codingan ini
 				$sql = "SELECT F_GET_TEST( '{$ec->val_werks}', '{$ec->val_afd_code}', '{$ec->val_block_code}', '{$ec->val_tph_code}', '{$date}','{$date}' ) AS NO_BCC FROM DUAL";
 				$query = collect( $this->db_mobile_ins->select( $sql ) )->first();
 
