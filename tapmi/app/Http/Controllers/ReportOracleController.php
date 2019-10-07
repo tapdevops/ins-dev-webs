@@ -93,10 +93,10 @@ class ReportOracleController extends Controller
 		// return view( $results['view'], $results );
 		// dd();
 
-		print '<pre>';
-		print_r( $results );
-		print '<pre>';
-		dd();
+		// print '<pre>';
+		// print_r( $results );
+		// print '</pre>';
+		// dd();
 
 		// if ( !empty( $results['data'] ) ) {
 		// 	foreach ( $results['data'] as $dt ){

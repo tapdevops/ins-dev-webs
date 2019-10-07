@@ -1,5 +1,13 @@
+<style>
+tr > td, tr > th {
+    border: 1px solid #000000;
+}
+tr > th {
+    text-align: center;
+}
+</style>
 <table>
-	<tr>
+	<tr class="mythead">
 		<th style="background-color: #ff9933;" colspan="20">Sampling EBCC</th>
 		<th style="background-color: #33cc33;" colspan="12">Sampling EBCC</th>
 
@@ -85,7 +93,7 @@
 
 				<!-- Etc -->
 				<td></td>
-				<td>{{ $dt['match_status'] }}</td>
+				<td style="color:#fff;background-color:@if( $dt['match_status']=='MATCH' ) #27ae60 @else #e74c3c @endif;">{{ $dt['match_status'] }}</td>
 				<td>{{ $dt['akurasi_kualitas_ms'] }}</td>
 
 			</tr>
