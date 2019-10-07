@@ -175,8 +175,8 @@ class ReportOracle extends Model
 		    	WHEN EBCC_VAL.VAL_ALASAN_MANUAL IS NULL THEN 'AUTOMATIC'
 		    	ELSE
 		    		CASE
-		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'QR Codenya Hilang'
-		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'Tanya pak sentot'
+		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'MANUAL - QR Codenya Hilang'
+		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'MANUAL - QR Codenya Rusak'
 		    	END
 		    END AS VAL_ALASAN_MANUAL,
 		    -- END TAMBAHAN QUERY
