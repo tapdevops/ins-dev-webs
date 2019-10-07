@@ -189,9 +189,9 @@ class KafkaController extends Controller
 					'{$payload['DLVCD']}', 
 					'{$payload['SDLVC']}', 
 					'{$payload['INSUR']}', 
-					to_date('{$payload['INSTM']}','YYYYMMDDHH24MISS'), 
+					to_date('{date( 'YmdHis', strtotime( $payload['INSTM'] ) )}','YYYYMMDDHH24MISS'), 
 					'{$payload['SSYNC']}', 
-					to_date('{$payload['STIME']}','YYYYMMDDHH24MISS'), 
+					to_date('{date( 'YmdHis', strtotime( $payload['STIME'] ) )}','YYYYMMDDHH24MISS'), 
 					'{$payload['UPTUR']}', 
 					null 
 				)";
