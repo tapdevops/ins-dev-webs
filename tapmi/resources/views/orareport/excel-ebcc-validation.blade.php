@@ -13,8 +13,10 @@
 		<th style="text-align: left;back">Jabatan Validator</th>
 		<th style="text-align: left;back">Lat</th>
 		<th style="text-align: left;back">Long</th>
+		{{--
 		<th style="text-align: left;back">Delivery Code</th>
 		<th style="text-align: left;back">Status Delivery Code</th>
+		--}}
 		@foreach($head as $hd)
 		<th style="text-align: left;back">{{ $hd->nama_kualitas }}</th>
 		@endforeach
@@ -41,13 +43,19 @@
 		<td style="text-align: left;">{{ $dt['jabatan_validator'] }}</td>
 		<td style="text-align: left;">{{ $dt['lat_tph'] }}</td>
 		<td style="text-align: left;">{{ $dt['lon_tph'] }}</td>
-		<td style="text-align: left;">{{ $dt['delivery_code'] }}</td>
-		<td style="text-align: left;">{{ $dt['status_delivery_code'] }}</td>
+		
+		
 		
 		@foreach($head as $hd)
+		@if( $hd->id_kualitas == '10' )
+		<td style="text-align: left;">{{ @$dt['id_kualitas_'.$hd->id_kualitas] == '1' ? 'Ada' : 'Tidak ada' }}</td>
+		@else
 		<td style="text-align: left;">{{ @$dt['id_kualitas_'.$hd->id_kualitas] }}</td>
+		@endif
 		@endforeach
 		{{--
+		<td style="text-align: left;">{{ $dt['delivery_code'] }}</td>
+		<td style="text-align: left;">{{ $dt['status_delivery_code'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_1'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_2'] }}</td>
 		<td style="text-align: left;">{{ $dt['id_kualitas_3'] }}</td>
