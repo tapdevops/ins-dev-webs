@@ -20,11 +20,12 @@ class ReportOracle extends Model
 	{
 		$get = $this->db_mobile_ins->select("
 				SELECT
+					KUALITAS.ID_KUALITAS,
 					KUALITAS.NAMA_KUALITAS
 				FROM
 					TAP_DW.T_KUALITAS_PANEN@PRODDW_LINK KUALITAS
 				WHERE
-					KUALITAS.ACTIVE_STATUS = 'YES'
+					KUALITAS.ACTIVE_STATUS = 'YES' and KUALITAS.ID_KUALITAS not in ('14','11','12','13')
 				ORDER BY 
 					KUALITAS.GROUP_KUALITAS ASC,
 					KUALITAS.UOM ASC,
@@ -123,7 +124,7 @@ class ReportOracle extends Model
 				WHERE 1=1
 				$where
 		";
-		
+		// print_r($sql);die;
 		$get = $this->db_mobile_ins->select($sql);
 
 		// print '<pre>';

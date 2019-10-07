@@ -95,7 +95,6 @@ class ReportOracleController extends Controller
 
 		// print '<pre>';
 		// print_r( $results );
-		// print '<pre>';
 		// dd();
 
 		// if ( !empty( $results['data'] ) ) {
