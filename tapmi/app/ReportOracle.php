@@ -124,7 +124,7 @@ class ReportOracle extends Model
 				WHERE 1=1
 				$where
 		";
-		
+		// print_r($sql);die;
 		$get = $this->db_mobile_ins->select($sql);
 		return $get;
 	}
