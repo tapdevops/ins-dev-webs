@@ -63,7 +63,16 @@ class ReportOracle extends Model
 					EBCC_HEADER.BLOCK_CODE,
 					EBCC_HEADER.NO_TPH,
 					EBCC_HEADER.STATUS_TPH_SCAN,
-					EBCC_HEADER.ALASAN_MANUAL,
+					
+					CASE
+					WHEN EBCC_HEADER.ALASAN_MANUAL IS NULL THEN 'AUTOMATIC'
+					ELSE
+						CASE
+							WHEN EBCC_HEADER.ALASAN_MANUAL = '1' THEN 'MANUAL - QR Codenya Hilang'
+							WHEN EBCC_HEADER.ALASAN_MANUAL = '2' THEN 'MANUAL - QR Codenya Rusak'
+						END
+					END AS ALASAN_MANUAL,
+					
 					EBCC_HEADER.LAT_TPH,
 					EBCC_HEADER.LON_TPH,
 					EBCC_HEADER.DELIVERY_CODE,
@@ -126,6 +135,10 @@ class ReportOracle extends Model
 		";
 		// print_r($sql);die;
 		$get = $this->db_mobile_ins->select($sql);
+
+		// print '<pre>';
+		// print_r( $sql );
+		// print '</pre>';
 		return $get;
 	}
 	
@@ -166,7 +179,14 @@ class ReportOracle extends Model
 		    EBCC_VAL.VAL_NAMA_VALIDATOR,
 		    EBCC_VAL.VAL_JABATAN_VALIDATOR,
 		    EBCC_VAL.VAL_STATUS_TPH_SCAN,
-		    EBCC_VAL.VAL_ALASAN_MANUAL,
+		    CASE
+		    	WHEN EBCC_VAL.VAL_ALASAN_MANUAL IS NULL THEN 'AUTOMATIC'
+		    	ELSE
+		    		CASE
+		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'MANUAL - QR Codenya Hilang'
+		    			WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'MANUAL - QR Codenya Rusak'
+		    	END
+		    END AS VAL_ALASAN_MANUAL,
 		    EBCC_VAL.VAL_AFD_CODE,
 		    EBCC_VAL.VAL_BLOCK_CODE,
 		    EBCC_VAL.VAL_DATE_TIME AS VAL_DATE_TIME,
@@ -333,7 +353,8 @@ class ReportOracle extends Model
 				$joindata[$i]['akurasi_kualitas_ms'] = '';
 				$joindata[$i]['match_status'] = 'NOT MATCH';
 				$date = date( 'd-m-Y', strtotime( $ec->val_date_time ) );
-				$sql = "SELECT F_GET_TEST( '{$ec->val_werks}', '{$ec->val_afd_code}', '{$ec->val_block_code}', '{$ec->val_tph_code}', '{$date}','{$date}' ) AS NO_BCC FROM DUAL";
+				# Vi, setelah data inputan ALASAN_MANUAL keluar, km ganti F_GET_TEST jadi F_GET_EBCC_COMPARE ya vi, di oracle sm di codingan ini
+				$sql = "SELECT F_GET_EBCC_COMPARE( '{$ec->val_werks}', '{$ec->val_afd_code}', '{$ec->val_block_code}', '{$ec->val_tph_code}', '{$date}','{$date}' ) AS NO_BCC FROM DUAL";
 				$query = collect( $this->db_mobile_ins->select( $sql ) )->first();
 
 				if ( $query->no_bcc != null ) {
