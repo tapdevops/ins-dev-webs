@@ -125,6 +125,10 @@ class ReportOracle extends Model
 		";
 		
 		$get = $this->db_mobile_ins->select($sql);
+
+		// print '<pre>';
+		// print_r( $sql );
+		// print '</pre>';
 		return $get;
 	}
 	
