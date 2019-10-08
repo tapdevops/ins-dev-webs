@@ -231,5 +231,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
-
+	
+	'kafkahost' => '149.129.252.13', #Production
+	// 'kafkahost' => '149.129.221.137', #Development 
 ];
