@@ -230,7 +230,6 @@ class ReportOracle extends Model
 		            	AND EBCC_HEADER.SYNC_TIME BETWEEN TO_DATE( '$START_DATE', 'RRRR-MM-DD' ) AND TO_DATE( '$END_DATE', 'RRRR-MM-DD' )
 		            	$where
 			    ) EBCC_VAL
-			WHERE ROWNUM < 100
 			GROUP BY
 			    EBCC_VAL.VAL_EBCC_CODE,
 			    EBCC_VAL.VAL_WERKS,
