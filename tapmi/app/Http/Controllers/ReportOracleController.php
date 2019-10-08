@@ -17,10 +17,9 @@ class ReportOracleController extends Controller
 	protected $active_menu;
 	
     public function __construct() {
-		$this->env = 'dev';
 		$this->active_menu = '_' . str_replace('.', '', '02.03.00.00.00') . '_';
 		$this->url_api_ins_msa_hectarestatement = APISetup::url()['msa']['ins']['hectarestatement'];
-		$this->db_mobile_ins = ($this->env == 'production' ? DB::connection('mobile_ins') : DB::connection('mobile_ins_dev'));
+		$this->db_mobile_ins = DB::connection('mobile_ins');
 	}
 	
 	public function download() {
@@ -45,13 +44,7 @@ class ReportOracleController extends Controller
 		// Set Empty Array (Biar gak error)
 		$results['head'] = array();
 		$results['data'] = array();
-
-
-		// print '<pre>';
-		// print_r($_POST);
-		// print '</pre>';
-		// print 'Hehehe';
-		// dd();
+		$results['periode'] = date( 'Ym', strtotime( $START_DATE ) );
 
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		# REPORT EBCC VALIDATION ESTATE/MILL
@@ -90,39 +83,9 @@ class ReportOracleController extends Controller
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
 
-		// return view( $results['view'], $results );
-		// dd();
-
 		// print '<pre>';
-		// print_r( $results );
-		// dd();
-
-		// if ( !empty( $results['data'] ) ) {
-		// 	foreach ( $results['data'] as $dt ){
-		// 		$dt = (array) $dt;
-
-
-		
-		// 		$tmp[] = $dt;
-				
-		// 		foreach($results['head'] as $hd){
-
-		// 			// if ( $dt[ $hd['original'] ] ) {
-		// 			// 	print $dt[ $hd['original'] ].'<br />';
-		// 			// }
-		// 			// else {
-		// 			// 	print 'Undefined<br />';
-		// 			// }
-
-		// 			print '<pre>';
-		// 			print_r( $hd );
-		// 			print '<pre>';
-		// 			// $sip[] = $dt[ $hd['original'] ];
-		// 		}
-				
-		// 	}
-		// }
-		
+		// // print_r( $results['data'] );
+		// print '</pre>';
 		// dd();
 		
 		if($file_name){

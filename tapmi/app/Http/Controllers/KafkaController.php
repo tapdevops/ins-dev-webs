@@ -10,8 +10,7 @@ use RdKafka;
 class KafkaController extends Controller
 {
     public function __construct() {
-		$this->env = 'dev';
-		$this->db_mobile_ins = ( $this->env == 'production' ? DB::connection( 'mobile_ins' ) : DB::connection( 'mobile_ins_dev' ) );
+		$this->db_mobile_ins = DB::connection( 'mobile_ins' );
 	}
 	
 	public function tes() {
@@ -305,7 +304,7 @@ class KafkaController extends Controller
 											WHERE
 												TOPIC_NAME = 'INS_MSA_AUTH_TM_USER_AUTH'");
 			$this->db_mobile_ins->commit();
-			return 'Insert Success -> {$payload["URACD"]}\n';
+			return 'Insert Success -> '.$payload["URACD"].PHP_EOL;
 		} 
 		catch ( \Throwable $e ) {
 			return 'Insert Failde: '.$e->getMessage().'\n';
