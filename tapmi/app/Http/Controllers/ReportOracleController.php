@@ -46,13 +46,6 @@ class ReportOracleController extends Controller
 		$results['head'] = array();
 		$results['data'] = array();
 
-
-		// print '<pre>';
-		// print_r($_POST);
-		// print '</pre>';
-		// print 'Hehehe';
-		// dd();
-
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		# REPORT EBCC VALIDATION ESTATE/MILL
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -89,41 +82,6 @@ class ReportOracleController extends Controller
 			$file_name 		 = 'Report-EBCC-Compare';
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
-
-		// return view( $results['view'], $results );
-		// dd();
-
-		// print '<pre>';
-		// print_r( $results );
-		// dd();
-
-		// if ( !empty( $results['data'] ) ) {
-		// 	foreach ( $results['data'] as $dt ){
-		// 		$dt = (array) $dt;
-
-
-		
-		// 		$tmp[] = $dt;
-				
-		// 		foreach($results['head'] as $hd){
-
-		// 			// if ( $dt[ $hd['original'] ] ) {
-		// 			// 	print $dt[ $hd['original'] ].'<br />';
-		// 			// }
-		// 			// else {
-		// 			// 	print 'Undefined<br />';
-		// 			// }
-
-		// 			print '<pre>';
-		// 			print_r( $hd );
-		// 			print '<pre>';
-		// 			// $sip[] = $dt[ $hd['original'] ];
-		// 		}
-				
-		// 	}
-		// }
-		
-		// dd();
 		
 		if($file_name){
 			Excel::create($file_name, function ($excel) use ($results) {
