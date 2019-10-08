@@ -17,8 +17,6 @@
 		<th style="text-align: left;background-color: #ff9933;">Periode</th>
 		<th style="text-align: left;background-color: #ff9933;">Lat</th>
 		<th style="text-align: left;background-color: #ff9933;">Long</th>
-		<th style="text-align: left;background-color: #ff9933;">Delivery Code</th>
-		<th style="text-align: left;background-color: #ff9933;">Status Delivery Code</th>
 		@foreach($head as $hd)
 			<th style="text-align: left;background-color: #ff9933;">{{ $hd->nama_kualitas }}</th>
 		@endforeach
@@ -48,8 +46,6 @@
 		<td style="text-align: left;">{{ $periode }}</td>
 		<td style="text-align: left;">{{ $dt['val_lat_tph'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_lon_tph'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_delivery_ticket'] }}</td>
-		<td style="text-align: left;"></td>
 		<td style="text-align: left;">{{ $dt['val_jml_1'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_2'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_3'] }}</td>
