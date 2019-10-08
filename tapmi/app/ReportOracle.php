@@ -251,9 +251,9 @@ class ReportOracle extends Model
 			    EBCC_VAL.VAL_MATURITY_STATUS,
 			    EBCC_VAL.VAL_SPMON";
 		
-		// $get = $this->db_mobile_ins->select($sql);
-			    print '<pre>'.$sql;
-			    dd();
+		$get = $this->db_mobile_ins->select($sql);
+			    // print '<pre>'.$sql;
+			    // dd();
 		return $get;
 	}
 	
