@@ -44,7 +44,7 @@
 		<td style="text-align: left;">{{ $dt['val_nik_validator'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_nama_validator'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jabatan_validator'] }}</td>
-		<td style="text-align: left;">MAT_STATUS</td>
+		<td style="text-align: left;">{{ $dt['val_maturity_status'] }}</td>
 		<td style="text-align: left;">{{ $periode }}</td>
 		<td style="text-align: left;">{{ $dt['val_lat_tph'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_lon_tph'] }}</td>
