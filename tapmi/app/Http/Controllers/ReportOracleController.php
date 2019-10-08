@@ -17,10 +17,9 @@ class ReportOracleController extends Controller
 	protected $active_menu;
 	
     public function __construct() {
-		$this->env = 'dev';
 		$this->active_menu = '_' . str_replace('.', '', '02.03.00.00.00') . '_';
 		$this->url_api_ins_msa_hectarestatement = APISetup::url()['msa']['ins']['hectarestatement'];
-		$this->db_mobile_ins = ($this->env == 'production' ? DB::connection('mobile_ins') : DB::connection('mobile_ins_dev'));
+		$this->db_mobile_ins = DB::connection('mobile_ins');
 	}
 	
 	public function download() {
