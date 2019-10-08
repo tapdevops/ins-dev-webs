@@ -10,8 +10,7 @@ use RdKafka;
 class KafkaController extends Controller
 {
     public function __construct() {
-		$this->env = 'dev';
-		$this->db_mobile_ins = ( $this->env == 'production' ? DB::connection( 'mobile_ins' ) : DB::connection( 'mobile_ins_dev' ) );
+		$this->db_mobile_ins = DB::connection( 'mobile_ins' );
 	}
 	
 	public function tes() {
