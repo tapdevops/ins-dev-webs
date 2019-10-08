@@ -304,7 +304,7 @@ class KafkaController extends Controller
 											WHERE
 												TOPIC_NAME = 'INS_MSA_AUTH_TM_USER_AUTH'");
 			$this->db_mobile_ins->commit();
-			return 'Insert Success -> {$payload["URACD"]}\n';
+			return 'Insert Success -> '.$payload["URACD"].PHP_EOL;
 		} 
 		catch ( \Throwable $e ) {
 			return 'Insert Failde: '.$e->getMessage().'\n';

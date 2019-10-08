@@ -44,6 +44,7 @@ class ReportOracleController extends Controller
 		// Set Empty Array (Biar gak error)
 		$results['head'] = array();
 		$results['data'] = array();
+		$results['periode'] = date( 'Ym', strtotime( $START_DATE ) );
 
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		# REPORT EBCC VALIDATION ESTATE/MILL
@@ -81,6 +82,11 @@ class ReportOracleController extends Controller
 			$file_name 		 = 'Report-EBCC-Compare';
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
+
+		// print '<pre>';
+		// // print_r( $results['data'] );
+		// print '</pre>';
+		// dd();
 		
 		if($file_name){
 			Excel::create($file_name, function ($excel) use ($results) {
