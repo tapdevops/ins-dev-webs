@@ -2,7 +2,7 @@
 
 php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H
 php artisan Kafka:INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D
-php artisan Kafka:RUN_INS_MSA_AUTH_TM_USER_AUTH
+php artisan Kafka:INS_MSA_AUTH_TM_USER_AUTH
 
 --- Simulasi php artisan
 
