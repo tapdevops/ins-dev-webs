@@ -30,6 +30,11 @@ class ReportOracleController extends Controller
 	}
 	
 	public function download_proses( Request $request ) {
+
+		// print '<pre>';
+		// print_r( $_POST );
+		// print '</pre>';
+		// dd();
 		$RO = new ReportOracle;
 		$REPORT_TYPE = $request->REPORT_TYPE != '' ? $request->REPORT_TYPE :  null;
 		$START_DATE = $request->START_DATE != '' ? $request->START_DATE : null;

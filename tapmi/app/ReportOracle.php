@@ -45,11 +45,12 @@ class ReportOracle extends Model
 			}
 		}	
 
-		$where .= $REGION_CODE ? " and EST.REGION_CODE = '$REGION_CODE'  ": "";
-		$where .= $COMP_CODE ? " and EST.COMP_CODE = '$COMP_CODE'  ": "";
-		$where .= $BA_CODE ? " and EBCC_HEADER.WERKS = '$BA_CODE'  ": "";
-		$where .= $AFD_CODE ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE = '$AFD_CODE'  ": "";
-		$where .= $BLOCK_CODE ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE||EBCC_HEADER.BLOCK_CODE = '$BLOCK_CODE'  ": "";
+
+		$where .= ( $REGION_CODE != "" && $COMP_CODE == "" ) ? " and EST.REGION_CODE = '$REGION_CODE'  ": "";
+		$where .= ( $COMP_CODE != "" && $BA_CODE == "" ) ? " and EST.COMP_CODE = '$COMP_CODE'  ": "";
+		$where .= ( $BA_CODE != "" && $AFD_CODE == "" ) ? " and EBCC_HEADER.WERKS = '$BA_CODE'  ": "";
+		$where .= ( $AFD_CODE != "" && $BLOCK_CODE == "" ) ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE = '$AFD_CODE'  ": "";
+		$where .= ( $AFD_CODE != "" && $BLOCK_CODE != "" ) ? " and EBCC_HEADER.WERKS||EBCC_HEADER.AFD_CODE||EBCC_HEADER.BLOCK_CODE = '$BLOCK_CODE'  ": "";
 		
 		$START_DATE = date( 'Y-m-d', strtotime( $START_DATE ) );
 		$END_DATE = date( 'Y-m-d', strtotime( $END_DATE ) );
@@ -250,7 +251,9 @@ class ReportOracle extends Model
 			    EBCC_VAL.VAL_MATURITY_STATUS,
 			    EBCC_VAL.VAL_SPMON";
 		
-		$get = $this->db_mobile_ins->select($sql);
+		// $get = $this->db_mobile_ins->select($sql);
+			    print '<pre>'.$sql;
+			    dd();
 		return $get;
 	}
 	
