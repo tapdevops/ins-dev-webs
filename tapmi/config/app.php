@@ -232,6 +232,6 @@ return [
 
     ],
 	
-	// 'kafkahost' => '149.129.252.13', #Production
-	'kafkahost' => '149.129.221.137', #Development 
+	'kafkahost' => '149.129.252.13', #Production
+	// 'kafkahost' => '149.129.221.137', #Development 
 ];
