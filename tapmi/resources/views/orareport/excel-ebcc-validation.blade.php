@@ -18,7 +18,7 @@
 		<th style="text-align: left;background-color: #ff9933;">Lat</th>
 		<th style="text-align: left;background-color: #ff9933;">Long</th>
 		@foreach($head as $hd)
-			<th style="text-align: left;background-color: #ff9933;">{{ $hd->nama_kualitas }}</th>
+			<th style="text-align: left;background-color: #ff9933;">{{ $hd->id_kualitas.' - '.$hd->nama_kualitas }}</th>
 		@endforeach
 		<th style="text-align: left;background-color: #ff9933;">Total Janjang Panen</th>
 	</tr>
@@ -26,7 +26,6 @@
 	@foreach ( $data as $dt )
 	@php
 		$dt = (array) $dt;
-		
 	@endphp
 	<tr>
 		<td style="text-align: left;">{{ $dt['val_ebcc_code'] }}</td>
