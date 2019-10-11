@@ -8,7 +8,7 @@ tr > th {
 </style>
 <table>
 	<tr class="mythead">
-		<th style="background-color: #ff9933;" colspan="21">Sampling EBCC</th>
+		<th style="background-color: #ff9933;" colspan="20">Sampling EBCC</th>
 		<th style="background-color: #33cc33;" colspan="12">Sampling EBCC</th>
 
 		<!-- Etc -->
@@ -37,7 +37,6 @@ tr > th {
 		<th style="background-color: #ff9933;">BB (jjg)</th>
 		<th style="background-color: #ff9933;">JK (jjg)</th>
 		<th style="background-color: #ff9933;">BA (jjg)</th>
-		<th style="background-color: #ff9933;">BRD (jjg)</th>
 		<th style="background-color: #ff9933;">Total Janjang Panen</th>
 
 		<!-- EBCC -->
@@ -56,50 +55,47 @@ tr > th {
 	</tr>
 	@if ( !empty( $data ) )
 		@foreach ( $data as $dt )
-			@php
-				$dtt = (array) $dt; 
-			@endphp
 			<tr>
-				<td>{{ $dtt['sampling_tgl'] }}</td>
-				<td>{{ $dtt['sampling_nik_pelaku'] }}</td>
-				<td>{{ $dtt['sampling_nama_pelaku'] }}</td>
-				<td>{{ $dtt['sampling_role_pelaku'] }}</td>
-				<td>{{ $dtt['sampling_ba_code'] }}</td>
-				<td>{{ $dtt['sampling_ba_name'] }}</td>
-				<td>{{ $dtt['sampling_afd_code'] }}</td>
-				<td>{{ $dtt['sampling_block_code'] }}</td>
-				<td>{{ $dtt['sampling_block_name'] }}</td>
-				<td>{{ $dtt['sampling_no_tph'] }}</td>
-				<td>{{ $dtt['sampling_code'] }}</td>
-				<td>{{ $dtt['sampling_status_qrcode_tph'] }}</td>
-				<td>{{ $dtt['sampling_jml_bm'] }}</td>
-				<td>{{ $dtt['sampling_jml_bk'] }}</td>
-				<td>{{ $dtt['sampling_jml_ms'] }}</td>
-				<td>{{ $dtt['sampling_jml_or'] }}</td>
-				<td>{{ $dtt['sampling_jml_bb'] }}</td>
-				<td>{{ $dtt['sampling_jml_jk'] }}</td>
-				<td>{{ $dtt['sampling_jml_ba'] }}</td>
-				<td>{{ $dtt['sampling_jml_brd'] }}</td>
-				<td>{{ $dtt['sampling_total_jjg'] }}</td>
+				<td>{{ $dt['val_date_time'] }}</td>
+				<td>{{ $dt['val_nik_validator'] }}</td>
+				<td>{{ $dt['val_nama_validator'] }}</td>
+				<td>{{ $dt['val_jabatan_validator'] }}</td>
+				<td>{{ $dt['val_werks'] }}</td>
+				<td>{{ $dt['val_est_name'] }}</td>
+				<td>{{ $dt['val_afd_code'] }}</td>
+				<td>{{ $dt['val_block_code'] }}</td>
+				<td>{{ $dt['val_block_name'] }}</td>
+				<td>{{ $dt['val_tph_code'] }}</td>
+				<td>{{ $dt['val_ebcc_code'] }}</td>
+				<td></td>
+				<td>{{ $dt['val_jml_bm'] }}</td>
+				<td>{{ $dt['val_jml_bk'] }}</td>
+				<td>{{ $dt['val_jml_ms'] }}</td>
+				<td>{{ $dt['val_jml_or'] }}</td>
+				<td>{{ $dt['val_jml_bb'] }}</td>
+				<td>{{ $dt['val_jml_jk'] }}</td>
+				<td>{{ $dt['val_jml_ba'] }}</td>
+				<td>{{ $dt['val_jjg_panen'] }}</td>
 
 				<!-- EBCC -->
-				<td>{{ $dtt['ebcc_nik_pelaku'] }}</td>
-				<td>{{ $dtt['ebcc_nama_pelaku'] }}</td>
-				<td>{{ $dtt['ebcc_code'] }}</td>
-				<td>{{ $dtt['ebcc_status_qrcode_tph'] }}</td>
-				<td>{{ $dtt['ebcc_jml_bm'] }}</td>
-				<td>{{ $dtt['ebcc_jml_bk'] }}</td>
-				<td>{{ $dtt['ebcc_jml_ms'] }}</td>
-				<td>{{ $dtt['ebcc_jml_or'] }}</td>
-				<td>{{ $dtt['ebcc_jml_bb'] }}</td>
-				<td>{{ $dtt['ebcc_jml_jk'] }}</td>
-				<td>{{ $dtt['ebcc_jml_ba'] }}</td>
-				<td>{{ $dtt['ebcc_total_jjg_panen'] }}</td>
+				<td>{{ $dt['ebcc_nik_kerani_buah'] }}</td>
+				<td>{{ $dt['ebcc_nama_kerani_buah'] }}</td>
+				<td>{{ $dt['ebcc_no_bcc'] }}</td>
+				<td></td>
+				<td>{{ $dt['ebcc_jml_bm'] }}</td>
+				<td>{{ $dt['ebcc_jml_bk'] }}</td>
+				<td>{{ $dt['ebcc_jml_ms'] }}</td>
+				<td>{{ $dt['ebcc_jml_or'] }}</td>
+				<td>{{ $dt['ebcc_jml_bb'] }}</td>
+				<td>{{ $dt['ebcc_jml_jk'] }}</td>
+				<td>{{ $dt['ebcc_jml_ba'] }}</td>
+				<td>{{ $dt['ebcc_jjg_panen'] }}</td>
 
 				<!-- Etc -->
-				<td>{{ $dtt['link_foto'] }}</td>
-				<td style="color:#fff;background-color:@if( $dtt['akurasi_sampling']=='MATCH' ) #27ae60 @else #e74c3c @endif;">{{ $dtt['akurasi_sampling'] }}</td>
-				<td>{{ $dtt['akurasi_ms'] }}</td>
+				<td></td>
+				<td style="color:#fff;background-color:@if( $dt['match_status']=='MATCH' ) #27ae60 @else #e74c3c @endif;">{{ $dt['match_status'] }}</td>
+				<td>{{ $dt['akurasi_kualitas_ms'] }}</td>
+
 			</tr>
 		@endforeach
 	@endif
