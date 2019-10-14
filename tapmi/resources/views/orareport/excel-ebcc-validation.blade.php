@@ -8,7 +8,6 @@
 		<th style="text-align: left;background-color: #ff9933;">Block Deskripsi</th>
 		<th style="text-align: left;background-color: #ff9933;">TPH</th>
 		<th style="text-align: left;background-color: #ff9933;">Inputan TPH</th>
-		<th style="text-align: left;background-color: #ff9933;">Alasan Input Manual</th>
 		<th style="text-align: left;background-color: #ff9933;">Tanggal Validasi</th>
 		<th style="text-align: left;background-color: #ff9933;">NIK Validator</th>
 		<th style="text-align: left;background-color: #ff9933;">Nama Validator</th>
@@ -18,14 +17,15 @@
 		<th style="text-align: left;background-color: #ff9933;">Lat</th>
 		<th style="text-align: left;background-color: #ff9933;">Long</th>
 		@foreach($head as $hd)
-			<th style="text-align: left;background-color: #ff9933;">{{ $hd->id_kualitas.' - '.$hd->nama_kualitas }}</th>
+		<th style="text-align: left;background-color: #ff9933;">{{ $hd->id_kualitas.' - '.$hd->nama_kualitas }}</th>
 		@endforeach
 		<th style="text-align: left;background-color: #ff9933;">Total Janjang Panen</th>
+		<th style="text-align: left;background-color: #ff9933;">Alasan Input Manual</th>
 	</tr>
 	@if ( count( $data ) > 0 )
 	@foreach ( $data as $dt )
 	@php
-		$dt = (array) $dt;
+	$dt = (array) $dt;
 	@endphp
 	<tr>
 		<td style="text-align: left;">{{ $dt['val_ebcc_code'] }}</td>
@@ -36,7 +36,6 @@
 		<td style="text-align: left;">{{ $dt['val_block_name'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_tph_code'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_status_tph_scan'] }}</td>
-		<td style="text-align: left;">{{ $dt['val_alasan_manual'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_date_time'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_nik_validator'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_nama_validator'] }}</td>
@@ -58,6 +57,7 @@
 		<td style="text-align: left;">{{ $dt['val_jml_9'] }}</td>
 		<td style="text-align: left;">{{ ( $dt['val_jml_10'] == '1' ? 'Ada' : 'Tidak ada' ) }}</td>
 		<td style="text-align: left;">{{ $dt['val_total_jjg'] }}</td>
+		<td style="text-align: left;">{{ $dt['val_alasan_manual'] }}</td>
 	</tr>
 	@endforeach
 	@endif
