@@ -20,7 +20,7 @@
 		@foreach($head as $hd)
 			<th style="text-align: left;background-color: #ff9933;">{{ $hd->id_kualitas.' - '.$hd->nama_kualitas }}</th>
 		@endforeach
-		<th style="text-align: left;background-color: #ff9933;">Total Janjang Panen zzzzz</th>
+		<th style="text-align: left;background-color: #ff9933;">Total Janjang Panen</th>
 	</tr>
 	@if ( count( $data ) > 0 )
 	@foreach ( $data as $dt )

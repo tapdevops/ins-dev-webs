@@ -57,6 +57,7 @@ Route::group( [ 'middleware' => 'web' ], function() {
 		Route::group(['prefix'=>'report-oracle'], function () {
 			Route::get('download', ['as'=>'orareport.download', 'uses'=>'ReportOracleController@download']);
 			Route::post('download', ['as'=>'orareport.download_proses', 'uses'=>'ReportOracleController@download_proses']);
+			Route::get('nohup', ['as'=>'orareport.read_nohup', 'uses'=>'ReportOracleController@read_nohup']);
 			
 		});
 	});

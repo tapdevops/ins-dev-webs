@@ -226,30 +226,64 @@ class KafkaController extends Controller
 	{
 		$INSTM = ( (bool) strtotime( $payload['INSTM'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['INSTM'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
 		$STIME = ( (bool) strtotime( $payload['STIME'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['STIME'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
-		$sql = "INSERT INTO 
-				MOBILE_INSPECTION.TR_EBCC_VALIDATION_D ( 
-					EBCC_VALIDATION_CODE, 
-					ID_KUALITAS, 
-					JUMLAH, 
-					INSERT_USER, 
-					INSERT_TIME, 
-					STATUS_SYNC, 
-					SYNC_TIME 
-				) 
-			VALUES ( 
-				'{$payload['EBVTC']}', 
-				'{$payload['IDKLT']}', 
-				'{$payload['JML']}', 
-				'{$payload['INSUR']}', 
-				$INSTM, 
-				'{$payload['SSYNC']}',
-				$STIME 
-			)";
-		
-		try {
-			$this->db_mobile_ins->statement( $sql );
-			$this->db_mobile_ins->commit();
+		$check = collect( $this->db_mobile_ins->select( "
+			SELECT 
+				COUNT( * ) AS COUNT 
+			FROM 
+				TR_EBCC_VALIDATION_D
+			WHERE
+				EBCC_VALIDATION_CODE = '{$payload['EBVTC']}'
+				AND ID_KUALITAS = '{$payload['IDKLT']}'
+		" ) )->first();
+
+		if ( $check->count == 0 ) {
+			$sql = "
+				INSERT INTO 
+					MOBILE_INSPECTION.TR_EBCC_VALIDATION_D ( 
+						EBCC_VALIDATION_CODE, 
+						ID_KUALITAS, 
+						JUMLAH, 
+						INSERT_USER, 
+						INSERT_TIME, 
+						STATUS_SYNC, 
+						SYNC_TIME 
+					) 
+				VALUES ( 
+					'{$payload['EBVTC']}', 
+					'{$payload['IDKLT']}', 
+					'{$payload['JML']}', 
+					'{$payload['INSUR']}', 
+					$INSTM, 
+					'{$payload['SSYNC']}',
+					$STIME 
+				)
+			";
 			
+			try {
+				$this->db_mobile_ins->statement( $sql );
+				$this->db_mobile_ins->commit();
+				
+				// Update offset payloads
+				$this->db_mobile_ins->statement( "
+					UPDATE 
+						MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
+					SET
+						OFFSET = $offset,
+						EXECUTE_DATE = SYSDATE
+					WHERE
+						TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'
+				" );
+				$this->db_mobile_ins->commit();
+				return 'Insert Success'.PHP_EOL;
+			}
+			catch ( \Throwable $e ) {
+				return 'Insert Failed: '.$e->getMessage().PHP_EOL;
+	        }
+	        catch ( \Exception $e ) {
+				return 'Insert Failed: '.$e->getMessage().PHP_EOL;
+			}
+		}
+		else {
 			// Update offset payloads
 			$this->db_mobile_ins->statement( "
 				UPDATE 
@@ -261,11 +295,7 @@ class KafkaController extends Controller
 					TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'
 			" );
 			$this->db_mobile_ins->commit();
-			return 'Insert Success'.PHP_EOL;
-		}catch ( \Throwable $e ) {
-			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
-        }catch ( \Exception $e ) {
-			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
+			return 'Duplicate Data '.$payload['EBVTC'].'-'.$payload['IDKLT'].PHP_EOL;
 		}
 	}
 

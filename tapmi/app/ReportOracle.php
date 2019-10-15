@@ -311,7 +311,7 @@ class ReportOracle extends Model
 		return $get;
 	}
 	
-	public function EBCC_COMPARE( $REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE ) {
+	public function EBCC_COMPARE_OLD( $REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE ) {
 		if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' ) {
 			$REPORT_TYPE = 'V';
 		}
@@ -343,8 +343,8 @@ class ReportOracle extends Model
 					WHEN EBCC_VAL.VAL_ALASAN_MANUAL IS NULL THEN 'AUTOMATIC'
 					ELSE
 						CASE
-							WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'MANUAL - QR Codenya Hilang'
-							WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'MANUAL - QR Codenya Rusak'
+							WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'QR Codenya Hilang'
+							WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'QR Codenya Rusak'
 					END
 				END AS VAL_ALASAN_MANUAL,
 				EBCC_VAL.VAL_AFD_CODE,
@@ -582,7 +582,7 @@ class ReportOracle extends Model
 		return $joindata;
 	}
 	
-	public function EBCC_COMPARE_NEW($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)
+	public function EBCC_COMPARE($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)
 	{
 		if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' ) {
 			$REPORT_TYPE = 'V';

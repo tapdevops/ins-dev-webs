@@ -17,17 +17,63 @@ class ReportOracleController extends Controller
 	protected $url_api_ins_msa_hectarestatement;
 	protected $active_menu;
 	
-    public function __construct() {
+	public function __construct() {
 		$this->active_menu = '_' . str_replace('.', '', '02.03.00.00.00') . '_';
 		$this->url_api_ins_msa_hectarestatement = APISetup::url()['msa']['ins']['hectarestatement'];
 		$this->db_mobile_ins = DB::connection('mobile_ins');
 	}
 
+	public function read_nohup() {
+		$content = File::get( base_path( 'nohup.out' ) );
+
+		print '<pre>';
+		print_r( $content );
+		print '</pre>';
+	}
+
 	public function testing() {
 
-		print (bool)strtotime( '201901010000' );
 		// print 'ABCDZ';
+		// dd();
+
+		# Delete Duplicate Data EBCC Validation Detail
+		$query = $this->db_mobile_ins->select( "
+			SELECT
+				X.EBCC_VALIDATION_CODE,
+				X.ID_KUALITAS,
+				X.COUNT
+			FROM
+				(
+					SELECT
+						EBCC_VALIDATION_CODE,
+						ID_KUALITAS,
+						JUMLAH,
+						COUNT( * ) AS COUNT
+					FROM
+						MOBILE_INSPECTION.TR_EBCC_VALIDATION_D
+					GROUP BY
+						EBCC_VALIDATION_CODE,
+						ID_KUALITAS,
+						JUMLAH
+				) X
+			WHERE
+				X.COUNT > 1
+				AND ROWNUM < 10
+		" );
+
+		foreach ( $query as $q ) {
+			$sql_delete = "DELETE FROM TR_EBCC_VALIDATION_D WHERE EBCC_VALIDATION_CODE = '{$q->ebcc_validation_code}' AND ID_KUALITAS = '{$q->id_kualitas}' AND ROWNUM < {$q->count}";
+			print '<pre>';
+			print_r( $this->db_mobile_ins->select( $sql_delete ) );
+			print_r( $sql_delete );
+			print '</pre>';
+		}
+
 		dd();
+
+		// print (bool)strtotime( '201901010000' );
+		// print 'ABCDZ';
+		// dd();
 		/*
 		$query = $this->db_mobile_ins->select( "
 			SELECT
@@ -153,10 +199,10 @@ class ReportOracleController extends Controller
 		}
 		
 
-		print '<pre>';
-		print_r( $results['data'] );
-		print '<pre>';
-		dd();
+		// print '<pre>';
+		// print_r( $results['data'] );
+		// print '<pre>';
+		// dd();
 
 		if( $file_name ) {
 			Excel::create( $file_name, function( $excel ) use ( $results ) {
