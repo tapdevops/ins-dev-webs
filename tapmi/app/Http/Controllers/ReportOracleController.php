@@ -33,7 +33,6 @@ class ReportOracleController extends Controller
 
 	public function testing() {
 
-		/*
 		# Update Data Block 4 -> 004
 		$query = $this->db_mobile_ins->select( "SELECT * FROM TR_EBCC_VALIDATION_H WHERE LENGTH( BLOCK_CODE ) = 1" );
 		foreach ( $query as $q ) {
@@ -60,7 +59,6 @@ class ReportOracleController extends Controller
 			$this->db_mobile_ins->statement( $sql );
 			$this->db_mobile_ins->commit();
 		}
-		*/
 
 		# Update Data Block 23 -> 023
 		$query4 = $this->db_mobile_ins->select( "SELECT * FROM TR_EBCC_VALIDATION_H WHERE LENGTH( NO_TPH ) = 2" );

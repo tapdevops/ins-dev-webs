@@ -1276,6 +1276,12 @@ class ReportController extends Controller
 		$finding_data = Data::web_report_finding_find($query_finding)['items'];
 		$i = 0;
 
+
+		// print '<pre>';
+		// print_r( $query_finding );
+		// print '<pre>';
+		// dd();
+
 		foreach ($finding_data as $finding) {
 
 			$hectarestatement =  Data::web_report_land_use_findone($finding['WERKS'] . $finding['AFD_CODE'] . $finding['BLOCK_CODE']);
