@@ -16,11 +16,23 @@
 		<th style="text-align: left;background-color: #ff9933;">Maturity Status</th>
 		<th style="text-align: left;background-color: #ff9933;">Periode</th>
 		<th style="text-align: left;background-color: #ff9933;">Lat</th>
-		<th style="text-align: left;background-color: #ff9933;">Long</th>
-		@foreach($head as $hd)
-			<th style="text-align: left;background-color: #ff9933;">{{ $hd->id_kualitas.' - '.$hd->nama_kualitas }}</th>
-		@endforeach
+		<th style="text-align: left;background-color: #ff9933;">Long
+
+		<th style="text-align: left;background-color: #ff9933;">a. Mentah</th>
+		<th style="text-align: left;background-color: #ff9933;">b. Mengkal/Kurang Masak</th>
+		<th style="text-align: left;background-color: #ff9933;">c. Masak</th>
+		<th style="text-align: left;background-color: #ff9933;">d. Overripe/Terlalu Masak</th>
+		<th style="text-align: left;background-color: #ff9933;">e. Busuk</th>
+		<th style="text-align: left;background-color: #ff9933;">f. Janjang Kosong</th>
+		<th style="text-align: left;background-color: #ff9933;">g. Buah Aborsi</th>
 		<th style="text-align: left;background-color: #ff9933;">Total Janjang Panen</th>
+		<th style="text-align: left;background-color: #ff9933;">h. Total Brondolan</th>
+		<th style="text-align: left;background-color: #ff9933;">a. Parthenocarpic/Abnormal</th>
+		<th style="text-align: left;background-color: #ff9933;">b. Buah Masak Tangkai Panjang</th>
+		<th style="text-align: left;background-color: #ff9933;">c. Dimakan Hama(Tikus/lainnya)</th>
+		<th style="text-align: left;background-color: #ff9933;">Alas Brondolan(TPH)</th>
+
+		
 	</tr>
 	@if ( count( $data ) > 0 )
 	@foreach ( $data as $dt )
@@ -52,12 +64,12 @@
 		<td style="text-align: left;">{{ $dt['val_jml_6'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_15'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_16'] }}</td>
+		<td style="text-align: left;">{{ $dt['val_total_jjg'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_5'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_8'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_7'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_9'] }}</td>
 		<td style="text-align: left;">{{ ( $dt['val_jml_10'] == '1' ? 'Ada' : 'Tidak ada' ) }}</td>
-		<td style="text-align: left;">{{ $dt['val_total_jjg'] }}</td>
 	</tr>
 	@endforeach
 	@endif

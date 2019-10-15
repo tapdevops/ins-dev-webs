@@ -274,13 +274,13 @@ class KafkaController extends Controller
 						TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'
 				" );
 				$this->db_mobile_ins->commit();
-				return 'Insert Success'.PHP_EOL;
+				return date( 'Y-m-d H:i:s' ).' - INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D - INSERT '.$payload['EBVTC'].' - SUCCESS '.PHP_EOL;
 			}
 			catch ( \Throwable $e ) {
-				return 'Insert Failed: '.$e->getMessage().PHP_EOL;
+				return date( 'Y-m-d H:i:s' ).' - INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
 	        }
 	        catch ( \Exception $e ) {
-				return 'Insert Failed: '.$e->getMessage().PHP_EOL;
+				return date( 'Y-m-d H:i:s' ).' - INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
 			}
 		}
 		else {
@@ -295,7 +295,7 @@ class KafkaController extends Controller
 					TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'
 			" );
 			$this->db_mobile_ins->commit();
-			return 'Duplicate Data '.$payload['EBVTC'].'-'.$payload['IDKLT'].PHP_EOL;
+			return date( 'Y-m-d H:i:s' ).' - INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D - INSERT '.$payload['EBVTC'].' - DUPLICATE '.PHP_EOL;
 		}
 	}
 

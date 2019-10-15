@@ -33,43 +33,46 @@ class ReportOracleController extends Controller
 
 	public function testing() {
 
-		// print 'ABCDZ';
-		// dd();
-
-		# Delete Duplicate Data EBCC Validation Detail
-		$query = $this->db_mobile_ins->select( "
-			SELECT
-				X.EBCC_VALIDATION_CODE,
-				X.ID_KUALITAS,
-				X.COUNT
-			FROM
-				(
-					SELECT
-						EBCC_VALIDATION_CODE,
-						ID_KUALITAS,
-						JUMLAH,
-						COUNT( * ) AS COUNT
-					FROM
-						MOBILE_INSPECTION.TR_EBCC_VALIDATION_D
-					GROUP BY
-						EBCC_VALIDATION_CODE,
-						ID_KUALITAS,
-						JUMLAH
-				) X
-			WHERE
-				X.COUNT > 1
-				AND ROWNUM < 10
-		" );
-
+		/*
+		# Update Data Block 4 -> 004
+		$query = $this->db_mobile_ins->select( "SELECT * FROM TR_EBCC_VALIDATION_H WHERE LENGTH( BLOCK_CODE ) = 1" );
 		foreach ( $query as $q ) {
-			$sql_delete = "DELETE FROM TR_EBCC_VALIDATION_D WHERE EBCC_VALIDATION_CODE = '{$q->ebcc_validation_code}' AND ID_KUALITAS = '{$q->id_kualitas}' AND ROWNUM < {$q->count}";
-			print '<pre>';
-			print_r( $this->db_mobile_ins->select( $sql_delete ) );
-			print_r( $sql_delete );
-			print '</pre>';
+			$sql = "UPDATE TR_EBCC_VALIDATION_H SET BLOCK_CODE = '00{$q->block_code}' WHERE EBCC_VALIDATION_CODE = '{$q->ebcc_validation_code}'";
+			$this->db_mobile_ins->beginTransaction();
+			$this->db_mobile_ins->statement( $sql );
+			$this->db_mobile_ins->commit();
 		}
 
-		dd();
+		# Update Data Block 23 -> 023
+		$query2 = $this->db_mobile_ins->select( "SELECT * FROM TR_EBCC_VALIDATION_H WHERE LENGTH( BLOCK_CODE ) = 2" );
+		foreach ( $query2 as $q2 ) {
+			$sql = "UPDATE TR_EBCC_VALIDATION_H SET BLOCK_CODE = '0{$q2->block_code}' WHERE EBCC_VALIDATION_CODE = '{$q2->ebcc_validation_code}'";
+			$this->db_mobile_ins->beginTransaction();
+			$this->db_mobile_ins->statement( $sql );
+			$this->db_mobile_ins->commit();
+		}
+
+		# Update Data No TPH 4 -> 004
+		$query3 = $this->db_mobile_ins->select( "SELECT * FROM TR_EBCC_VALIDATION_H WHERE LENGTH( NO_TPH ) = 1" );
+		foreach ( $query3 as $q3 ) {
+			$sql = "UPDATE TR_EBCC_VALIDATION_H SET NO_TPH = '00{$q3->no_tph}' WHERE EBCC_VALIDATION_CODE = '{$q3->ebcc_validation_code}'";
+			$this->db_mobile_ins->beginTransaction();
+			$this->db_mobile_ins->statement( $sql );
+			$this->db_mobile_ins->commit();
+		}
+		*/
+
+		# Update Data Block 23 -> 023
+		$query4 = $this->db_mobile_ins->select( "SELECT * FROM TR_EBCC_VALIDATION_H WHERE LENGTH( NO_TPH ) = 2" );
+		foreach ( $query4 as $q4 ) {
+			$sql = "UPDATE TR_EBCC_VALIDATION_H SET NO_TPH = '0{$q4->no_tph}' WHERE EBCC_VALIDATION_CODE = '{$q4->ebcc_validation_code}'";
+			$this->db_mobile_ins->beginTransaction();
+			$this->db_mobile_ins->statement( $sql );
+			$this->db_mobile_ins->commit();
+		}
+
+
+
 
 		// print (bool)strtotime( '201901010000' );
 		// print 'ABCDZ';
@@ -132,7 +135,7 @@ class ReportOracleController extends Controller
 		}
 		*/
 
-		print date( 'YmdHis', strtotime( '20190724240258' ) );
+		// print date( 'YmdHis', strtotime( '20190724240258' ) );
 
 	}
 	
@@ -198,7 +201,6 @@ class ReportOracleController extends Controller
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
 		
-
 		// print '<pre>';
 		// print_r( $results['data'] );
 		// print '<pre>';
