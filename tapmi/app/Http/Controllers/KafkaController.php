@@ -157,6 +157,9 @@ class KafkaController extends Controller
 		try {
 			$INSTM = date( 'YmdHis', strtotime( $payload['INSTM'] ) );
 			$STIME = date( 'YmdHis', strtotime( $payload['STIME'] ) );
+
+
+
 			$sql = "INSERT INTO 
 					MOBILE_INSPECTION.TR_EBCC_VALIDATION_H ( 
 						EBCC_VALIDATION_CODE, 
@@ -200,26 +203,29 @@ class KafkaController extends Controller
 			$this->db_mobile_ins->commit();
 			
 			//update offset payloads			
-			$this->db_mobile_ins->statement("UPDATE 
-												MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
-											SET
-												OFFSET = $offset,
-												EXECUTE_DATE = SYSDATE
-											WHERE
-												TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H'");
+			$this->db_mobile_ins->statement( "
+				UPDATE 
+					MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
+				SET
+					OFFSET = $offset,
+					EXECUTE_DATE = SYSDATE
+				WHERE
+					TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H'
+			" );
 			$this->db_mobile_ins->commit();
-			return 'Insert Success';
+			return 'Insert Success'.PHP_EOL;
 		}catch (\Throwable $e) {
-			return 'Insert Failde: '.$e->getMessage();
+			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
 			// return response()->json( $e->getMessage() );
         }catch (\Exception $e) {
-			return 'Insert Failde: '.$e->getMessage();
+			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
 		}
 	}
 	
 	public function insert_d($payload, $offset)
 	{
-		
+		$INSTM = ( (bool) strtotime( $payload['INSTM'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['INSTM'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
+		$STIME = ( (bool) strtotime( $payload['STIME'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['STIME'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
 		$sql = "INSERT INTO 
 				MOBILE_INSPECTION.TR_EBCC_VALIDATION_D ( 
 					EBCC_VALIDATION_CODE, 
@@ -235,30 +241,31 @@ class KafkaController extends Controller
 				'{$payload['IDKLT']}', 
 				'{$payload['JML']}', 
 				'{$payload['INSUR']}', 
-				to_date('{$payload['INSTM']}','YYYYMMDDHH24MISS'), 
+				$INSTM, 
 				'{$payload['SSYNC']}',
-				to_date('{$payload['STIME']}','YYYYMMDDHH24MISS') 
+				$STIME 
 			)";
 		
-		try{
-			$this->db_mobile_ins->statement($sql);
+		try {
+			$this->db_mobile_ins->statement( $sql );
 			$this->db_mobile_ins->commit();
 			
-			//update offset payloads			
-			$this->db_mobile_ins->statement("UPDATE 
-												MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
-											SET
-												OFFSET = $offset,
-												EXECUTE_DATE = SYSDATE
-											WHERE
-												TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'");
+			// Update offset payloads
+			$this->db_mobile_ins->statement( "
+				UPDATE 
+					MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
+				SET
+					OFFSET = $offset,
+					EXECUTE_DATE = SYSDATE
+				WHERE
+					TOPIC_NAME = 'INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D'
+			" );
 			$this->db_mobile_ins->commit();
-			return 'Insert Success';
-		}catch (\Throwable $e) {
-			return 'Insert Failde: '.$e->getMessage();
-			// return response()->json( $e->getMessage() );
-        }catch (\Exception $e) {
-			return 'Insert Failde: '.$e->getMessage();
+			return 'Insert Success'.PHP_EOL;
+		}catch ( \Throwable $e ) {
+			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
+        }catch ( \Exception $e ) {
+			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
 		}
 	}
 
@@ -291,27 +298,28 @@ class KafkaController extends Controller
 				null
 		)";
 
-		try{
+		try {
 			$this->db_mobile_ins->statement($sql);
 			$this->db_mobile_ins->commit();
 			
 			//update offset payloads			
-			$this->db_mobile_ins->statement("UPDATE 
-												MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
-											SET
-												OFFSET = $offset,
-												EXECUTE_DATE = SYSDATE
-											WHERE
-												TOPIC_NAME = 'INS_MSA_AUTH_TM_USER_AUTH'");
+			$this->db_mobile_ins->statement( "
+				UPDATE 
+					MOBILE_INSPECTION.TM_KAFKA_PAYLOADS
+				SET
+					OFFSET = $offset,
+					EXECUTE_DATE = SYSDATE
+				WHERE
+					TOPIC_NAME = 'INS_MSA_AUTH_TM_USER_AUTH'
+			" );
 			$this->db_mobile_ins->commit();
 			return 'Insert Success -> '.$payload["URACD"].PHP_EOL;
 		} 
 		catch ( \Throwable $e ) {
-			return 'Insert Failde: '.$e->getMessage().'\n';
-			// return response()->json( $e->getMessage() );
+			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
         }
         catch ( \Exception $e ) {
-			return 'Insert Failde: '.$e->getMessage().'\n';
+			return 'Insert Failde: '.$e->getMessage().PHP_EOL;
 		}
 	}
 	

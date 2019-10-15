@@ -10,6 +10,7 @@ use App\APISetup;
 use App\ReportOracle;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
+use File;
 
 class ReportOracleController extends Controller
 {
@@ -21,6 +22,73 @@ class ReportOracleController extends Controller
 		$this->url_api_ins_msa_hectarestatement = APISetup::url()['msa']['ins']['hectarestatement'];
 		$this->db_mobile_ins = DB::connection('mobile_ins');
 	}
+
+	public function testing() {
+
+		print (bool)strtotime( '201901010000' );
+		// print 'ABCDZ';
+		dd();
+		/*
+		$query = $this->db_mobile_ins->select( "
+			SELECT
+				*
+			FROM
+				TR_EBCC_VALIDATION_H
+		" );
+
+		$i = 0;
+		foreach( $query as $q ) {
+			$data['EBCC_VALIDATION_CODE'] = $q->ebcc_validation_code;
+			$data['WERKS'] = $q->werks;
+			$data['AFD_CODE'] = $q->afd_code;
+			$data['BLOCK_CODE'] = $q->block_code;
+			$data['NO_TPH'] = $q->no_tph;
+			$data['STATUS_TPH_SCAN'] = $q->status_tph_scan;
+			$data['ALASAN_MANUAL'] = $q->alasan_manual;
+			$data['LAT_TPH'] = $q->lat_tph;
+			$data['LON_TPH'] = $q->lon_tph;
+			$data['DELIVERY_CODE'] = $q->delivery_code;
+			$data['STATUS_DELIVERY_CODE'] = $q->status_delivery_code;
+			$data['INSERT_USER'] = $q->insert_user;
+			$data['INSERT_TIME'] = intval( date( 'YmdHis', strtotime( $q->insert_time ) ) );
+			$data['UPDATE_USER'] = $q->update_user;
+			$data['UPDATE_TIME'] = 0;
+			$data['STATUS_SYNC'] = $q->status_sync;
+			$data['SYNC_TIME'] = ( $q->sync_time == NULL ? intval( date( 'YmdHis', strtotime( $q->sync_time ) ) ) : 0 );
+
+			File::append( public_path( '/TR_EBCC_VALIDATION_H.csv' ), implode( ',' , $data ).PHP_EOL );
+		}
+		*/
+
+		/*
+		$query = $this->db_mobile_ins->select( "
+			SELECT
+				*
+			FROM
+				TR_EBCC_VALIDATION_D
+			WHERE
+				INSERT_TIME BETWEEN TO_DATE( '2019-07-01', 'RRRR-MM-DD' ) AND TO_DATE( '2019-10-30', 'RRRR-MM-DD' )
+		" );
+
+		$i = 0;
+		foreach( $query as $q ) {
+			$data['EBCC_VALIDATION_CODE'] = $q->ebcc_validation_code;
+			$data['ID_KUALITAS'] = $q->id_kualitas;
+			$data['JUMLAH'] = intval( $q->jumlah );
+			$data['INSERT_USER'] = $q->insert_user;
+			$data['INSERT_TIME'] = intval( date( 'YmdHis', strtotime( $q->insert_time ) ) );
+			$data['UPDATE_USER'] = "";
+			$data['UPDATE_TIME'] = 0;
+			$data['STATUS_SYNC'] = $q->status_sync;
+			$data['SYNC_TIME'] = intval( date( 'YmdHis', strtotime( $q->sync_time ) ) );
+
+			File::append( public_path( '/TR_EBCC_VALIDATION_D.csv' ), implode( ',' , $data ).PHP_EOL );
+		}
+		*/
+
+		print date( 'YmdHis', strtotime( '20190724240258' ) );
+
+	}
 	
 	public function download() {
 		$url_region_data = $this->url_api_ins_msa_hectarestatement . '/region/all';
@@ -31,10 +99,6 @@ class ReportOracleController extends Controller
 	
 	public function download_proses( Request $request ) {
 
-		// print '<pre>';
-		// print_r( $_POST );
-		// print '</pre>';
-		// dd();
 		$RO = new ReportOracle;
 		$REPORT_TYPE = $request->REPORT_TYPE != '' ? $request->REPORT_TYPE :  null;
 		$START_DATE = $request->START_DATE != '' ? $request->START_DATE : null;
@@ -87,21 +151,24 @@ class ReportOracleController extends Controller
 			$file_name 		 = 'Report-EBCC-Compare';
 			$results['view'] = 'orareport.excel-ebcc-compare';
 		}
-
-		// print '<pre>';
-		// print_r( $results['data'] );
-		// print '</pre>';
-		// dd();
 		
-		if($file_name){
-			Excel::create($file_name, function ($excel) use ($results) {
-				$excel->sheet('Sampling EBCC', function ($sheet) use ($results) {
-					$sheet->loadView($results['view'], $results);
+
+		print '<pre>';
+		print_r( $results['data'] );
+		print '<pre>';
+		dd();
+
+		if( $file_name ) {
+			Excel::create( $file_name, function( $excel ) use ( $results ) {
+				$excel->sheet( 'Sampling EBCC', function( $sheet ) use ( $results ) {
+					$sheet->loadView( $results['view'], $results );
 				});
-			})->export('xls');
+			} )->export( 'xls' );
 		}
 	}
 
+	# View Page Report EBCC Compare
+	# Untuk menampilkan view
 	public function view_page_report_ebcc_compare( Request $req ) {
 		return view( 'orareport/preview-ebcc-compare' );
 	}
