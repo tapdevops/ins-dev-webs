@@ -185,7 +185,7 @@ class ReportOracleController extends Controller
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		else if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' || $REPORT_TYPE == 'EBCC_COMPARE_MILL' ) {	
 
-			$results['data'] = $RO->EBCC_COMPARE(
+			$results['data'] = $RO->EBCC_COMPARE_OLD(
 				$REPORT_TYPE, 
 				$START_DATE, 
 				$END_DATE, 
