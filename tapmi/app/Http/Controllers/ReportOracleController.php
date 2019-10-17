@@ -30,6 +30,102 @@ class ReportOracleController extends Controller
 		print_r( $content );
 		print '</pre>';
 	}
+	
+	public function download() {
+		$url_region_data = $this->url_api_ins_msa_hectarestatement . '/region/all';
+		$data['region_data'] = APISetup::ins_rest_client('GET', $url_region_data);
+		$data['active_menu'] = $this->active_menu;
+		return view('orareport.download', $data);
+	}
+	
+	public function download_proses( Request $request ) {
+
+		$RO = new ReportOracle;
+		$REPORT_TYPE = $request->REPORT_TYPE != '' ? $request->REPORT_TYPE :  null;
+		$START_DATE = $request->START_DATE != '' ? $request->START_DATE : null;
+		$END_DATE = $request->END_DATE != '' ? $request->END_DATE : null;
+		$REGION_CODE = $request->REGION_CODE != '' ? $request->REGION_CODE : null;
+		$COMP_CODE = $request->COMP_CODE != '' ? $request->COMP_CODE : null;
+		$BA_CODE = $request->BA_CODE != '' ? $request->BA_CODE : null;
+		$AFD_CODE = $request->AFD_CODE != '' ? $request->AFD_CODE : null;
+		$BLOCK_CODE = $request->BLOCK_CODE != '' ? $request->BLOCK_CODE : null;
+		$file_name = null;
+
+		// Set Empty Array (Biar gak error)
+		$results['head'] = array();
+		$results['data'] = array();
+		$results['periode'] = date( 'Ym', strtotime( $START_DATE ) );
+
+		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+		# REPORT EBCC VALIDATION ESTATE/MILL
+		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+		if ( $REPORT_TYPE == 'EBCC_VALIDATION_ESTATE' || $REPORT_TYPE == 'EBCC_VALIDATION_MILL' ) {
+			$results['head'] = $RO->EBCC_VALIDATION_ESTATE_HEAD();
+			$results['data'] = $RO->EBCC_VALIDATION(
+									$REPORT_TYPE, 
+									$START_DATE, 
+									$END_DATE, 
+									$REGION_CODE, 
+									$COMP_CODE, 
+									$BA_CODE, 
+									$AFD_CODE, 
+									$BLOCK_CODE
+								);
+			$file_name = 'Report-Sampling-EBCC';
+			$results['sheet_name'] = 'Sampling EBCC';
+			$results['view'] = 'orareport.excel-ebcc-validation';
+		}
+		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+		# REPORT EBCC COMPARE ESTATE/MILL
+		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+		else if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' || $REPORT_TYPE == 'EBCC_COMPARE_MILL' ) {	
+
+			$results['data'] = $RO->EBCC_COMPARE_OLD(
+				$REPORT_TYPE, 
+				$START_DATE, 
+				$END_DATE, 
+				$REGION_CODE, 
+				$COMP_CODE, 
+				$BA_CODE, 
+				$AFD_CODE, 
+				$BLOCK_CODE
+			);
+			$file_name = 'Report-EBCC-Compare';
+			$results['sheet_name'] = 'Sampling EBCC vs EBCC';
+			$results['view'] = 'orareport.excel-ebcc-compare';
+		}
+		
+		// print '<pre>';
+		// print_r( $results['data'] );
+		// print '<pre>';
+		// dd();
+
+		if( $file_name ) {
+			Excel::create( $file_name, function( $excel ) use ( $results ) {
+				$excel->sheet( $results['sheet_name'], function( $sheet ) use ( $results ) {
+					$sheet->loadView( $results['view'], $results );
+				});
+			} )->export( 'xls' );
+		}
+	}
+
+	# View Page Report EBCC Compare
+	# Untuk menampilkan view
+	public function view_page_report_ebcc_compare( Request $req ) {
+		// $RO = new ReportOracle;
+		$results = array();
+		$results['data'] = ( new ReportOracle() )->EBCC_COMPARE_PREVIEW( $req->id );
+
+		// print '<pre>';
+		// print_r( $results );
+		// dd();
+		if ( !empty( $results['data'] ) ) {
+			return view( 'orareport/preview-ebcc-compare', $results );
+		}
+		else {
+			return 'Data not found.';
+		}
+	}
 
 	public function testing() {
 
@@ -135,87 +231,5 @@ class ReportOracleController extends Controller
 
 		// print date( 'YmdHis', strtotime( '20190724240258' ) );
 
-	}
-	
-	public function download() {
-		$url_region_data = $this->url_api_ins_msa_hectarestatement . '/region/all';
-		$data['region_data'] = APISetup::ins_rest_client('GET', $url_region_data);
-		$data['active_menu'] = $this->active_menu;
-		return view('orareport.download', $data);
-	}
-	
-	public function download_proses( Request $request ) {
-
-		$RO = new ReportOracle;
-		$REPORT_TYPE = $request->REPORT_TYPE != '' ? $request->REPORT_TYPE :  null;
-		$START_DATE = $request->START_DATE != '' ? $request->START_DATE : null;
-		$END_DATE = $request->END_DATE != '' ? $request->END_DATE : null;
-		$REGION_CODE = $request->REGION_CODE != '' ? $request->REGION_CODE : null;
-		$COMP_CODE = $request->COMP_CODE != '' ? $request->COMP_CODE : null;
-		$BA_CODE = $request->BA_CODE != '' ? $request->BA_CODE : null;
-		$AFD_CODE = $request->AFD_CODE != '' ? $request->AFD_CODE : null;
-		$BLOCK_CODE = $request->BLOCK_CODE != '' ? $request->BLOCK_CODE : null;
-		$file_name = null;
-
-		// Set Empty Array (Biar gak error)
-		$results['head'] = array();
-		$results['data'] = array();
-		$results['periode'] = date( 'Ym', strtotime( $START_DATE ) );
-
-		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-		# REPORT EBCC VALIDATION ESTATE/MILL
-		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-		if ( $REPORT_TYPE == 'EBCC_VALIDATION_ESTATE' || $REPORT_TYPE == 'EBCC_VALIDATION_MILL' ) {
-			$results['head'] = $RO->EBCC_VALIDATION_ESTATE_HEAD();
-			$results['data'] = $RO->EBCC_VALIDATION(
-									$REPORT_TYPE, 
-									$START_DATE, 
-									$END_DATE, 
-									$REGION_CODE, 
-									$COMP_CODE, 
-									$BA_CODE, 
-									$AFD_CODE, 
-									$BLOCK_CODE
-								);
-			$file_name 		 = 'Report-Sampling-EBCC';
-			$results['view'] = 'orareport.excel-ebcc-validation';
-		}
-		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-		# REPORT EBCC COMPARE ESTATE/MILL
-		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-		else if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' || $REPORT_TYPE == 'EBCC_COMPARE_MILL' ) {	
-
-			$results['data'] = $RO->EBCC_COMPARE_OLD(
-				$REPORT_TYPE, 
-				$START_DATE, 
-				$END_DATE, 
-				$REGION_CODE, 
-				$COMP_CODE, 
-				$BA_CODE, 
-				$AFD_CODE, 
-				$BLOCK_CODE
-			);
-			$file_name 		 = 'Report-EBCC-Compare';
-			$results['view'] = 'orareport.excel-ebcc-compare';
-		}
-		
-		// print '<pre>';
-		// print_r( $results['data'] );
-		// print '<pre>';
-		// dd();
-
-		if( $file_name ) {
-			Excel::create( $file_name, function( $excel ) use ( $results ) {
-				$excel->sheet( 'Sampling EBCC', function( $sheet ) use ( $results ) {
-					$sheet->loadView( $results['view'], $results );
-				});
-			} )->export( 'xls' );
-		}
-	}
-
-	# View Page Report EBCC Compare
-	# Untuk menampilkan view
-	public function view_page_report_ebcc_compare( Request $req ) {
-		return view( 'orareport/preview-ebcc-compare' );
 	}
 }

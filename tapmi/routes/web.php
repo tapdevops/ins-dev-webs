@@ -69,5 +69,5 @@ Route::group( [ 'middleware' => 'web' ], function() {
 
 });
 
-Route::get( '/preview/compare-ebcc', 'ReportOracleController@view_page_report_ebcc_compare' );
+Route::get( '/preview/compare-ebcc/{id}', 'ReportOracleController@view_page_report_ebcc_compare' );
 Route::get( '/repair', 'ReportOracleController@testing' );

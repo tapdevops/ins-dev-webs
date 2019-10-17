@@ -9,7 +9,7 @@ tr > th {
 <table>
 	<tr class="mythead">
 		<th style="background-color: #ff9933;" colspan="20">Sampling EBCC</th>
-		<th style="background-color: #33cc33;" colspan="12">Sampling EBCC</th>
+		<th style="background-color: #33cc33;" colspan="12">EBCC</th>
 
 		<!-- Etc -->
 		<th rowspan="2">Lihat Foto</th>
@@ -67,7 +67,7 @@ tr > th {
 				<td>{{ $dt['val_block_name'] }}</td>
 				<td>{{ $dt['val_tph_code'] }}</td>
 				<td>{{ $dt['val_ebcc_code'] }}</td>
-				<td></td>
+				<td>{{ $dt['val_status_tph_scan'].' '.$dt['val_alasan_manual'] }}</td>
 				<td>{{ $dt['val_jml_bm'] }}</td>
 				<td>{{ $dt['val_jml_bk'] }}</td>
 				<td>{{ $dt['val_jml_ms'] }}</td>
@@ -81,7 +81,7 @@ tr > th {
 				<td>{{ $dt['ebcc_nik_kerani_buah'] }}</td>
 				<td>{{ $dt['ebcc_nama_kerani_buah'] }}</td>
 				<td>{{ $dt['ebcc_no_bcc'] }}</td>
-				<td></td>
+				<td>{{ $dt['ebcc_status_tph'].' '.$dt['ebcc_keterangan_qrcode'] }}</td>
 				<td>{{ $dt['ebcc_jml_bm'] }}</td>
 				<td>{{ $dt['ebcc_jml_bk'] }}</td>
 				<td>{{ $dt['ebcc_jml_ms'] }}</td>
@@ -92,7 +92,7 @@ tr > th {
 				<td>{{ $dt['ebcc_jjg_panen'] }}</td>
 
 				<!-- Etc -->
-				<td></td>
+				<td><a href="{{ $dt['link_foto'] }}">Link Foto</a></td>
 				<td style="color:#fff;background-color:@if( $dt['match_status']=='MATCH' ) #27ae60 @else #e74c3c @endif;">{{ $dt['match_status'] }}</td>
 				<td>{{ $dt['akurasi_kualitas_ms'] }}</td>
 
