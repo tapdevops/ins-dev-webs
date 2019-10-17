@@ -186,6 +186,8 @@ class ReportOracle extends Model
 										TAP_DW.TR_HS_LAND_USE@DWH_LINK
 									WHERE
 										1 = 1
+										AND ROWNUM < 2
+										AND MATURITY_STATUS IS NOT NULL
 										AND SPMON
 											BETWEEN 
 												(
@@ -286,6 +288,8 @@ class ReportOracle extends Model
 					WHERE EBCC_VALIDATION_CODE IS NOT NULL
 				) DETAIL
 					ON HEADER.VAL_EBCC_CODE = DETAIL.EBCC_VALIDATION_CODE
+			ORDER BY
+				HEADER.VAL_DATE_TIME DESC
 		";
 		
 		// print '<pre>';
@@ -802,6 +806,8 @@ class ReportOracle extends Model
 										TAP_DW.TR_HS_LAND_USE@DWH_LINK
 									WHERE
 										1 = 1
+										AND ROWNUM < 2
+										AND MATURITY_STATUS IS NOT NULL
 										AND SPMON
 											BETWEEN 
 												(
@@ -902,6 +908,8 @@ class ReportOracle extends Model
 					WHERE EBCC_VALIDATION_CODE IS NOT NULL
 				) DETAIL
 					ON HEADER.VAL_EBCC_CODE = DETAIL.EBCC_VALIDATION_CODE
+			ORDER BY
+				HEADER.VAL_DATE_TIME DESC
 		";
 		$get = $this->db_mobile_ins->select( $sql );
 		$joindata = array();

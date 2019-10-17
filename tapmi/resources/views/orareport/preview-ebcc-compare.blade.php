@@ -4,17 +4,21 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<title>Preview - LAPORAN SAMPLING EBCC vs EBCC</title>
+	<style type="text/css">
+		.disable-select {
+			user-select: none; /* supported by Chrome and Opera */
+			-webkit-user-select: none; /* Safari */
+			-khtml-user-select: none; /* Konqueror HTML */
+			-moz-user-select: none; /* Firefox */
+			-ms-user-select: none; /* Internet Explorer/Edge */
+		}
+	</style>
 </head>
 <body>
-	<div class="container">
+	<div class="container disable-select" id="capture" oncontextmenu="return false;">
 		<br />
-
-
-
-
-
-
 		<h4 class="text-center">LAPORAN SAMPLING EBCC vs EBCC</h4>
 		<p class="text-center">PT: {{ $data['val_est_name'] }}; BISNIS AREA: {{ $data['val_werks'] }}; AFD: {{ $data['val_afd_code'] }}; BLOCK: {{ $data['val_block_code'].'/'.$data['val_block_name'] }}; TPH: {{ $data['val_tph_code'] }}</p>
 		<div class="row" style="margin-top: 20px;">
@@ -85,12 +89,12 @@
 			</div>
 			<div class="col-md-6">
 				<div class="card">
-					<div class="card-header text-center bg-success">
+					<div class="card-header text-center bg-success" style="color:white !important">
 						<b>EBCC</b>
 					</div>
 					<div class="card-body">
 						@if ( $data['ebcc_no_bcc'] == '' )
-							<img src="{{ url( 'assets/notfound.jpg' ) }}" width="240px" class="rounded mx-auto d-block">
+							<img src="{{ url( 'assets/notfound.jpg' ) }}" width="234px" class="rounded mx-auto d-block">
 							<h3 class="text-center">EBCC tidak ditemukan</h3><br />
 						@else
 							<table class="table table-bordered">
@@ -155,8 +159,39 @@
 			</div>
 		</div>
 	</div>
+	<footer>
+		<br />
+		<center>
+			<button id="download-jpg" class="btn btn-primary"><i class="fa fa-cloud-download"></i> Download as PNG</button>
+		</center>
+	</footer>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+	<script type="text/javascript">
+		function saveAs( uri, filename ) {
+			var link = document.createElement( 'a' );
+			if ( typeof link.download === 'string' ) {
+				link.href = uri;
+				link.download = filename;
+				document.body.appendChild( link );
+				link.click();
+				document.body.removeChild( link );
+			} 
+			else {
+				window.open( uri );
+			}
+		}
+		$( document ).ready( function() {
+			$( "#download-jpg" ).click( function() {
+				html2canvas( document.querySelector("#capture") ).then( canvas => {
+					var filename = "{{ $data['val_est_name'].' ('.$data['val_werks'].$data['val_afd_code'].$data['val_block_code'].')-'.$data['val_ebcc_code'].'-'.$data['val_tph_code'].'-'.date( 'Ymd', strtotime( $data['val_date_time'] ) ).'-'.$data['val_nik_validator'].'-'.$data['val_nama_validator'] }}";
+					saveAs(canvas.toDataURL(), filename + '.png' );
+				} );
+				
+			} );
+		} );
+	</script>
 </body>
 </html>
