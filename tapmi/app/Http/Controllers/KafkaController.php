@@ -428,7 +428,7 @@ class KafkaController extends Controller
 		" ) )->first();
 
 		if ( $check->count == 0 ) {
-			print_r( $payload ); print PHP_EOL;
+			// print_r( $payload ); print PHP_EOL;
 
 
 // Array
@@ -456,9 +456,6 @@ class KafkaController extends Controller
 //     [RTGMS] =>
 //     [END_TIME] => 0
 // )
-
-
-
 
 			$sql = "INSERT INTO 
 					MOBILE_INSPECTION.TR_FINDING (
@@ -496,8 +493,8 @@ class KafkaController extends Controller
 					'{$payload['LATFN']}',
 					'{$payload['LONFN']}',
 					'{$payload['RFINC']}',
-					'{$payload['INSUR']}',
-					$INSTM,
+					'',
+					null,
 					'',
 					null,
 					'',
@@ -519,13 +516,13 @@ class KafkaController extends Controller
 						TOPIC_NAME = 'INS_MSA_FINDING_TR_FINDING'
 				" );
 				$this->db_mobile_ins->commit();
-				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['EBVTC'].' - SUCCESS '.PHP_EOL;
+				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['FNDCD'].' - SUCCESS '.PHP_EOL;
 			}
 			catch ( \Throwable $e ) {
-				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
+				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['FNDCD'].' - FAILED '.$e->getMessage().PHP_EOL;
 	        }
 	        catch ( \Exception $e ) {
-				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
+				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['FNDCD'].' - FAILED '.$e->getMessage().PHP_EOL;
 			}
 		}
 		else {
