@@ -416,20 +416,50 @@ class KafkaController extends Controller
 //    "END_TIME":0
 // }
 	public function insert_tr_finding( $payload, $offset ) {
-		// $INSTM = ( (bool) strtotime( $payload['INSTM'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['INSTM'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
-		// $STIME = ( (bool) strtotime( $payload['STIME'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['STIME'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
+		$INSTM = ( (bool) strtotime( $payload['INSTM'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['INSTM'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
+		$DUE_DATE = ( (bool) strtotime( $payload['DUE_DATE'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['DUE_DATE'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
 		$check = collect( $this->db_mobile_ins->select( "
 			SELECT 
 				COUNT( * ) AS COUNT 
 			FROM 
 				TR_FINDING
 			WHERE
-				EBCC_VALIDATION_CODE = '{$payload['FNDCD']}'
+				FINDING_CODE = '{$payload['FNDCD']}'
 		" ) )->first();
 
 		if ( $check->count == 0 ) {
 			print_r( $payload ); print PHP_EOL;
-			/*
+
+
+// Array
+// (
+//     [FNDCD] => F0135191014113236
+//     [WERKS] => 4122
+//     [AFD_CODE] => O
+//     [BLOCK_CODE] => 379
+//     [FNDCT] => CA0000001DEW
+//     [FNDDS] => Kacangan melilit pokok f39 jalur 75/76
+//     [FNDPR] => MED
+//     [DUE_DATE] =>
+//     [ASSTO] => 0110
+//     [PRGRS] => 0
+//     [LATFN] => -2.9747407
+//     [LONFN] => 112.3484292
+//     [RFINC] =>
+//     [INSUR] => 0135
+//     [INSTM] => 20191014113342
+//     [UPTUR] => 0135
+//     [UPTTM] => 20191014113342
+//     [DLTUR] =>
+//     [DLTTM] => 0
+//     [RTGVL] => 0
+//     [RTGMS] =>
+//     [END_TIME] => 0
+// )
+
+
+
+
 			$sql = "INSERT INTO 
 					MOBILE_INSPECTION.TR_FINDING (
 						FINDING_CODE,
@@ -444,25 +474,33 @@ class KafkaController extends Controller
 						PROGRESS,
 						LAT_FINDING,
 						LONG_FINDING,
-						REFFERENCE_INS_CODE ,
+						REFFERENCE_INS_CODE,
 						INSERT_USER,
-						INSERT_DATE,
+						INSERT_TIME,
 						UPDATE_USER,
 						UPDATE_TIME,
 						DELETE_USER,
 						DELETE_TIME
 					) 
 				VALUES (
-					'{$payload['URACD']}',
-					'{$payload['EMNIK']}',
-					'{$payload['URROL']}',
-					'{$payload['LOCCD']}',
-					'{$payload['RROLE']}',
+					'{$payload['FNDCD']}',
+					'{$payload['WERKS']}',
+					'{$payload['AFD_CODE']}',
+					'{$payload['BLOCK_CODE']}',
+					'{$payload['FNDCT']}',
+					'{$payload['FNDDS']}',
+					'{$payload['FNDPR']}',
+					$DUE_DATE,
+					'{$payload['ASSTO']}',
+					{$payload['PRGRS']},
+					'{$payload['LATFN']}',
+					'{$payload['LONFN']}',
+					'{$payload['RFINC']}',
+					'{$payload['INSUR']}',
+					$INSTM,
+					'',
 					null,
-					null,
-					null,
-					null,
-					null,
+					'',
 					null
 			)";
 
@@ -489,7 +527,6 @@ class KafkaController extends Controller
 	        catch ( \Exception $e ) {
 				return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['EBVTC'].' - FAILED '.$e->getMessage().PHP_EOL;
 			}
-			*/
 		}
 		else {
 			// Update offset payloads
@@ -503,7 +540,7 @@ class KafkaController extends Controller
 					TOPIC_NAME = 'INS_MSA_FINDING_TR_FINDING'
 			" );
 			$this->db_mobile_ins->commit();
-			return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['EBVTC'].' - DUPLICATE '.PHP_EOL;
+			return date( 'Y-m-d H:i:s' ).' - INS_MSA_FINDING_TR_FINDING - INSERT '.$payload['FNDCD'].' - DUPLICATE '.PHP_EOL;
 		}
 
 	}

@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H::class,
         \App\Console\Commands\INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_D::class,
         \App\Console\Commands\INS_MSA_AUTH_TM_USER_AUTH::class,
+        \App\Console\Commands\INS_MSA_FINDING_TR_FINDING::class,
     ];
 
     /**

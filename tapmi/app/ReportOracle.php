@@ -223,7 +223,7 @@ class ReportOracle extends Model
 							WHERE
 								1 = 1
 								AND SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = '$REPORT_TYPE'
-								AND EBCC_HEADER.SYNC_TIME BETWEEN TO_DATE( '$START_DATE', 'RRRR-MM-DD' ) AND TO_DATE( '$END_DATE', 'RRRR-MM-DD' )
+								AND TRUNC( EBCC_HEADER.SYNC_TIME ) BETWEEN TRUNC( TO_DATE( '$START_DATE', 'RRRR-MM-DD' ) ) AND TRUNC( TO_DATE( '$END_DATE', 'RRRR-MM-DD' ) )
 								$where
 						) EBCC_VAL
 					GROUP BY
@@ -724,7 +724,7 @@ class ReportOracle extends Model
 								CASE
 									WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '1' THEN 'QR Codenya Hilang'
 									WHEN EBCC_VAL.VAL_ALASAN_MANUAL = '2' THEN 'QR Codenya Rusak'
-							END
+								END
 						END AS VAL_ALASAN_MANUAL,
 						EBCC_VAL.VAL_AFD_CODE,
 						EBCC_VAL.VAL_BLOCK_CODE,
@@ -843,7 +843,7 @@ class ReportOracle extends Model
 							WHERE
 								1 = 1
 								AND SUBSTR( EBCC_HEADER.EBCC_VALIDATION_CODE, 0, 1 ) = '$REPORT_TYPE'
-								AND EBCC_HEADER.SYNC_TIME BETWEEN TO_DATE( '$START_DATE', 'RRRR-MM-DD' ) AND TO_DATE( '$END_DATE', 'RRRR-MM-DD' )
+								AND TRUNC( EBCC_HEADER.SYNC_TIME ) BETWEEN TRUNC( TO_DATE( '$START_DATE', 'RRRR-MM-DD' ) ) AND TRUNC( TO_DATE( '$END_DATE', 'RRRR-MM-DD' ) )
 								$where
 						) EBCC_VAL
 					GROUP BY
