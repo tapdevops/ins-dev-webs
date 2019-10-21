@@ -21,6 +21,9 @@
 		<br />
 		<h4 class="text-center">LAPORAN SAMPLING EBCC vs EBCC</h4>
 		<p class="text-center">PT: {{ $data['val_est_name'] }}; BISNIS AREA: {{ $data['val_werks'] }}; AFD: {{ $data['val_afd_code'] }}; BLOCK: {{ $data['val_block_code'].'/'.$data['val_block_name'] }}; TPH: {{ $data['val_tph_code'] }}</p>
+
+		
+
 		<div class="row" style="margin-top: 20px;">
 			<div class="col-md-6">
 				<div class="card">
@@ -28,6 +31,7 @@
 						<b>SAMPLING EBCC</b>
 					</div>
 					<div class="card-body">
+						<img src="{{ $data['val_image_janjang'] }}" width="496px" class="rounded mx-auto d-block"><br />
 						<table class="table table-bordered">
 							<tr style="font-size:14px;">
 								<td class="text-center">BM (jjg)</td>
@@ -81,7 +85,7 @@
 								</table>
 							</div>
 							<div class="col-md-4">
-								<img src="http://beautycraftkitchens.com/wp-content/uploads/2017/02/dummy_user.png" width="100%;">
+								<img src="{{ $data['val_image_selfie'] }}" width="100%;">
 							</div>
 						</div>
 					</div>
@@ -97,6 +101,7 @@
 							<img src="{{ url( 'assets/notfound.jpg' ) }}" width="234px" class="rounded mx-auto d-block">
 							<h3 class="text-center">EBCC tidak ditemukan</h3><br />
 						@else
+							<img src="{{ $data['ebcc_image_janjang'] }}" width="496px" class="rounded mx-auto d-block"><br />
 							<table class="table table-bordered">
 								<tr style="font-size:14px;">
 									<td class="text-center">BM (jjg)</td>
@@ -150,7 +155,7 @@
 									</table>
 								</div>
 								<div class="col-md-4">
-									<img src="http://beautycraftkitchens.com/wp-content/uploads/2017/02/dummy_user.png" width="100%;">
+									<img src="{{ url( 'assets/user.jpg' ) }}" width="100%;">
 								</div>
 							</div>
 						@endif
@@ -158,6 +163,7 @@
 				</div>
 			</div>
 		</div>
+		<br />
 	</div>
 	<footer>
 		<br />
@@ -183,13 +189,18 @@
 				window.open( uri );
 			}
 		}
+
 		$( document ).ready( function() {
 			$( "#download-jpg" ).click( function() {
-				html2canvas( document.querySelector("#capture") ).then( canvas => {
+
+				html2canvas( document.querySelector( "#capture" ) ).then( canvas => {
 					var filename = "{{ $data['val_est_name'].' ('.$data['val_werks'].$data['val_afd_code'].$data['val_block_code'].')-'.$data['val_ebcc_code'].'-'.$data['val_tph_code'].'-'.date( 'Ymd', strtotime( $data['val_date_time'] ) ).'-'.$data['val_nik_validator'].'-'.$data['val_nama_validator'] }}";
-					saveAs(canvas.toDataURL(), filename + '.png' );
+					saveAs( canvas.toDataURL(), filename + '.png' );
+				}, { 
+					allowTaint: true,
+					width: 1200,
+					height: 1200
 				} );
-				
 			} );
 		} );
 	</script>

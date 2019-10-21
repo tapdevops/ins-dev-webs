@@ -514,8 +514,24 @@ class ReportOracle extends Model
 		// print '</pre>';
 		// dd();
 		$joindata = array();
-
+	
 		if ( !empty( $get ) ) {
+			$client = new \GuzzleHttp\Client();
+			$image_selfie = $client->request( 'GET', 'http://149.129.245.230:3012/api/v1.1/foto-transaksi/'.$get->val_ebcc_code.'?status_image=SELFIE_V' );
+			$image_selfie = json_decode( $image_selfie->getBody(), true );
+			$image_janjang = $client->request( 'GET', 'http://149.129.245.230:3012/api/v1.1/foto-transaksi/'.$get->val_ebcc_code.'?status_image=JANJANG' );
+			$image_janjang = json_decode( $image_janjang->getBody(), true );
+
+			// print '<pre>';
+			// print_r( $image_janjang );
+			// print '</pre>';
+
+			$joindata['val_image_selfie'] = ( isset( $image_selfie['data']['http'][0] ) ? $image_selfie['data']['http'][0] : url( 'assets/user.jpg' ) );
+			$joindata['val_image_janjang'] = ( isset( $image_janjang['data']['http'][0] ) ? $image_janjang['data']['http'][0] : url( 'assets/dummy-janjang.jpg' ) );
+			 
+			$joindata['ebcc_image_selfie'] = url( 'assets/user.jpg' );
+			$joindata['ebcc_image_janjang'] = url( 'assets/dummy-janjang.jpg' );
+
 			$joindata['val_ebcc_code'] = $get->val_ebcc_code;
 			$joindata['val_werks'] = $get->val_werks;
 			$joindata['val_est_name'] = $get->val_est_name;
@@ -634,11 +650,12 @@ class ReportOracle extends Model
 			}
 		}
 
-		// dd();
+		
 
 		// print '<pre>';
 		// print_r( $joindata );
 		// print '<pre>';
+		// dd();
 		return $joindata;
 	}
 	
@@ -909,14 +926,24 @@ class ReportOracle extends Model
 				) DETAIL
 					ON HEADER.VAL_EBCC_CODE = DETAIL.EBCC_VALIDATION_CODE
 			ORDER BY
+				HEADER.VAL_NAMA_VALIDATOR ASC,
+				HEADER.VAL_AFD_CODE ASC,
 				HEADER.VAL_DATE_TIME DESC
 		";
+
+		// print '<pre>';
+		// print_r( $sql );
+		// print '</pre>';
+		// dd();
 		$get = $this->db_mobile_ins->select( $sql );
 		$joindata = array();
+		$summary_data = array();
 
 		if ( !empty( $get ) ) {
 			$i = 0;
 			foreach ( $get as $ec ) {
+				$summary_code = date( 'Ymd', strtotime( $ec->val_date_time ) ).$ec->val_nik_validator.'_'.$ec->val_werks.$ec->val_afd_code;
+				$joindata[$i]['summary_code'] = $summary_code;
 				$joindata[$i]['val_ebcc_code'] = $ec->val_ebcc_code;
 				$joindata[$i]['val_werks'] = $ec->val_werks;
 				$joindata[$i]['val_est_name'] = $ec->val_est_name;
@@ -957,6 +984,45 @@ class ReportOracle extends Model
 				$joindata[$i]['akurasi_kualitas_ms'] = '';
 				$joindata[$i]['match_status'] = 'NOT MATCH';
 				$joindata[$i]['link_foto'] = url( 'preview/compare-ebcc/'.$ec->val_ebcc_code );
+
+				// Data Summary
+				if ( !isset( $summary_data[$summary_code] ) ) {
+					$summary_data[$summary_code] = array();
+					$summary_data[$summary_code]['nama'] = $ec->val_nama_validator;
+					$summary_data[$summary_code]['match'] = 0;
+					$summary_data[$summary_code]['akurasi'] = 0;
+					$summary_data[$summary_code]['tanggal'] = date( 'd M Y', strtotime( $ec->val_date_time ) );
+					$summary_data[$summary_code]['jumlah_data'] = 0;
+					$summary_data[$summary_code]['val_jml_bm'] = 0;
+					$summary_data[$summary_code]['val_jml_bk'] = 0;
+					$summary_data[$summary_code]['val_jml_ms'] = 0;
+					$summary_data[$summary_code]['val_jml_or'] = 0;
+					$summary_data[$summary_code]['val_jml_bb'] = 0;
+					$summary_data[$summary_code]['val_jml_jk'] = 0;
+					$summary_data[$summary_code]['val_jml_ba'] = 0;
+					$summary_data[$summary_code]['val_jml_brd'] = 0;
+					$summary_data[$summary_code]['val_jjg_panen'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_bm'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_bk'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_ms'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_or'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_bb'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_jk'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_ba'] = 0;
+					$summary_data[$summary_code]['ebcc_jml_brd'] = 0;
+					$summary_data[$summary_code]['ebcc_jjg_panen'] = 0;
+				}
+
+				$summary_data[$summary_code]['jumlah_data'] += 1;
+				$summary_data[$summary_code]['val_jml_bm'] = $summary_data[$summary_code]['val_jml_bm'] + intval( $ec->val_jml_1 );
+				$summary_data[$summary_code]['val_jml_bk'] = $summary_data[$summary_code]['val_jml_bk'] + intval( $ec->val_jml_2 );
+				$summary_data[$summary_code]['val_jml_ms'] = $summary_data[$summary_code]['val_jml_ms'] + intval( $ec->val_jml_3 );
+				$summary_data[$summary_code]['val_jml_or'] = $summary_data[$summary_code]['val_jml_or'] + intval( $ec->val_jml_4 );
+				$summary_data[$summary_code]['val_jml_bb'] = $summary_data[$summary_code]['val_jml_bb'] + intval( $ec->val_jml_6 );
+				$summary_data[$summary_code]['val_jml_jk'] = $summary_data[$summary_code]['val_jml_jk'] + intval( $ec->val_jml_15 );
+				$summary_data[$summary_code]['val_jml_ba'] = $summary_data[$summary_code]['val_jml_ba'] + intval( $ec->val_jml_16 );
+				$summary_data[$summary_code]['val_jml_brd'] = $summary_data[$summary_code]['val_jml_brd'] + intval( $ec->val_jml_5 );
+				$summary_data[$summary_code]['val_jjg_panen'] = $summary_data[$summary_code]['val_jjg_panen'] + intval( $ec->val_total_jjg );
 
 				$date = date( 'd-m-Y', strtotime( $ec->val_date_time ) );
 				
@@ -1010,10 +1076,6 @@ class ReportOracle extends Model
 							
 					$query_ebcc = collect( $this->db_mobile_ins->select( $sql_ebcc ) )->first();
 
-					// print '<pre>';
-					// print_r( $query_ebcc );
-					// print '</pre>';
-
 					$joindata[$i]['ebcc_nik_kerani_buah'] = $query_ebcc->nik_kerani_buah;
 					$joindata[$i]['ebcc_nama_kerani_buah'] = $query_ebcc->emp_name;
 					$joindata[$i]['ebcc_no_bcc'] = $query_ebcc->no_bcc;
@@ -1028,20 +1090,40 @@ class ReportOracle extends Model
 					$joindata[$i]['ebcc_jjg_panen'] = $query_ebcc->jjg_panen;
 					$joindata[$i]['ebcc_status_tph'] = $query_ebcc->status_tph;
 					$joindata[$i]['ebcc_keterangan_qrcode'] = $query_ebcc->keterangan_qrcode;
-					
-					$joindata[$i]['match_status'] = ( intval( $query_ebcc->jjg_panen ) == intval( $ec->val_total_jjg ) ? 'MATCH' : 'NOT MATCH' );
-					$akurasi_kualitas_ms = intval( $query_ebcc->ebcc_jml_ms ) - intval( $ec->val_jml_3 );
-					$joindata[$i]['akurasi_kualitas_ms'] = ( $akurasi_kualitas_ms > 0 ? $akurasi_kualitas_ms : 0 );
-					
 
+					$summary_data[$summary_code]['ebcc_jml_bm'] = $summary_data[$summary_code]['ebcc_jml_bm'] + $query_ebcc->ebcc_jml_bm;
+					$summary_data[$summary_code]['ebcc_jml_bk'] = $summary_data[$summary_code]['ebcc_jml_bk'] + $query_ebcc->ebcc_jml_bk;
+					$summary_data[$summary_code]['ebcc_jml_ms'] = $summary_data[$summary_code]['ebcc_jml_ms'] + $query_ebcc->ebcc_jml_ms;
+					$summary_data[$summary_code]['ebcc_jml_or'] = $summary_data[$summary_code]['ebcc_jml_or'] + $query_ebcc->ebcc_jml_or;
+					$summary_data[$summary_code]['ebcc_jml_bb'] = $summary_data[$summary_code]['ebcc_jml_bb'] + $query_ebcc->ebcc_jml_bb;
+					$summary_data[$summary_code]['ebcc_jml_jk'] = $summary_data[$summary_code]['ebcc_jml_jk'] + $query_ebcc->ebcc_jml_jk;
+					$summary_data[$summary_code]['ebcc_jml_ba'] = $summary_data[$summary_code]['ebcc_jml_ba'] + $query_ebcc->ebcc_jml_ba;
+					$summary_data[$summary_code]['ebcc_jml_brd'] = $summary_data[$summary_code]['ebcc_jml_brd'] + $query_ebcc->ebcc_jml_brd;
+					$summary_data[$summary_code]['ebcc_jjg_panen'] = $summary_data[$summary_code]['ebcc_jjg_panen'] + $query_ebcc->jjg_panen;
+					$summary_data[$summary_code]['match'] = $summary_data[$summary_code]['match'] + ( intval( $query_ebcc->jjg_panen ) == intval( $ec->val_total_jjg ) ? 1 : 0 );
+
+					if ( intval( $query_ebcc->jjg_panen ) == intval( $ec->val_total_jjg ) ) {
+						$summary_data[$summary_code]['akurasi'] = $summary_data[$summary_code]['akurasi'] + abs( intval( $query_ebcc->ebcc_jml_ms ) - intval( $ec->val_jml_3 ) );
+					}
+
+					$joindata[$i]['match_status'] = ( intval( $query_ebcc->jjg_panen ) == intval( $ec->val_total_jjg ) ? 'MATCH' : 'NOT MATCH' );
+					$akurasi_kualitas_ms =  abs( $ec->val_jml_3 - $query_ebcc->ebcc_jml_ms );
+					$joindata[$i]['akurasi_kualitas_ms'] = ( $akurasi_kualitas_ms > 0 ? $akurasi_kualitas_ms : 0 );
 				}
 					
 				$i++;
 			}
 		}
 
+		// print '<pre>';
+		// print_r( $summary_data );
+		// print '</pre>';
 		// dd();
-		return $joindata;
+
+		return array(
+			"data" => $joindata,
+			"summary" => $summary_data
+		);
 	}
 	
 	public function EBCC_COMPARE($REPORT_TYPE , $START_DATE , $END_DATE , $REGION_CODE , $COMP_CODE , $BA_CODE , $AFD_CODE , $BLOCK_CODE)

@@ -54,6 +54,7 @@ class ReportOracleController extends Controller
 		// Set Empty Array (Biar gak error)
 		$results['head'] = array();
 		$results['data'] = array();
+		$results['summary'] = array();
 		$results['periode'] = date( 'Ym', strtotime( $START_DATE ) );
 
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -80,7 +81,7 @@ class ReportOracleController extends Controller
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		else if ( $REPORT_TYPE == 'EBCC_COMPARE_ESTATE' || $REPORT_TYPE == 'EBCC_COMPARE_MILL' ) {	
 
-			$results['data'] = $RO->EBCC_COMPARE_OLD(
+			$query_ebcc_compare = $RO->EBCC_COMPARE_OLD(
 				$REPORT_TYPE, 
 				$START_DATE, 
 				$END_DATE, 
@@ -90,6 +91,8 @@ class ReportOracleController extends Controller
 				$AFD_CODE, 
 				$BLOCK_CODE
 			);
+			$results['data'] = $query_ebcc_compare['data'];
+			$results['summary'] = $query_ebcc_compare['summary'];
 			$file_name = 'Report-EBCC-Compare';
 			$results['sheet_name'] = 'Sampling EBCC vs EBCC';
 			$results['view'] = 'orareport.excel-ebcc-compare';

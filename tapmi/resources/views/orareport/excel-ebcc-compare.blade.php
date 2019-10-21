@@ -53,7 +53,11 @@ tr > th {
 		<th style="background-color: #33cc33;">BA (jjg)</th>
 		<th style="background-color: #33cc33;">Total Janjang Panen</th>
 	</tr>
+
 	@if ( !empty( $data ) )
+		@php
+			$i = 0;
+		@endphp
 		@foreach ( $data as $dt )
 			<tr>
 				<td>{{ $dt['val_date_time'] }}</td>
@@ -97,7 +101,100 @@ tr > th {
 				<td>{{ $dt['akurasi_kualitas_ms'] }}</td>
 
 			</tr>
+
+			<?php
+				$j = $i + 1;
+				if ( isset( $data[$j] ) ) {
+					$summary_code_a = $data[$i]['summary_code'];
+					$summary_code_b = $data[$j]['summary_code'];
+					if ( $summary_code_a != $summary_code_b ) {
+						$match_percent = intval( ( $summary[$summary_code_a]['match'] * 100 ) / $summary[$summary_code_a]['jumlah_data'] );
+						$match_akurasi = intval( $summary[$summary_code_a]['val_jml_ms'] ) - intval( $summary[$summary_code_a]['akurasi'] );
+						$match_akurasi = ( $match_akurasi > 0 ? abs( $match_akurasi / $summary[$summary_code_a]['val_jml_ms'] ) : 0 ) * 100;
+						$match_akurasi = number_format( $match_akurasi, 2, '.', '' );
+						print '<tr>
+							<td colspan="10" style="background-color:#6faaf2;text-align:center;color:white;">
+								TOTAL : '.$summary[$summary_code_a]['nama'].' - TANGGAL : '.$summary[$summary_code_a]['tanggal'].'
+							</td>
+							<td colspan="2" style="background-color:#000;"></td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_bm'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_bk'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_ms'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_or'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_bb'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_jk'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jml_ba'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['val_jjg_panen'].'</td>
+							<td colspan="4" style="background-color:#000;"></td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_bm'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_bk'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_ms'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_or'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_bb'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_jk'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jml_ba'].'</td>
+							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jjg_panen'].'</td>
+							<td style="background-color:#000;"></td>
+							<td style="text-align:center;"background-color:#6faaf2;">'.$match_percent.'%</td>
+							<td style="text-align:center;"background-color:#6faaf2;">'.$match_akurasi.'%</td>
+						</tr>';
+					}
+					
+				}
+				else {
+					$summary_code = $data[$i]['summary_code'];
+					$match_percent = intval( ( $summary[$summary_code]['match'] * 100 ) / $summary[$summary_code]['jumlah_data'] );
+					$match_akurasi = intval( $summary[$summary_code]['val_jml_ms'] ) - intval( $summary[$summary_code]['akurasi'] );
+					$match_akurasi = ( $match_akurasi > 0 ? abs( $match_akurasi / $summary[$summary_code]['val_jml_ms'] ) : 0 ) * 100;
+					$match_akurasi = number_format( $match_akurasi, 2, '.', '' );
+					print '<tr>
+						<td colspan="10" style="background-color:#6faaf2;text-align:center;color:white;">
+							TOTAL : '.$summary[$summary_code]['nama'].' - TANGGAL : '.$summary[$summary_code]['tanggal'].'
+						</td>
+						<td colspan="2" style="background-color:#000;"></td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_bm'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_bk'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_ms'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_or'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_bb'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_jk'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jml_ba'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['val_jjg_panen'].'</td>
+						<td colspan="4" style="background-color:#000;"></td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_bm'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_bk'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_ms'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_or'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_bb'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_jk'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jml_ba'].'</td>
+						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jjg_panen'].'</td>
+						<td style="background-color:#000;"></td>
+						<td style="text-align:center;"background-color:#6faaf2;">'.$match_percent.'%</td>
+						<td style="text-align:center;"background-color:#6faaf2;">'.$match_akurasi.'%</td>
+					</tr>';
+				}
+				$i++;
+				
+			?>
 		@endforeach
 	@endif
+
+
 </table>
+
+<table>
+	<tr>
+		<td colspan="2">Keterangan :</td>
+	</tr>
+	<tr><td>BM</td><td>a. Mentah</td></tr></tr>
+	<tr><td>BK</td><td>b. Mengkal/Kurang Masak</td></tr>
+	<tr><td>MS</td><td>c. Masak</td></tr>
+	<tr><td>OR</td><td>d. Overripe/Terlalu Masak</td></tr>
+	<tr><td>BB</td><td>e. Busuk</td></tr>
+	<tr><td>JK</td><td>f. Janjang Kosong</td></tr>
+	<tr><td>BA</td><td>g. Buah Aborsi</td></tr>
+</table>
+
+
 

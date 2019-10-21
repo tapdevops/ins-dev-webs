@@ -388,33 +388,6 @@ class KafkaController extends Controller
 	}
 
 
-
-
-
-// { 
-//    "FNDCD":"F0135191014113236",
-//    "WERKS":"4122",
-//    "AFD_CODE":"O",
-//    "BLOCK_CODE":"379",
-//    "FNDCT":"CA0000001DEW",
-//    "FNDDS":"Kacangan melilit pokok f39 jalur 75/76",
-//    "FNDPR":"MED",
-//    "DUE_DATE":"",
-//    "ASSTO":"0110",
-//    "PRGRS":"0",
-//    "LATFN":"-2.9747407",
-//    "LONFN":"112.3484292",
-//    "RFINC":"",
-//    "INSUR":"0135",
-//    "INSTM":20191014113342,
-//    "UPTUR":"0135",
-//    "UPTTM":20191014113342,
-//    "DLTUR":"",
-//    "DLTTM":0,
-//    "RTGVL":0,
-//    "RTGMS":"",
-//    "END_TIME":0
-// }
 	public function insert_tr_finding( $payload, $offset ) {
 		$INSTM = ( (bool) strtotime( $payload['INSTM'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['INSTM'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
 		$DUE_DATE = ( (bool) strtotime( $payload['DUE_DATE'] ) == true ? "to_date('".date( 'YmdHis', strtotime( $payload['DUE_DATE'] ) )."','YYYYMMDDHH24MISS')" : "NULL" );
@@ -428,34 +401,6 @@ class KafkaController extends Controller
 		" ) )->first();
 
 		if ( $check->count == 0 ) {
-			// print_r( $payload ); print PHP_EOL;
-
-
-// Array
-// (
-//     [FNDCD] => F0135191014113236
-//     [WERKS] => 4122
-//     [AFD_CODE] => O
-//     [BLOCK_CODE] => 379
-//     [FNDCT] => CA0000001DEW
-//     [FNDDS] => Kacangan melilit pokok f39 jalur 75/76
-//     [FNDPR] => MED
-//     [DUE_DATE] =>
-//     [ASSTO] => 0110
-//     [PRGRS] => 0
-//     [LATFN] => -2.9747407
-//     [LONFN] => 112.3484292
-//     [RFINC] =>
-//     [INSUR] => 0135
-//     [INSTM] => 20191014113342
-//     [UPTUR] => 0135
-//     [UPTTM] => 20191014113342
-//     [DLTUR] =>
-//     [DLTTM] => 0
-//     [RTGVL] => 0
-//     [RTGMS] =>
-//     [END_TIME] => 0
-// )
 
 			$sql = "INSERT INTO 
 					MOBILE_INSPECTION.TR_FINDING (
