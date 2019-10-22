@@ -136,7 +136,7 @@ tr > th {
 							<td style="background-color:#6faaf2;">'.$summary[$summary_code_a]['ebcc_jjg_panen'].'</td>
 							<td style="background-color:#000;"></td>
 							<td style="text-align:center;"background-color:#6faaf2;">'.$match_percent.'%</td>
-							<td style="text-align:center;"background-color:#6faaf2;">'.$match_akurasi.'%</td>
+							<td style="text-align:center;"background-color:#6faaf2;">'.( $summary[$summary_code_a]['match'] > 0 ? $match_akurasi.'%' :'' ).'</td>
 						</tr>';
 					}
 					
@@ -171,7 +171,7 @@ tr > th {
 						<td style="background-color:#6faaf2;">'.$summary[$summary_code]['ebcc_jjg_panen'].'</td>
 						<td style="background-color:#000;"></td>
 						<td style="text-align:center;"background-color:#6faaf2;">'.$match_percent.'%</td>
-						<td style="text-align:center;"background-color:#6faaf2;">'.$match_akurasi.'%</td>
+						<td style="text-align:center;"background-color:#6faaf2;">'.( $summary[$summary_code]['match'] > 0 ? $match_akurasi.'%' :'' ).'</td>
 					</tr>';
 				}
 				$i++;
