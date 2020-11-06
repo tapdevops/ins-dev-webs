@@ -80,6 +80,13 @@ Route::group( [ 'middleware' => 'web' ], function() {
 		Route::get( '/validasi/create/{id}', 'ValidationController@create' );
 		Route::get( '/validasi/cek_aslap', 'ValidationController@cek_aslap'); 
 		Route::post( '/validasi/create_action', 'ValidationController@create_action')->name('create_validation');
+
+
+		#verification_image_data
+		Route::get( '/listverifikasi/{tgl?}', 'VerificationController@index'); 
+		Route::get( '/verifikasi/create/{id}', 'VerificationController@create' );
+		Route::get( '/verifikasi/cek_aslap', 'VerificationController@cek_aslap'); 
+		Route::post( '/verifikasi/create_action', 'VerificationController@create_action')->name('create_verification');
 	});
 
 	// Cron URL

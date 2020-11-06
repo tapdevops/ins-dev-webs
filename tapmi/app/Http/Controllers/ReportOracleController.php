@@ -208,6 +208,7 @@ class ReportOracleController extends Controller {
 	}
 	
 	public function download() {
+		dd(session()->all());
 		$url_region_data = $this->url_api_ins_msa_hectarestatement . '/region/all';
 		$data['region_data'] = APISetup::ins_rest_client('GET', $url_region_data);
 		$data['active_menu'] = $this->active_menu;
