@@ -1,38 +1,63 @@
-<div id="table">
+<style type="text/css">
+	.btn-white{
+		-webkit-box-shadow: 0 5px 10px 2px rgba(152,22,244,.19)!important;
+	    -moz-box-shadow: 0 5px 10px 2px rgba(152,22,244,.19)!important;
+	    box-shadow: 0 5px 10px 2px rgba(152,22,244,.19)!important;
+	}
+</style>
 <div class="row">
 	<div class="col-md-12">
 		<div class="row">
-			<div class="col-md-4"></div>
-			<div class="col-md-4"></div>
-			@if(!empty($records) && $status == 1)
-			<div class="col-md-4 m--align-right" style="white-space:nowrap;margin-bottom:20px;">
-				<div id="cekaslap" class="btn btn-danger m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
-					<span>
-						<i class="fa fa-refresh"></i>
-						<span>Cek Validasi Krani Buah</span>
-					</span>
+			<div class="col-md-4">
+				<div class="input-daterange input-group">
+					<input type="hidden" name="werks" id="werks">
+					<input type="hidden" name="afd" id="afd">
+					<label style="padding-top: 6px" for="tanggal_rencana">Tanggal &nbsp; &nbsp; </label>
+					<?php $tgl = date("d-M-Y", strtotime($tgl_validasi));
+					?>
+					<input type="text" class="form-control m-input" id="generalSearch" name="tanggal_rencana" value="{{$tgl}}" autocomplete="off" readonly="readonly" />
+					
+					<div class="input-group-append">
+						<span class="input-group-text">
+							<i class="la la-calendar"></i>
+						</span>
+					</div>&nbsp;&nbsp;&nbsp;
+					<button type="button" name="btsearch" class="btn btn-primary btn-sm btsearch tampilkan">Tampilkan</button>
 				</div>
-				@if($status_validasi_aslap==1)
+
+			</div>
+			<div class="col-md-4"></div>
+			@if(count($data_header)>0)
+			<div class="col-md-4 m--align-right" style="white-space:nowrap;margin-bottom:20px;">
+				<a href="{{ URL::to('/validasi/create/'.$tgl_validasi) }}" class="btn btn-white m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+					<span>
+						<i class="fa fa-clipboard"></i>
+						<span>Export XLS</span>
+					</span>
+				</a>
 				<a href="{{ URL::to('/validasi/create/'.$tgl_validasi) }}" class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
 					<span>
 						<i class="fa fa-clipboard"></i>
-						<span>Validasi</span>
+						<span>Verifikasi</span>
 					</span>
 				</a>
-				@else
-				<div class="btn btn-dark m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pil disabled" style="border-radius: 60px;">
-					<span>
-						<i class="fa fa-clipboard"></i>
-						<span>Validasi</span>
-					</span>
-				</div>
-				@endif
 				<div class="m-separator m-separator--dashed d-xl-none"></div>
 			</div>
-			@endif
-			@if($status_validasi_aslap==0 && !empty($records))
-			<div class="col-md-12 m--align-center" style="white-space:nowrap;">
-				<h5 class="m-subheader__title m-subheader__title--separator text-danger">Anda harus melakukan "Cek Validasi Krani Buah" terlebih dulu</h5>
+			@else
+			<div class="col-md-4 m--align-right" style="white-space:nowrap;margin-bottom:20px;">
+				<a href="#" class="btn btn-white m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill disabled">
+					<span>
+						<i class="fa fa-clipboard"></i>
+						<span>Export XLS</span>
+					</span>
+				</a>
+				<a href="#" class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill disabled">
+					<span>
+						<i class="fa fa-clipboard"></i>
+						<span>Verifikasi</span>
+					</span>
+				</a>
+				<div class="m-separator m-separator--dashed d-xl-none"></div>
 			</div>
 			@endif
 		</div>
@@ -42,79 +67,64 @@
 <table class="m-datatable" id="html_table" width="100%">
 	<thead>
 		<tr>
-			<th>Tanggal</th>
-			<th>Krani Buah</th>
+			<th>Bisnis Area</th>
 			<th>Afdeling</th>
-			<th>Mandor Panen</th>
-			<th>BCC berhasil Divalidasi</th>
-			<th>Jumlah BCC yang Divalidasi</th>
+			<th>PIC Sampling</th>
+			<th>Role</th>
+			<th>Janjang Panen<br>Versi Validasi Sampling</th>
+			<th>Janjang Panen Versi<br>Sistem - Validasi Otomatis</th>
+			<th>Selisih Janjang</th>
 			<th>Keterangan</th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach ( $data_header as $key => $q )
-			<tr>
-				<td>{{ $q['tanggal_rencana'] }}</td>
-				<td>{{ $q['nama_krani_buah'] }} - {{$q['nik_kerani_buah']}}</td>
-				<td>{{ $q['id_afd'] }}</td>
-				<td>{{ $q['nama_mandor'] }} - {{$q['nik_mandor']}}</td>
-				<td>{{ $q['aslap_validation'] }}</td>
-				<td>{{ $q['jumlah_ebcc_validated'] }} / {{ $q['target_validasi'] }}  </td>
-				<?php 
-					$id = str_replace("/",".",$q['id_validasi']);
-				?>
-				@if ($q['jumlah_ebcc_validated'] === $q['target_validasi'])
-				<td><p class="text-success">Selesai divalidasi</p></td>
-				@else
-				<td><p class="text-danger">Belum divalidasi</p></td>
-				@endif		
-			</tr>
+		@foreach($data_header as $data)
+		@if($data->COUNT_DIFF>6 || $data->COUNT_DIFF<-6)
+		<tr>
+			<td>{{$data->WERKS}}</td>
+			<td>{{$data->AFD_CODE}}</td>
+			<td>{{$data->INSERT_USER}}</td>
+			<td>{{$data->ROLE}}</td>
+			<td>{{$data->COUNT_VALIDATION}}</td>
+			<td>{{$data->COUNT_AI}}</td>
+			<td>{{$data->COUNT_DIFF}}</td>
+			<td><span class="text-{{$data->KETERANGAN=='BELUM DIVERIFIKASI'?'danger':'success'}}"><b>{{$data->KETERANGAN}}</b></span></td>
+		</tr>
+		@endif
 		@endforeach
 	</tbody>
 </table>
-</div>
-<script>
-	$(document).on('click','#cekaslap',function(){
-		$('#cekaslap>span>i').addClass('fa-spin');
-		$('#cekaslap').addClass('disabled');
-		$('#cekaslap>span>span').html('Proses pengecekan');
-		cekaslap();
+<script type="text/javascript">
+	
+	$("#generalSearch").datepicker({
+		todayHighlight: !0,
+		templates: {
+			leftArrow: '<i class="la la-angle-left"></i>',
+			rightArrow: '<i class="la la-angle-right"></i>'
+		},
+		// startDate: "<?php echo $last_work_daily ?>d",
+		endDate: "-1d",
+		format: 'dd-M-yyyy',
+        orientation: 'bottom'
 	});
-	function cekaslap(){
-		const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+	$(".tampilkan").click(function(){
 		var search = document.getElementById('generalSearch').value;
-		var werks = document.getElementById('werks').value;
-		var afd = document.getElementById('afd').value;
+		refreshData();
+	});
+
+	function refreshData(){
+		var search = document.getElementById('generalSearch').value;
+		const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 		$.ajax({
-			url:"{{ URL::to('/validasi/cek_aslap/') }}",
+			url:'/getNewdataverification2',
 			type:'get',
 			data:{
 				CSRF_TOKEN,
-				'tanggal' : search,
-				'werks' : werks,
-				'afd' : afd
+				'tanggal' : search
 			},
 			success:function(data){
-				// console.log(data);
-				$("#tampilkan").trigger('click');
-				toastr.options = {
-					"closeButton": false,
-					"debug": false,
-					"newestOnTop": false,
-					"progressBar": false,
-					"positionClass": "toast-top-right",
-					"preventDuplicates": false,
-					"onclick": null,
-					"showDuration": "300",
-					"hideDuration": "1000",
-					"timeOut": "5000",
-					"extendedTimeOut": "1000",
-					"showEasing": "swing",
-					"hideEasing": "linear",
-					"showMethod": "fadeIn",
-					"hideMethod": "fadeOut"
-				};
-				toastr.success( 'Pengecekan validasi Aslap selesai' , "Sukses");
+				$("#table").html(data);
+				$(".m-datatable").mDatatable({});
 			}
 		})
 	}

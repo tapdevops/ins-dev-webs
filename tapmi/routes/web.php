@@ -108,6 +108,8 @@ Route::get( '/kafka/tm_user_auth', 'KafkaController@RUN_INS_MSA_AUTH_TM_USER_AUT
 // Route::get( '/getGuzzleRequest', 'ValidationController@getGuzzleRequest' );
 Route::get( '/getNewdata', 'ValidationController@getEbccValHeader' );
 Route::get( '/getNewdata2', 'ValidationController@getValHeader' );
+Route::get( '/getNewdataverification', 'VerificationController@getEbccValHeader' );
+Route::get( '/getNewdataverification2', 'VerificationController@getValHeader' );
 
 Route::get( '/validasi/compare-ebcc/{id}', 'ValidationController@compare_ebcc');
 

@@ -50,6 +50,10 @@ class APIData extends Model
 				return APISetup::url()['msa']['ins']['mivalidation'];
 				break;
 				# DEFAULT
+			case 'url_api_ins_msa_bunchcounting':
+				return APISetup::url()['msa']['ins']['bunchcounting'];
+				break;
+				# DEFAULT
 			default:
 				return '';
 				break;

@@ -37,6 +37,7 @@ class APISetup extends Model
 						// "report" => "http://apis.tap-agri.com/mobileinspectiondev/ins-msa-dev-reports",
 						"report" => "http://apisdev.tap-agri.com/mobileinspection/ins-msa-reports",
 						"ebccvalidation" => "http://apisdev.tap-agri.com/mobileinspectiondev/ins-msa-dev-ebccval",
+						"bunchcounting" => "http://apisdev.tap-agri.com/mobileinspectiondev/ins-msa-dev-bunchcounting",
 						"image" => "http://image.tap-agri.com:4012",
 						"point" => "http://apisdev.tap-agri.com/mobileinspectiondev/ins-msa-dev-point/",
 						"mivalidation" => "http://127.0.0.1:8000/api"
@@ -52,6 +53,8 @@ class APISetup extends Model
 						"inspection" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-inspection",
 						"report" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-reports",
 						"ebccvalidation" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-ebccval",
+						// "bunchcounting" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-bunchcounting",
+						"bunchcounting" => "http://localhost:5022",
 						"image" => "http://image.tap-agri.com:5012",
 						"point" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-point/"
 					)
@@ -66,6 +69,7 @@ class APISetup extends Model
 						"inspection" => "http://apis.tap-agri.com/mobileinspection/ins-msa-inspection",
 						"report" => "http://apis.tap-agri.com/mobileinspection/ins-msa-reports",
 						"ebccvalidation" => "http://apis.tap-agri.com/mobileinspection/ins-msa-ebccval",
+						"bunchcounting" => "http://apis.tap-agri.com/mobileinspection/ins-msa-bunchcounting",
 						"image" => "http://image.tap-agri.com:3012",
 						"point" => "http://apis.tap-agri.com/mobileinspection/ins-msa-point/"
 					)

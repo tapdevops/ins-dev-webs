@@ -56,47 +56,22 @@ class VerificationController extends Controller {
       }else{
          $day =  date("Y-m-d", strtotime($tgl));
       }
-      $ba_afd_code =explode(",",session('LOCATION_CODE'));
-      $code = implode("','", $ba_afd_code);
+      $day = '2020-10-31';
       $data['active_menu'] = $this->active_menu;
-      $result = ( new ValidasiHeader() )->validasi_header($day);
-      $res = json_encode($result);
-      $data['data_header'] = json_decode($res,true);
-      $status_validasi_aslap = 0;
-      foreach ( $data['data_header'] as $key => $q )
-      {
-        if($q['aslap_validation']>0)
-        {
-          $status_validasi_aslap = 1;
-        }
-      }
-      $data['status_validasi_aslap'] = $status_validasi_aslap;
       $data['tgl_validasi'] = $day;
-      $data['records'] = $result;
-      $valid = ( new ValidasiHeader() )->count_valid($day);
-      $count_valid = count($valid);
-      $status_validasi = 1;
-      if($count_valid == 1){
-         $status = $valid['0']->status_validasi;
-         if($status == "unfinished"){
-               $status_validasi = 1;
-         }
-         else{
-               $status_validasi = 0;
-         }        
-      }else{
-         $status_validasi = 1;
-      }
-      $data['status'] = $status_validasi;
-      if(session('REFFERENCE_ROLE')=='COMP_CODE')
+      $client = new \GuzzleHttp\Client();
+      $res = $client->request( 'GET', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting', [
+        'json' => [
+          // 'KETERANGAN' => 'BELUM DIVERIFIKASI',
+          'DATE_FROM' => str_replace('-', '', $day).'000000',
+          'DATE_TO' => str_replace('-', '', $day).'999999'
+        ]
+      ]);
+      $bunch_counting = json_decode( $res->getBody() );
+      $data['data_header'] = array();
+      if($bunch_counting->status==true)
       {
-        $ba_afd_code = explode(",",session('LOCATION_CODE'));
-        $code = implode("','", $ba_afd_code);
-        $data['ba_data'] = $this->db_ebcc->table('T_DETAIL_RENCANA_PANEN')
-                                         ->select(DB::raw("SUBSTR (id_ba_afd_blok, 1, 5) AS ba"))
-                                         ->whereIn(DB::raw('SUBSTR (id_ba_afd_blok, 1, 2)'), $ba_afd_code)
-                                         ->groupBy(DB::raw("SUBSTR (id_ba_afd_blok, 1, 5)"))
-                                         ->orderBy('ba')->get();
+        $data['data_header'] = $bunch_counting->data;
       }
       $last_work_daily = $this->db_mobile_ins->select("SELECT trunc(TANGGAL) - trunc(sysdate) AS DIFF,MIN(FLAG_HK),MIN(NAMA_HARI) 
                                                                FROM TM_TIME_DAILY@DWH_LINK 
@@ -241,36 +216,29 @@ class VerificationController extends Controller {
 
    public function getValHeader(request $request){
       $data['active_menu'] = $this->active_menu;
-      $day = $request->tanggal;
-      session()->put(['werks'=>$request->werks,'afd'=>$request->afd]);
-      $result = ( new ValidasiHeader() )->validasi_header($day);
-      $res = json_encode( $result);
+      $day = date("Y-m-d", strtotime($request->tanggal));
       $data['tgl_validasi'] = $day;
-      $data['data_header'] = json_decode($res,true);
-      $status_validasi_aslap = 0;
-      foreach ( $data['data_header'] as $key => $q ){
-        if($q['aslap_validation']>0)
-        {
-          $status_validasi_aslap = 1;
-        }
+      $client = new \GuzzleHttp\Client();
+      $res = $client->request( 'GET', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting', [
+        'json' => [
+          // 'KETERANGAN' => 'BELUM DIVERIFIKASI',
+          'DATE_FROM' => str_replace('-', '', $day).'000000',
+          'DATE_TO' => str_replace('-', '', $day).'999999'
+        ]
+      ]);
+      $bunch_counting = json_decode( $res->getBody() );
+      $data['data_header'] = array();
+      if($bunch_counting->status==true)
+      {
+        $data['data_header'] = $bunch_counting->data;
       }
-      $data['status_validasi_aslap'] = $status_validasi_aslap;
-      $data['records'] = $result;
-      $valid = ( new ValidasiHeader() )->count_valid($day);
-      $count_valid = count($valid);
-      $status_validasi = 0;
-      if($count_valid == 1){
-         $status = $valid['0']->status_validasi;
-         if($status == "unfinished"){
-               $status_validasi = 1;
-         }
-         else{
-               $status_validasi = 0;
-         }        
-      }else{
-         $status_validasi = 1;
-      }
-      $data['status'] = $status_validasi;
+      $last_work_daily = $this->db_mobile_ins->select("SELECT trunc(TANGGAL) - trunc(sysdate) AS DIFF,MIN(FLAG_HK),MIN(NAMA_HARI) 
+                                                               FROM TM_TIME_DAILY@DWH_LINK 
+                                                               WHERE TANGGAL < trunc(sysdate)
+                                                               AND FLAG_HK = 'Y'
+                                                               GROUP BY TANGGAL
+                                                               ORDER BY TANGGAL DESC FETCH NEXT 1 ROWS ONLY");
+      $data['last_work_daily'] = isset($last_work_daily[0])?$last_work_daily[0]->diff:'-1';
       return view( 'verifikasi.filtertable', $data );
    }
 
