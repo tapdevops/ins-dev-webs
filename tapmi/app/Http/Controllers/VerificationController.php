@@ -23,8 +23,9 @@
 	use App\Validation;
 	use App\Employee;
 	use App\TMParameter;
-	use App\TRValidasiHeader;
-	use App\TRValidasiDetail;
+  use App\TRValidasiHeader;
+  use App\TRValidasiDetail;
+	use App\TRBunchCounting;
    use DataTables;
    use Ramsey\Uuid\Uuid;
    use App\ValidasiHeader;
@@ -305,228 +306,178 @@ class VerificationController extends Controller {
     public function create($tgl) 
     {   
       $data['active_menu'] = $this->active_menu;
-      
-      $target = TMParameter::select('PARAMETER_DESC')->where('PARAMETER_NAME','TARGET_VALIDASI')->get();
-      $target_validasi = $target[0]->parameter_desc;
-      $result = array();
-      $result = ( new ValidasiHeader() )->validasi_header($tgl);
-      $res = json_encode( $result);
+      $day = date("Y-m-d", strtotime($tgl));
+      $data['tgl_validasi'] = $day;
+      $client = new \GuzzleHttp\Client();
+      $data['last_work_daily'] = isset($last_work_daily[0])?$last_work_daily[0]->diff:'-1';
+      $res = $client->request( 'GET', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting', [
+        'json' => [
+          'KETERANGAN' => 'BELUM DIVERIFIKASI',
+          'DATE_FROM' => str_replace('-', '', $day).'000000',
+          'DATE_TO' => str_replace('-', '', $day).'999999'
+        ]
+      ]);
+      $bunch_counting = json_decode( $res->getBody() );
+      $data_header = array();
+      if($bunch_counting->status==true)
+      {
+        $data['data'] = $bunch_counting->data;
+        $comp = substr($data['data'][0]->WERKS, 0,2);
+        $comp = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_comp@proddw_link WHERE comp_code = $comp FETCH NEXT 1 ROWS ONLY");
+        $data['pt'] = $comp[0]->comp_name;
+        return view('verifikasi.image_preview',$data);
+      }
+      else 
+      {
+        return Redirect::to('listverifikasi/'.$tgl.'?nodata=1');
+      }
 
-      //check apakah semua sudah divalidasi
-      $valid = ( new ValidasiHeader() )->count_valid($tgl);
-      $count_valid = count($valid);
-      $status_validasi = 0;
-      if($count_valid == 1)
-      {
-         $status = $valid['0']->status_validasi;
-         if($status == "unfinished")
-         {
-               $status_validasi = 1;
-         }
-         else
-         {
-               $status_validasi = 0;
-         }        
-      }
-      else
-      {
-         $status_validasi = 1;
-      }
-      if($status_validasi == 1)
-      {
-         $dtval=json_decode($res,true);
-         foreach ( $dtval as $dt) 
-         {
-            $jml[] =  $dt['jumlah_ebcc_validated'];
-            $target_id[] =  $dt['target_validasi'];
-            $nik_kerani[] = $dt['nik_kerani_buah'];
-            $nik_mandor[] = $dt['nik_mandor'];
-            $tgl_rencana[] = date("Y-m-d",strtotime($dt['tanggal_rencana']));
-            $ba_code[] = $dt['id_ba'];
-            $afd[] = $dt['id_afd'];
-            $id_validasi[] = $dt['id_validasi'];
-         }
-         for($i=0; $i < count($dtval); $i++)
-         {
-            // jika kurang dari target validasi
-            if ($jml[$i] == $target_id[$i])
-            {
-               continue;
-            }
-            else
-            {
-               $nik_kerani_val = $nik_kerani[$i];
-               $nik_mandor_val  = $nik_mandor[$i];
-               $tgl_rencana_val  = $tgl_rencana[$i];
-               $ba_code_val  = $ba_code[$i];
-               $afd_val  = $afd[$i];
-               $id_validasi_val  = $id_validasi[$i];
-               $trg = $target_id[$i];
-                           
-               $increment = 1; //start jumlah validasi
-               $no_val = TRValidasiHeader::select('JUMLAH_EBCC_VALIDATED')->where('ID_VALIDASI',$id_validasi_val)->first();
-               if($no_val == null){
-                     $val = 1;
-               }else{
-                     $val = $increment + $no_val['jumlah_ebcc_validated'];
-               }
-               $valid_data = json_encode(( new ValidasiHeader() )->validasi_askep($ba_code_val,$afd_val,$nik_kerani_val,$nik_mandor_val,$tgl_rencana_val,$val));
-               $data_validasi = json_decode( $valid_data,true );
-
-               $data['data_validasi'] = $data_validasi;
-               $data['no_validasi'] = $val;
-               $data['target'] = $trg;
-               if(count($data_validasi)!=0)
-               {
-                  return view('verifikasi.image_preview',$data);
-               }
-               else 
-               {
-                  continue;
-               }
-            }        
-         }
-            return Redirect::to('listvalidasi/'.$tgl.'?nodata=1');
-      }
-      else
-      {
-         return Redirect::to('listvalidasi/'.$tgl);
-      }
        
-   }
+    }
+
+    public function export($tgl)
+    {
+      $day = date("Y-m-d", strtotime($tgl));
+      $data['tgl_validasi'] = $day;
+      $client = new \GuzzleHttp\Client();
+      $res = $client->request( 'GET', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting', [
+        'json' => [
+          // 'KETERANGAN' => 'BELUM DIVERIFIKASI',
+          'DATE_FROM' => str_replace('-', '', $day).'000000',
+          'DATE_TO' => str_replace('-', '', $day).'999999'
+        ]
+      ]);
+      $bunch_counting = json_decode( $res->getBody() );
+      $data_header = array();
+      if($bunch_counting->status==true)
+      {
+        $data_header = $bunch_counting->data;
+      }
+      // Set Empty Array (Biar gak error)
+      $results['head'] = array();
+      $results['summary'] = array();
+      $results['periode'] = $day;
+      $results['data_header'] = $data_header;
+      $results['sheet_name'] = 'Verifiation AI';
+      $results['view'] = 'report.excel-verification-ai';
+      $file_name = 'List-Verifiation-AI';
+      // $results['data'] = $data_header;
+
+      // print '<pre>';
+      // print_r( $results );
+      // print '</pre>';
+      // dd();
+      Excel::create( $file_name, function( $excel ) use ( $results ) {
+        $excel->sheet( $results['sheet_name'], function( $sheet ) use ( $results ) {
+          $sheet->loadView( $results['view'], $results );
+        } );
+      } )->export( 'xlsx' );
+    }
 
     public function create_action(Request $request)
     { 
         date_default_timezone_set('Asia/Jakarta');
-        $id_val = $request->id_validasi."-".$request->ba_code."-".$request->afd_code;
-        $id = str_replace("/",".",$id_val);
-        $tgl = $request->tanggal_ebcc;
-        $jml = $request->jumlah_ebcc_validated;
-            if($request->kondisi_foto == null){
-                if($request->jjg_validate_total == null or $request->jjg_validate_total == "0" ){
-                    $foto = "TIDAK BISA DIVALIDASI, KARENA ".strtoupper($request->kondisi_foto);
-                    // $jml_validate = $jml;
-                    $jml_validate = $jml-1;
-                }else{
-                    $foto = "BISA DIVALIDASI";
-                    $jml_validate = $jml;
-                }
-            }else{
-                $foto = "TIDAK BISA DIVALIDASI, KARENA ".strtoupper($request->kondisi_foto) ;
-                $jml_validate = $jml - 1;
-                // $jml_validate = $jml;
-            }
-            
-            $jmlh['jumlah_ebcc_validated'] = $jml_validate;
-            // $result1 =TRValidasiHeader::firstOrCreate($request->only('id_validasi','last_update')+$jmlh);     
-            // dd($request);       
-            $request->merge([ 'jumlah_ebcc_validated' => $jml_validate ]);
-            $request->merge([ 'kondisi_foto' => $foto ]);
-            $request->merge([ 'last_update' => date('Y-M-d H.i.s') ]);
-            // ,$request->only('id_validasi','jumlah_ebcc_validated','last_update')
-            TRValidasiHeader::updateOrCreate(['id_validasi'=>$request->id_validasi],[ 'jumlah_ebcc_validated'=>$request->jumlah_ebcc_validated, 'last_update' => $request->last_update]);            
-            $emp = Employee::where('EMPLOYEE_NIK',session('NIK'))->first();
-            $fullname = $emp['employee_fullname'];
-            $data['insert_time'] = date('Y-M-d H.i.s');
-            $data['insert_user'] = session('NIK');
-            $data['insert_user_fullname'] = $fullname;
-            $data['insert_user_userrole'] = session('USER_ROLE');
-            $data['uuid']	= Uuid::uuid1()->toString();
-         // $result = TRValidasiDetail::create($request->except('jumlah_ebcc_validated','last_updated','kodisi_foto')+$data);
-         
-         $TRValidasiDetail = TRValidasiDetail::create($request->except('last_updated','target')+$data);
+        if($request->KONDISI_FOTO=='Foto bagus & Inputan PIC Sesuai' || 
+           $request->KONDISI_FOTO=='Foto bagus & tapi Inputan PIC Tidak Sesuai' || 
+           $request->KONDISI_FOTO=='Foto Bagus tapi Jumlah Janjang lebih dari 30' || 
+           $request->KONDISI_FOTO=='Gambar Terpotong')
+        {
+          $type = 'BISA DIHITUNG';
+        }
+        else 
+        {
+          $type = 'TIDAK BISA DIHITUNG';
+        }
+        // dd(session()->all());
+      // "_token" => "7YmdmvnWadt6eMnmfaXq68ZocBKVNfvit0NvLRSB"
+      // "TANGGAL_TRANSAKSI" => "2020-10-31"
+      // "EBCC_CODE" => "V025920201031123623056044"
+      // "KONDISI_FOTO" => "Foto Bagus tapi Jumlah Janjang > 30"
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request( 'GET', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting', [
+          'json' => [
+            'KETERANGAN' => 'BELUM DIVERIFIKASI',
+            'EBCC_CODE' => $request->NO_BCC
+          ]
+        ]);
+        $bunch_counting = json_decode( $res->getBody() );
 
-         if($foto == "BISA DIVALIDASI")
-         {
-            // INSERT LOG TO EBCC
-            $this->db_ebcc->table('T_VALIDASI')->insert([
-               'TANGGAL_EBCC'=>$TRValidasiDetail->tanggal_ebcc,
-               'NO_BCC'=>$TRValidasiDetail->no_bcc,
-               'TANGGAL_VALIDASI' => date('Y-m-d H:i:s'),
-               'ROLES' => session('USER_ROLE'),
-               'NIK' => session('NIK'),
-               'NAMA' => $fullname,
-               'NIK_KRANI_BUAH' => $TRValidasiDetail->nik_krani_buah,
-               'NIK_MANDOR' => $TRValidasiDetail->nik_mandor
-            ]);
-   
-            // NOTE : DISABLE REPLACE DATA PANEN EBCC 2020-10-12
-            // UPDATE BCC HASIL PANEN KUALITAS 
-            // if(intval($request->jjg_validate_total)+0 != $request->jjg_ebcc_total)
-            // {
-            //    if(intval($request->jjg_validate_total)+0 >= $request->jjg_ebcc_total)
-            //    {
-            //       $selisih = intval($request->jjg_validate_total)+0 - $request->jjg_ebcc_total;
-            //       $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //          'ID_BCC'=>$TRValidasiDetail->no_bcc,
-            //          'ID_KUALITAS' => 3
-            //       ])->update(['QTY'=>DB::raw('QTY + '.$selisih)]);
-            //    }
-            //    else 
-            //    {
-            //       $selisih = $request->jjg_ebcc_total - intval($request->jjg_validate_total)+0;
-            //       $data = $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->
-            //                               where(['ID_BCC'=>$TRValidasiDetail->no_bcc])->
-            //                               whereIn('ID_KUALITAS',[1,3,4,6,15])->
-            //                               get()->pluck('qty','id_kualitas')->toArray();
-            //       // PENGURANGAN QUANTITY MENTAH
-            //       if(ISSET($data[1]) && $selisih>0)
-            //       {
-            //          $pengurangan = $data[1] - $selisih;
-            //          $selisih -= $data[1]>=$selisih?$selisih:$data[1];
-            //          $data[1] = $pengurangan>=0?$pengurangan:0;
-            //          $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //             'ID_BCC'=>$TRValidasiDetail->no_bcc,
-            //             'ID_KUALITAS' => 1
-            //          ])->update(['QTY'=>$data[1]]);
-            //       }
-            //       // PENGURANGAN QUANTITY BUSUK
-            //       if(ISSET($data[6]) && $selisih>0)
-            //       {
-            //          $pengurangan = $data[6] - $selisih;
-            //          $selisih -= $data[6]>=$selisih?$selisih:$data[6];
-            //          $data[6] = $pengurangan>=0?$pengurangan:0;
-            //          $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //             'ID_BCC'=>$TRValidasiDetail->no_bcc,
-            //             'ID_KUALITAS' => 6
-            //          ])->update(['QTY'=>$data[6]]);
-            //       }
-            //       // PENGURANGAN QUANTITY JAJANG KOSONG
-            //       if(ISSET($data[15]) && $selisih>0)
-            //       {
-            //          $pengurangan = $data[15] - $selisih;
-            //          $selisih -= $data[15]>=$selisih?$selisih:$data[15];
-            //          $data[15] = $pengurangan>=0?$pengurangan:0;
-            //          $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //             'ID_BCC'=>$TRValidasiDetail->no_bcc,
-            //             'ID_KUALITAS' => 15
-            //          ])->update(['QTY'=>$data[15]]);
-            //       }
-            //       // PENGURANGAN QUANTITY OVERRIPE
-            //       if(ISSET($data[4]) && $selisih>0)
-            //       {
-            //          $pengurangan = $data[4] - $selisih;
-            //          $selisih -= $data[4]>=$selisih?$selisih:$data[4];
-            //          $data[4] = $pengurangan>=0?$pengurangan:0;
-            //          $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //             'ID_BCC'=>$TRValidasiDetail->no_bcc,
-            //             'ID_KUALITAS' => 4
-            //          ])->update(['QTY'=>$data[4]]);
-            //       }
-            //       // PENGURANGAN QUANTITY MASAK
-            //       if(ISSET($data[3]) && $selisih>0)
-            //       {
-            //          $data[3] = $data[3] - $selisih;
-            //          $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //             'ID_BCC'=>$TRValidasiDetail->no_bcc,
-            //             'ID_KUALITAS' => 3
-            //          ])->update(['QTY'=>$data[3]]);
-            //       }
-            //    }
-            // }
-         }
+
+        $res = $client->request( 'POST', APISetup::url()['msa']['ins']['image'].'/v2.2/copy-image', [
+          'json' => [
+            'TYPE' => $type,
+            'CATEGORY' => $request->KONDISI_FOTO,
+            'EBCC_CODE' => $request->NO_BCC
+          ]
+        ]);
+        $copy_image = json_decode( $res->getBody() );
+
+        if($bunch_counting->status==true && $copy_image->status==true)
+        {
+          $bunch_counting_data = $bunch_counting->data;
+          $code_block = $bunch_counting_data[0]->BLOCK_CODE;
+          $code_ba = $bunch_counting_data[0]->WERKS;
+          $code_company = substr($bunch_counting_data[0]->WERKS, 0,2);
+          $username_PIC = $bunch_counting_data[0]->INSERT_USER;
+          $username_Create = session('USERNAME');
+          $getBlock = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_block@proddw_link WHERE block_code = '$code_block' FETCH NEXT 1 ROWS ONLY");
+          $getBA = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_est@proddw_link WHERE werks = '$code_ba' FETCH NEXT 1 ROWS ONLY");
+          $getCompany = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_comp@proddw_link WHERE comp_code = '$code_company' FETCH NEXT 1 ROWS ONLY");
+          $getUserPIC = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_employee_hris@proddw_link WHERE employee_username = '$username_PIC' FETCH NEXT 1 ROWS ONLY");
+          $getUserCreate = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_employee_hris@proddw_link WHERE employee_username = '$username_Create' FETCH NEXT 1 ROWS ONLY");
+            // dd($getBlock,$getBA,$getCompany,$getUserPIC,$getUserCreate);
+          if(isset($getBlock[0]) && isset($getBA[0]) && isset($getCompany[0]) && isset($getUserPIC[0]) && isset($getUserCreate[0]))
+          {
+              $score_ai = json_encode($bunch_counting_data[0]->SCORES);
+              $average = 0;
+              $i = 0;
+              foreach ($bunch_counting_data[0]->SCORES as $key => $value) {
+               $i++;
+               $average+=$value;
+              }
+              $average = $i==0?0:($average/$i);
+              $create_data = array( 'TANGGAL_TRANSAKSI' => $request->TANGGAL_TRANSAKSI.' '.date('H.i.s'),
+                                    'NIK_PIC' => $getUserPIC[0]->employee_nik,
+                                    'NAMA_PIC' => $getUserPIC[0]->employee_fullname,
+                                    'ROLE_PIC' => $bunch_counting_data[0]->ROLE,
+                                    'BA_CODE' => $bunch_counting_data[0]->WERKS,
+                                    'BA_NAME' => $getBA[0]->est_name,
+                                    'AFD_CODE' => $bunch_counting_data[0]->AFD_CODE,
+                                    'BLOCK_CODE' => $code_block,
+                                    'BLOCK_NAME' => $getBlock[0]->block_name,
+                                    'NO_TPH' => $bunch_counting_data[0]->NO_TPH,
+                                    'NO_BCC' => $request->NO_BCC,
+                                    'TOTAL_JJG_PIC' => $bunch_counting_data[0]->COUNT_VALIDATION,
+                                    'TOTAL_JJG_AI' => $bunch_counting_data[0]->COUNT_AI,
+                                    'SELISIH_JJG' => $bunch_counting_data[0]->COUNT_DIFF,
+                                    'PERCENT_VARIANCE' => ($bunch_counting_data[0]->COUNT_DIFF/$bunch_counting_data[0]->COUNT_VALIDATION),
+                                    'SCORES_AI' => $score_ai,
+                                    'START_PROCESS_AI' => $bunch_counting_data[0]->START_PROCESS,
+                                    'END_PROCESS_AI' => $bunch_counting_data[0]->END_PROCESS,
+                                    'DATA_SOURCE' => $bunch_counting_data[0]->SOURCE,
+                                    'IMG_URL' => $bunch_counting_data[0]->IMAGE_URL,
+                                    'IMG_NAME' => $bunch_counting_data[0]->IMAGE_NAME,
+                                    'KONDISI_FOTO' => $request->KONDISI_FOTO,
+                                    'INSERT_TIME' => date('Y-M-d H.i.s'),
+                                    'INSERT_USER' => $getUserCreate[0]->employee_username,
+                                    'INSERT_USER_FULLNAME' => $getUserCreate[0]->employee_fullname,
+                                    'INSERT_USER_USERROLE' => session('JOB_CODE'),
+                                    'AVG_SCORES_AI' => $average);
+              // dd($request);
+              TRBunchCounting::updateOrCreate($create_data);
+              return Redirect::to('verifikasi/create/'.substr($request->TANGGAL_TRANSAKSI,0,10));
+          }
+          else 
+          {
+            return Redirect::to('verifikasi/create/'.substr($request->TANGGAL_TRANSAKSI,0,10).'?error=2');
+          }
+        }
+        else 
+        {
+          return Redirect::to('verifikasi/create/'.substr($request->TANGGAL_TRANSAKSI,0,10).'?error=1');
+        }
          
-         return Redirect::to('validasi/create/'.substr($tgl,0,10));
+         return Redirect::to('verifikasi/create/'.substr($request->TANGGAL_TRANSAKSI,0,10));
 
     }
 
@@ -565,7 +516,7 @@ class VerificationController extends Controller {
         jjg_validate_jk,
         jjg_validate_ba,
         nvl(jjg_validate_total,0) as jjg_validate_total
-   FROM (SELECT ebcc.tanggal_rencana,
+          FROM (SELECT ebcc.tanggal_rencana,
                 ebcc.nik_kerani_buah,
                 ebcc.nama_kerani_buah,
                 ebcc.id_ba,
@@ -716,13 +667,13 @@ class VerificationController extends Controller {
         $valid_data = json_encode($this->db_mobile_ins->select($sql));
         $results['data'] =  json_decode($valid_data,true);
         // dd($result['data']== null);
-		if ( !empty( $results['data']) ) {
-			return view( 'validasi/ebcc-compare', $results );
-		}
-		else {
-			return 'Data not found.';
-		}
-	}
+  		if ( !empty( $results['data']) ) {
+  			return view( 'validasi/ebcc-compare', $results );
+  		}
+  		else {
+  			return 'Data not found.';
+  		}
+	 }
 
 
 }

@@ -85,6 +85,7 @@ Route::group( [ 'middleware' => 'web' ], function() {
 		#verification_image_data
 		Route::get( '/listverifikasi/{tgl?}', 'VerificationController@index'); 
 		Route::get( '/verifikasi/create/{id}', 'VerificationController@create' );
+		Route::get( '/verifikasi/export/{id}', 'VerificationController@export' );
 		Route::get( '/verifikasi/cek_aslap', 'VerificationController@cek_aslap'); 
 		Route::post( '/verifikasi/create_action', 'VerificationController@create_action')->name('create_verification');
 	});

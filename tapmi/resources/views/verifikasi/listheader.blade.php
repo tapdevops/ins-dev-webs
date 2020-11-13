@@ -37,13 +37,13 @@
 			<div class="col-md-4"></div>
 			@if(count($data_header)>0)
 			<div class="col-md-4 m--align-right" style="white-space:nowrap;margin-bottom:20px;">
-				<a href="{{ URL::to('/validasi/create/'.$tgl_validasi) }}" class="btn btn-white m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+				<a href="{{ URL::to('/verifikasi/export/'.$tgl_validasi) }}" class="btn btn-white m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
 					<span>
 						<i class="fa fa-clipboard"></i>
 						<span>Export XLS</span>
 					</span>
 				</a>
-				<a href="{{ URL::to('/validasi/create/'.$tgl_validasi) }}" class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+				<a href="{{ URL::to('/verifikasi/create/'.$tgl_validasi) }}" class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
 					<span>
 						<i class="fa fa-clipboard"></i>
 						<span>Verifikasi</span>
@@ -104,8 +104,7 @@
 </table>
 	@if($nodata==1)
 	<div class="col-md-12 m--align-center" style="white-space:nowrap; padding-top:20px;">
-		<h5 class="m-subheader__title m-subheader__title--separator text-danger">Tidak bisa melanjutkan validasi karena ada aslap yang tidak melakukan validasi / validasi BCC tidak "MATCH"</h5>
-		<h5 class="m-subheader__title m-subheader__title--separator text-danger">Lakukan proses validasi manual terlebih dulu di TAP MOTION eBCC</h5>
+		<h5 class="m-subheader__title m-subheader__title--separator text-danger">Tidak ditemukan data yang belum diverifikasi</h5>
 	</div>
 	@endif
 </div>

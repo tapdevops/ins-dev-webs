@@ -16,10 +16,14 @@ input[type="radio"]{
 	border-color: #000000;
 }
 .btn-radio {
-    white-space: normal !important;
-    height: 70px;
-    width: 150px; 
-  	background-color: white;
+  	white-space: normal !important;
+    height: 54px;
+    width: 165px;
+    border-radius: 40px;
+    background-color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding-top: 5px;
 }
 .btn-next {
 	white-space: normal !important;
@@ -81,191 +85,148 @@ tr
 }
 </style>
 @endsection
-
-@foreach ( $data_validasi as $key => $q )
+@foreach ( $data as $key )
 	
-
-	@section( 'content' )
-	<div class="row">
-		<div class="col-md-8">
-			<div class="row">
-				<div class="col-md-4">
+	@if($loop->first)
+		@section( 'content' )
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-12">
+						<h3 class="text-danger text-center">
+							@if(isset($_GET['error']))
+								@if($_GET['error']==1)
+									Terjadi kesalahan, API Bunch Counting Error.
+								@endif
+								@if($_GET['error']==2)
+									Terjadi kesalahan pada data Bunch Counting.
+								@endif
+							@endif
+						</h3><br>
+					</div>
 				</div>
-				<div class="col-md-4">
-				</div>
-				<div class="col-md-4"></div>
 			</div>
 		</div>
-	</div>
-	<table class="borderles">
-	<form action="{{ route( 'create_validation' ) }}" method="post">
-	{{ csrf_field() }}
-	<?php $tgl = date_format(date_create($q['tanggal_rencana']),'Ymd');?>
-	<input type="hidden" name="id_validasi" value="{{$q['nik_kerani_buah']}}-{{$q['nik_mandor']}}-{{$tgl}}">
-	<input type="hidden" name="tanggal_ebcc" value="{{$q['tanggal_rencana']}}">
-	<input type="hidden" name="nik_krani_buah" value="{{$q['nik_kerani_buah']}}">
-	<input type="hidden" name="nama_krani_buah" value="{{$q['emp_name']}}">
-	<input type="hidden" name="nik_mandor" value="{{$q['nik_mandor']}}">
-	<input type="hidden" name="nama_mandor" value="{{$q['nama_mandor']}}">
-	<input type="hidden" name="ba_code" value="{{ substr($q['id_ba_afd_blok'], 0, 4) }}">
-	<input type="hidden" name="ba_name" value="{{$q['nama_ba']}}">
-	<input type="hidden" name="afd_code" value="{{ substr($q['id_ba_afd_blok'], 4, 1) }}">
-	<input type="hidden" name="block_code" value="{{$q['id_blok']}}">
-	<input type="hidden" name="block_name" value="{{$q['blok_name']}}">
-	<input type="hidden" name="no_tph" value="{{$q['no_tph']}}">
-	<input type="hidden" name="no_bcc" value="{{$q['no_bcc']}}">
-	<input type="hidden" name="jumlah_ebcc_validated" value="{{$no_validasi}}">
-	<input type="hidden" name="last_update" value="{{ date('Y-M-d') }}">
-	<input type="hidden" name="target" value="{{$target}}">
-		<tr>
-			<td  rowspan="7" width="45%"  style="vertical-align: top;">
-				<div style="position:absolute;z-index: 1000">
-				<?php	$img = str_replace("/","",$q['picture_name']);
-						$total_jgg_kabun = '';
-						$os = PHP_OS; 
-						if( $os != "WINNT" ){
-							$img_backup = 'app/public/notfound.jpg';
-						}else{
-							$img_backup = 'app\public\notfound.jpg';
-						}
-						if(strlen($q['val_ebcc_code'])>0)
-						{
-							if($q['data_source']=='MI')
-							{
-								$data = json_decode(file_get_contents("http://image.tap-agri.com:3012/api/v2.0/foto-transaksi/".$q['val_ebcc_code']."?status_image=JANJANG"),true);
-								$img = isset($data['data']['http'][0])?$data['data']['http'][0]:'http://inspectiondev.tap-agri.com/storage/notfound.jpg';
-							}
-							elseif($q['data_source']=='ME')
-							{
-								$img = "http://tap-motion.tap-agri.com/mobile_estate/upload_image/".$q['image_name'].".jpg";
-							}
-							else
-							{
-								$img = 'http://tap-motion.tap-agri.com/ebcc/array/uploads'.$q['val_ebcc_code'];
-							}
-							if($q['insert_user_userrole']!=null && $q['jjg_validate_total']!=null)
-							{
-								if(substr($q['insert_user_userrole'],0,7)!='ASISTEN')
-								{
-									$total_jgg_kabun = $q['jjg_validate_total'];
-								}
-							}
-						}
-						else 
-						{
-							$img = 'http://tap-motion.tap-agri.com/ebcc/array/uploads/'.$img;
-						}
-							if(isset($_GET['image']))
-							{
-								dd($img);
-							}
-				?>
+		<table class="borderles">
+		<form action="{{ route( 'create_verification' ) }}" method="post">
+		{{ csrf_field() }}
+		<input type="hidden" name="TANGGAL_TRANSAKSI" value="{{$tgl_validasi}}">
+		<input type="hidden" name="NO_BCC" value="{{$key->EBCC_CODE}}">
+			<tr>
+				<td  rowspan="7" width="45%"  style="vertical-align: top;">
 					<div style="position:absolute;z-index: 1000">
-					<input id="button" type="image" src="http://inspectiondev.tap-agri.com/storage/rotate_45.png" >
-					</div>
-					<!-- <img onerror="this.onerror=null;this.src='https://webhostingmedia.net/wp-content/uploads/2018/01/http-error-404-not-found.png'"  src="http://10.20.1.59/ebcc/array/uploads/{{$img}}" style="display:block;" width="80%" height="80%" > -->
-					<div id="container"  style="background-position: center center; background-repeat: no-repeat;overflow: hidden;">
-					<img onerror="this.onerror=null;this.src='http://inspectiondev.tap-agri.com/storage/notfound.jpg'"  src="{{$img}}" style="display:block;" width="80%" height="80%" id="image" >
-					</div> 
-					
-				</div>
-			</td>
-			<td><h4>Validasi ke {{$no_validasi}} dari {{$target}}</h4></td>
-		</tr>
-		<tr>
-		<!-- Kriteria Buah Berdasarkan Foto eBCC -->
-			<td colspan="8"></td>
-		</tr>
-		<tr>
-			<td>
-				<table class="borderless" width = "100%" id="tform">
-				<!-- <table class="table table-bordered" id="tform"> -->
-					<!-- <thead style="background-color:#dadbd5">
-					<tr> -->
-						<input type="hidden" name="jjg_ebcc_bk" value="{{$q['ebcc_jml_bk']}}">
-						<input type="hidden" name="jjg_ebcc_ba" value="{{$q['ebcc_jml_ba']}}">
-						<input type="hidden" name="jjg_ebcc_bm" value="{{$q['ebcc_jml_bm']}}">
-						<input type="hidden" name="jjg_ebcc_ms" value="{{$q['ebcc_jml_ms']}}">
-						<input type="hidden" name="jjg_ebcc_or" value="{{$q['ebcc_jml_or']}}">
-						<input type="hidden" name="jjg_ebcc_bb" value="{{$q['ebcc_jml_bb']}}">
-						<input type="hidden" name="jjg_ebcc_jk" value="{{$q['ebcc_jml_jk']}}">
+					<?php	
+						$img = $key->IMAGE_URL;
+						if(isset($_GET['image']))
+						{
+							dd($img);
+						}
+					?>
+						<div style="position:absolute;z-index: 1000">
+						<input id="button" type="image" src="http://inspectiondev.tap-agri.com/storage/rotate_45.png" >
+						</div>
+						<!-- <img onerror="this.onerror=null;this.src='https://webhostingmedia.net/wp-content/uploads/2018/01/http-error-404-not-found.png'"  src="http://10.20.1.59/ebcc/array/uploads/{{$img}}" style="display:block;" width="80%" height="80%" > -->
+						<div id="container"  style="background-position: center center; background-repeat: no-repeat;overflow: hidden;">
+						<img onerror="this.onerror=null;this.src='http://inspectiondev.tap-agri.com/storage/notfound.jpg'"  src="{{$img}}" style="display:block;" width="80%" height="80%" id="image" >
+						</div> 
 						
-					<!-- </tr>
-					</thead> -->
-					<tbody>
-					
-						<!-- <input type="hidden" min=0 class="form-control fields" required name="jjg_validate_bk" id="bk" value="0" onkeyup="sum()">
-						<input type="hidden" min=0 class="form-control fields" required name="jjg_validate_ba" id="ba" value="0" onkeyup="sum()">
-						<td><input type="number" min=0 class="form-control fields" required name="jjg_validate_bm" id="bm" onkeyup="sum()" autofocus></td>
-						<td><input type="number" min=0 class="form-control fields" required name="jjg_validate_ms" id="ms" onkeyup="sum()"></td>
-						<td><input type="number" min=0 class="form-control fields" required name="jjg_validate_or" id="or" onkeyup="sum()"></td>
-						<td><input type="number" min=0 class="form-control fields" required name="jjg_validate_bb" id="bb" onkeyup="sum()"></td>
-						<td><input type="number" min=0 class="form-control fields" required name="jjg_validate_jk" id="jk" onkeyup="sum()"></td>
-						<td><input type="text" min=0 class="form-control" required  readonly="readonly" name="jjg_validate_total" id="total_jjg"></td> -->
-						<tr><td>Nama Krani Buah </td><td>: </td><td colspan="2"><b> {{$q['emp_name']}}</b></tr>
-						<tr><td>Nama Mandor </td><td>: </td><td colspan="2"><b>{{$q['nama_mandor']}}</b></tr>
-						<tr><td>Afdeling </td><td>: </td><td colspan="2"><b>{{$q['id_afd']}}</b></tr>
-						<tr><td>Total Janjang Panen<input type="hidden" name="jjg_ebcc_total" value="{{$q['jjg_panen']}}"></td><td>:</td>
-							<td> <div class="w-50"><input type="number" min=0 value="<?=$total_jgg_kabun?>" class="form-control fields" required autofocus name="jjg_validate_total" id="total_jjg"></div></td>
-							<td align="right">
-								<button type="submit" class="btn btn-block btn-success pull-right btn-next">SIMPAN & LANJUT BERIKUTNYA</button>
-							</td>
+					</div>
+				</td>
+				<td>
+					<table width="100%">
+						<tr>
+							<td style="text-align: center;background: #f4f3f8;font-weight: 600;border: 1px solid;padding: 5px;height: 45px;line-height: 18px;">Janjang Panen<br>versi PIC Sampling</td>
+							<td style="text-align: center;background: #f4f3f8;font-weight: 600;border: 1px solid;padding: 5px;line-height: 18px;">Janjang Panen<br>versi Sistem - Validasi Otomatis</td>
+							<td style="text-align: center;background: #f4f3f8;font-weight: 600;border: 1px solid;padding: 5px;width: 33%;line-height: 18px;">Selisih Janjang<br>Panen</td>
 						</tr>
-					</tbody>
-				</table>
+						<tr>
+							<td style="text-align: center;font-weight: 600;border: 1px solid;font-size: 25px;padding: 10px;">{{$key->COUNT_VALIDATION}}</td>
+							<td style="text-align: center;font-weight: 600;border: 1px solid;font-size: 25px;padding: 10px;">{{$key->COUNT_AI}}</td>
+							<td style="text-align: center;font-weight: 600;border: 1px solid;font-size: 25px;padding: 10px;">{{$key->COUNT_DIFF}}</td>
+						</tr>
+					</table>
+				</td>
 			</tr>
-		<tr>
-			<td><br/>Foto Tidak Bisa Divalidasi Karena:</td>
-		</tr>
-		<tr>
-			<td>
-				<div data-toggle="buttons">
-					<div class="row">
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Foto Tidak Muncul">Foto Tidak Muncul</button>
-						</div>
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Blur">Blur</button>
-						</div>
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Jauh">Jauh</button>
-						</div>
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Gambar Terpotong">Gambar Terpotong</button>
+			<tr>
+			<!-- Kriteria Buah Berdasarkan Foto eBCC -->
+				<td colspan="8"></td>
+			</tr>
+			<tr>
+				<td>
+					<table class="borderless" width = "100%" style="margin-top: 12px;">
+						<tbody>
+							<tr><td style="font-weight: 600;width: 100px">PT</td><td style="font-weight: 600;width: 10px">: </td><td colspan="2"><b>{{$pt}}</b></tr>
+							<tr><td style="font-weight: 600;">PIC Sampling </td><td style="font-weight: 600;"">: </td><td colspan="2"><b>{{$key->INSERT_USER}}</b></tr>
+						</tbody>
+					</table>
+				</tr>
+			<tr>
+				<td style="padding-top: 15px;"><h3>Bisa Dihitung : </h3></td>
+			</tr>
+			<tr>
+				<td>
+					<div data-toggle="buttons">
+						<div class="row">
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Foto bagus & Inputan PIC Sesuai">Foto bagus & Inputan PIC Sesuai</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Foto bagus & tapi Inputan PIC Tidak Sesuai">Foto bagus & tapi Inputan PIC Tidak Sesuai</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Foto Bagus tapi Jumlah Janjang lebih dari 30">Foto Bagus tapi Jumlah Janjang lebih dari 30</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Gambar Terpotong">Gambar Terpotong</button>
+
+							</div>
+							<div class="col-md-12">
+								<h3><br>Tidak Bisa Dihitung Karena : </h3>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Foto Tidak Muncul">Foto Tidak Muncul</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Blur">Blur</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Jauh">Jauh</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Gambar Janjang Terpotong">Gambar Janjang Terpotong</button>
+							</div><br><br>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Gelap atau Tertutup Bayangan">Gelap atau Tertutup Bayangan</button>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-radio btnselect">
+									<input  type="radio"  name="KONDISI_FOTO" value="Penyusunan atau Angle Pengambilan Tidak Sesuai SOP">Penyusunan atau Angle Pengambilan Tidak Sesuai SOP</button>
 							</div>
 					</div>
-					<br>
-					<div class="row">
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Gelap/ Tidak Terlihat">Gelap/ Tidak Terlihat</button>
-						</div>
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Angle Pengambilan Gambar">Angle Pengambilan Gambar</button>
-						</div>
-						<div class="col-md-3">
-							<button class="btn btn-radio btnselect" id="btnr">
-								<input  type="radio"  name="kondisi_foto" value="Penyusunan TBS tidak sesuai SOP">Penyusunan TBS tidak sesuai SOP</button>
-						</div>
-						</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				<div class="row">
+					<div class="col-md-12" style="text-align: right;">
+							<input style="border-radius: 20px;" type="submit" class="btn btn-success" name="submit" value="SIMPAN & LANJUTKAN">
+					</div>
 				</div>
-			</td>
-		</tr>
-		<tr><td><br><br></td></tr>
-		<tr>
-			<td>
-			<div class="row">
-			</div>
-			</td>
-		</tr>
-		</form>
-	<table>
-	@endsection
+				</td>
+			</tr>
+			</form>
+		<table>
+		@endsection
+	@endif
 
 @endforeach
 @section( 'scripts' )
@@ -274,63 +235,23 @@ tr
 	$(document).ready(function() {
 		MobileInspection.set_active_menu( '{{ $active_menu }}' );
 	});
-
-// 	function sum() {
-//        var bm = document.getElementById('bm').value;
-//        var bk = document.getElementById('bk').value;
-//        var ms = document.getElementById('ms').value;
-//        var or = document.getElementById('or').value;
-//        var bb = document.getElementById('bb').value;
-//        var jk = document.getElementById('jk').value;
-//        var ba = document.getElementById('ba').value;
-//        if (bm == "")
-//            bm = 0;
-//        if (bk == "")
-//            bk = 0;
-//        if (ms == "")
-//            ms = 0;
-//        if (or == "")
-//            or = 0;
-//        if (bb == "")
-//            bb = 0;
-//        if (jk == "")
-//            jk = 0;
-//        if (ba == "")
-//            ba = 0;
-
-//        var result = parseInt(bm) + parseInt(bk) + parseInt(ms) + parseInt(or) + parseInt(bb) + parseInt(jk) + parseInt(ba);
-//        if (!isNaN(result)) {
-//            document.getElementById('total_jjg').value = result;
-//        }
-//    }
-
-
-   $('.btnselect').change(function(){
-		$('.fields').removeAttr('required');
-		$('.fields').val('');
-		// $('#total_jjg').val('');
+	$(document).on("submit", "form", function(e){
+	   	if($('input[name=KONDISI_FOTO]:checked').val())
+	   	{
+	   		console.log('true');
+	   	}
+	   	else
+	   	{
+		    e.preventDefault();
+	   	}
 	});
-
-	$("input").change(function () {
-		$("input.fields").prop('required',true);
-	});
-
-	
-	// function rotateElem() { 
-	// 	// document.querySelector('.box').style.transform 
-	// 	// = 'rotate(90deg)'; 
-	// 	var img=document.getElementById('image');
-	// 	img.setAttribute('style','transform:rotate(90deg)');
-	// 	img.removeAttr('style','transform:rotate(90deg)');
-	// } 
-    
 
 	var angle = 0,
-  img = document.getElementById('container');
-	document.getElementById('button').onclick = function() {
-	angle = (angle + 90) % 360;
-	img.className = "rotate" + angle;
-}
+  	img = document.getElementById('container');
+		document.getElementById('button').onclick = function() {
+		angle = (angle + 90) % 360;
+		img.className = "rotate" + angle;
+	}
 
 </script>
 
