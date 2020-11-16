@@ -402,17 +402,26 @@ class VerificationController extends Controller {
         ]);
         $bunch_counting = json_decode( $res->getBody() );
 
+        $res2 = $client->request( 'PUT', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting/'.$request->NO_BCC);
+        $bunch_counting_update = json_decode( $res2->getBody() );
 
-        $res = $client->request( 'POST', APISetup::url()['msa']['ins']['image'].'/v2.2/copy-image', [
-          'json' => [
-            'TYPE' => $type,
-            'CATEGORY' => $request->KONDISI_FOTO,
-            'EBCC_CODE' => $request->NO_BCC
-          ]
-        ]);
-        $copy_image = json_decode( $res->getBody() );
+        $copy_image_status = false;
+        if($bunch_counting->status==true)
+        { 
+          $res = $client->request( 'POST', APISetup::url()['msa']['ins']['image'].'/api/v2.2/copy-image', [
+            'json' => [
+              'IMAGE_URL_FROM' => $bunch_counting_data[0]->IMAGE_URL,
+              'IMAGE_URL_TO' => str_replace(' ','-',APISetup::url()['msa']['ins']['image'].'/files/images-ai/'.$type.'/'.$request->KONDISI_FOTO.'/'.$bunch_counting_data[0]->IMAGE_NAME)
+            ]
+          ]);
+          $copy_image = json_decode( $res->getBody() );
+          if($copy_image->status==true)
+          {
+            $copy_image_status = true;
+          }
+        }
 
-        if($bunch_counting->status==true && $copy_image->status==true)
+        if($bunch_counting->status==true && $copy_image_status==true && $bunch_counting_update->status==true)
         {
           $bunch_counting_data = $bunch_counting->data;
           $code_block = $bunch_counting_data[0]->BLOCK_CODE;
