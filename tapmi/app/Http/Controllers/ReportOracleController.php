@@ -511,6 +511,31 @@ class ReportOracleController extends Controller {
 			// dd();
 		}
 
+		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+		# REPORT SUMMARY HASIL VALIDASI JANJANG BY AI
+		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+		else if ( $REPORT_TYPE == 'VALIDASI_JANJANG_BY_AI' ) {
+			$results['data'] = $RO->PENCAPAIAN_INSPEKSI(
+									$REPORT_TYPE, 
+									$START_DATE, 
+									$END_DATE, 
+									$REGION_CODE, 
+									$COMP_CODE, 
+									$BA_CODE, 
+									$AFD_CODE, 
+									$BLOCK_CODE,
+									$DATE_MONTH
+								);					
+			$results['data'] = json_decode( json_encode( $results['data'] ), true );
+			$results['periode'] = date('d M Y',(strtotime ( '-7 day' , strtotime ( $START_DATE) ) ))." - ".date('d M Y',(strtotime ( '-1 day' , strtotime ( $START_DATE) ) ));
+			$file_name = 'Summary hasil Validasi Janjang By AI';
+			$results['sheet_name'] = 'Summary';
+			$results['view'] = 'orareport.excel-validasi-janjang-by-ai';
+
+			// return view( 'orareport.excel-pencapaian-inspeksi', $results );
+			// dd();
+		}
+
 		if( $file_name && $REPORT_TYPE != 'INSPEKSI' AND $REPORT_TYPE != 'EBCC_COMPARE_ESTATE' AND $REPORT_TYPE != 'EBCC_COMPARE_MILL') {
 			
 			Excel::create( $file_name, function( $excel ) use ( $results ) {

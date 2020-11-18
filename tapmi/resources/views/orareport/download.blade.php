@@ -33,7 +33,10 @@
 				<label>Pilih Report <span class="text-danger">*</span></label>
 				<select id="report-select" class="form-control m-select2 mi-select2" name="REPORT_TYPE" onchange="return reportGroup( this.value )" data-placeholder="...">
 					<option value="" selected="selected">Semua</option>
-					
+					@if(session('USER_ROLE')=='IT' || session('USER_ROLE')=='ADMIN')
+					<option value="VALIDASI_JANJANG_BY_AI" selected="selected">VALIDASI JANJANG BY AI</option>
+					@endif
+					<option>VALIDASI JANJANG BY AI</option>
 					<option value="EBCC_COMPARE_ESTATE">EBCC COMPARE ESTATE</option>
 					<option value="EBCC_COMPARE_MILL">EBCC COMPARE MILL</option>
 					<option value="EBCC_VALIDATION_ESTATE">EBCC SAMPLING ESTATE</option>
