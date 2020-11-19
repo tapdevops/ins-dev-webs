@@ -34,81 +34,81 @@
 		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Penyusunan / Angel Pengambilan Tidak Sesuai</b></td>
 	</tr>
 	@if( !empty( $data ) )
-		@foreach( $data as $key=>$dt )
+		@foreach( $data as $dt )
 			<tr>
 				<td>
-					@isset($dt['ba_code'])
-						{{ $dt['ba_code'].' - '.$dt['ba_name'] }}
+					@isset($dt->ba_code)
+						{{ $dt->ba_code.' - '.$dt->ba_name }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['berhasi_dihitung'])
-						{{ $dt['berhasi_dihitung'] }}
+					@isset($dt->berhasi_dihitung)
+						{{ $dt->berhasi_dihitung }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['tidak_berhasi_dihitung'])
-						{{ $dt['tidak_berhasi_dihitung'] }}
+					@isset($dt->tidak_berhasi_dihitung)
+						{{ $dt->tidak_berhasi_dihitung }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['total_janjang_pic'])
-						{{ $dt['total_janjang_pic'] }}
+					@isset($dt->total_janjang_pic)
+						{{ $dt->total_janjang_pic }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['total_janjang_ai'])
-						{{ $dt['total_janjang_ai'] }}
+					@isset($dt->total_janjang_ai)
+						{{ $dt->total_janjang_ai }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['akurasi'])
-						{{ $dt['akurasi'] }}
+					@isset($dt->akurasi)
+						{{ $dt->akurasi }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_1'])
-						{{ $dt['kondisi_1'] }}
+					@isset($dt->kondisi_1)
+						{{ $dt->kondisi_1 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_2'])
-						{{ $dt['kondisi_2'] }}
+					@isset($dt->kondisi_2)
+						{{ $dt->kondisi_2 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_3'])
-						{{ $dt['kondisi_3'] }}
+					@isset($dt->kondisi_3)
+						{{ $dt->kondisi_3 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_4'])
-						{{ $dt['kondisi_4'] }}
+					@isset($dt->kondisi_4)
+						{{ $dt->kondisi_4 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_5'])
-						{{ $dt['kondisi_5'] }}
+					@isset($dt->kondisi_5)
+						{{ $dt->kondisi_5 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_6'])
-						{{ $dt['kondisi_6'] }}
+					@isset($dt->kondisi_6)
+						{{ $dt->kondisi_6 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_7'])
-						{{ $dt['kondisi_7'] }}
+					@isset($dt->kondisi_7)
+						{{ $dt->kondisi_7 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_8'])
-						{{ $dt['kondisi_8'] }}
+					@isset($dt->kondisi_8)
+						{{ $dt->kondisi_8 }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['kondisi_9'])
-						{{ $dt['kondisi_9'] }}
+					@isset($dt->kondisi_9)
+						{{ $dt->kondisi_9 }}
 					@endisset
 				</td>
 			</tr>

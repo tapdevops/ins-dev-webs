@@ -516,11 +516,11 @@ class ReportOracleController extends Controller {
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		else if ( $REPORT_TYPE == 'VALIDASI_JANJANG_BY_AI' ) {
 
-			$START_DATE_FROM = date( 'Y-m-d H.i.s',strtotime( $START_DATE ) );
-			$START_DATE_TO = date( 'Y-m-d H.i.s',strtotime( $END_DATE ) );
+			$START_DATE_FROM = date( 'Y-m-d',strtotime( $START_DATE ) );
+			$START_DATE_TO = date( 'Y-m-d',strtotime( $END_DATE ) );
 			$COMP_CODE = $request->COMP_CODE != '' ? $request->COMP_CODE : null;
 			$COMP_CODE_WHERE = $COMP_CODE==null?'':"AND SUBSTR(bunch.ba_code,1,2) = '$COMP_CODE'";
-			$results['data'] = $this->db_mobile_ins->select("select comp.region_code ,comp.region_name ,bunch.ba_code,bunch.ba_name,
+			$results['data'] = $this->db_mobile_ins->select("select comp.region_code,bunch.ba_code,bunch.ba_name,
 																	SUM(CASE WHEN bunch.kondisi_foto IN('Foto bagus & Inputan PIC Sesuai',
 																										'Foto bagus & tapi Inputan PIC Tidak Sesuai',
 																										'Foto Bagus tapi Jumlah Janjang lebih dari 30') THEN 1 ELSE 0 END) berhasi_dihitung,
@@ -543,12 +543,16 @@ class ReportOracleController extends Controller {
 																INNER JOIN tap_dw.tm_comp@proddw_link comp
 																ON comp.comp_code = SUBSTR(bunch.ba_code,1,2) 
 																WHERE comp.region_code = '$REGION_CODE'
-																AND TRUNC(bunch.tanggal_transaksi) BETWEEN TRUNC ('$START_DATE_FROM') AND TRUNC ('$START_DATE_TO')
+																AND TRUNC(bunch.tanggal_transaksi) BETWEEN TRUNC (TO_DATE('$START_DATE_FROM', 'RRRR-MM-DD' )) AND TRUNC (TO_DATE('$START_DATE_TO', 'RRRR-MM-DD' ))
 																".$COMP_CODE_WHERE."
-																GROUP BY comp.region_code ,bunch.ba_code,bunch.ba_name");				
+																GROUP BY comp.region_code,bunch.ba_code,bunch.ba_name");				
+			$comp = $this->db_mobile_ins->select("select comp_name from tap_dw.tm_comp@proddw_link where comp_code = '$COMP_CODE'");
+			$pt=''; foreach ($comp as $d) { $pt = $d->comp_name; }		
+			$reg = $this->db_mobile_ins->select("select region_name from tap_dw.tm_region@proddw_link where region_code = '$REGION_CODE'");
+			$region=''; foreach ($reg as $d) { $region = $d->region_name; }
 			$results['periode'] = $file_name_date;
-			$results['region'] = $results['data'][0]->region_name;
-			$results['pt'] = $results['data'][0]->ba_name;;
+			$results['region'] = $region;
+			$results['pt'] = $pt;
 			$file_name = 'Summary hasil Validasi Janjang By AI';
 			$results['sheet_name'] = 'Summary';
 			$results['view'] = 'orareport.excel-validasi-janjang-by-ai';

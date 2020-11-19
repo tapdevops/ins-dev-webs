@@ -379,7 +379,7 @@ class VerificationController extends Controller {
         date_default_timezone_set('Asia/Jakarta');
         if($request->KONDISI_FOTO=='Foto bagus & Inputan PIC Sesuai' || 
            $request->KONDISI_FOTO=='Foto bagus & tapi Inputan PIC Tidak Sesuai' || 
-           $request->KONDISI_FOTO=='Foto Bagus tapi Jumlah Janjang lebih dari 30'
+           $request->KONDISI_FOTO=='Foto Bagus tapi Jumlah Janjang lebih dari 30')
         {
           $type = 'BISA DIHITUNG';
         }
