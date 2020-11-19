@@ -515,19 +515,40 @@ class ReportOracleController extends Controller {
 		# REPORT SUMMARY HASIL VALIDASI JANJANG BY AI
 		# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		else if ( $REPORT_TYPE == 'VALIDASI_JANJANG_BY_AI' ) {
-			$results['data'] = $RO->PENCAPAIAN_INSPEKSI(
-									$REPORT_TYPE, 
-									$START_DATE, 
-									$END_DATE, 
-									$REGION_CODE, 
-									$COMP_CODE, 
-									$BA_CODE, 
-									$AFD_CODE, 
-									$BLOCK_CODE,
-									$DATE_MONTH
-								);					
-			$results['data'] = json_decode( json_encode( $results['data'] ), true );
-			$results['periode'] = date('d M Y',(strtotime ( '-7 day' , strtotime ( $START_DATE) ) ))." - ".date('d M Y',(strtotime ( '-1 day' , strtotime ( $START_DATE) ) ));
+
+			$START_DATE_FROM = date( 'Y-m-d H.i.s',strtotime( $START_DATE ) );
+			$START_DATE_TO = date( 'Y-m-d H.i.s',strtotime( $END_DATE ) );
+			$COMP_CODE = $request->COMP_CODE != '' ? $request->COMP_CODE : null;
+			$COMP_CODE_WHERE = $COMP_CODE==null?'':"AND SUBSTR(bunch.ba_code,1,2) = '$COMP_CODE'";
+			$results['data'] = $this->db_mobile_ins->select("select comp.region_code ,comp.region_name ,bunch.ba_code,bunch.ba_name,
+																	SUM(CASE WHEN bunch.kondisi_foto IN('Foto bagus & Inputan PIC Sesuai',
+																										'Foto bagus & tapi Inputan PIC Tidak Sesuai',
+																										'Foto Bagus tapi Jumlah Janjang lebih dari 30') THEN 1 ELSE 0 END) berhasi_dihitung,
+																	SUM(CASE WHEN bunch.kondisi_foto IN('Foto bagus & Inputan PIC Sesuai',
+																										'Foto bagus & tapi Inputan PIC Tidak Sesuai',
+																										'Foto Bagus tapi Jumlah Janjang lebih dari 30') THEN 0 ELSE 1 END) tidak_berhasi_dihitung,
+																	SUM(bunch.total_jjg_pic) total_janjang_pic,
+																	SUM(bunch.total_jjg_ai) total_janjang_ai,
+																	AVG(bunch.percent_variance) akurasi,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Foto bagus & Inputan PIC Sesuai' THEN 1 ELSE 0 END) kondisi_1,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Foto bagus & tapi Inputan PIC Tidak Sesuai' THEN 1 ELSE 0 END) kondisi_2,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Foto Bagus tapi Jumlah Janjang lebih dari 30' THEN 1 ELSE 0 END) kondisi_3,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Foto Tidak Muncul' THEN 1 ELSE 0 END) kondisi_4,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Blur' THEN 1 ELSE 0 END) kondisi_5,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Jauh' THEN 1 ELSE 0 END) kondisi_6,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Gambar Janjang Terpotong' THEN 1 ELSE 0 END) kondisi_7,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Gelap atau Tertutup Bayangan' THEN 1 ELSE 0 END) kondisi_8,
+																	SUM(CASE WHEN bunch.kondisi_foto = 'Penyusunan atau Angle Pengambilan Tidak Sesuai SOP' THEN 1 ELSE 0 END) kondisi_9
+																FROM TR_BUNCH_COUNTING_VERIFICATION bunch 
+																INNER JOIN tap_dw.tm_comp@proddw_link comp
+																ON comp.comp_code = SUBSTR(bunch.ba_code,1,2) 
+																WHERE comp.region_code = '$REGION_CODE'
+																AND TRUNC(bunch.tanggal_transaksi) BETWEEN TRUNC ('$START_DATE_FROM') AND TRUNC ('$START_DATE_TO')
+																".$COMP_CODE_WHERE."
+																GROUP BY comp.region_code ,bunch.ba_code,bunch.ba_name");				
+			$results['periode'] = $file_name_date;
+			$results['region'] = $results['data'][0]->region_name;
+			$results['pt'] = $results['data'][0]->ba_name;;
 			$file_name = 'Summary hasil Validasi Janjang By AI';
 			$results['sheet_name'] = 'Summary';
 			$results['view'] = 'orareport.excel-validasi-janjang-by-ai';

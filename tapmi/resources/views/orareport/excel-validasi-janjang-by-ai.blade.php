@@ -2,10 +2,13 @@
 <html>
 <table>
 	<tr>
-		<th colspan="11">PENCAPAIAN INSPEKSI LAPANGAN</th>
+		<th colspan="11">Summary hasil Validasi Janjang By AI</th>
 	</tr>
 	<tr>
-		<td colspan="11">BISNIS AREA : {{ $ba_name }}</td>
+		<td colspan="11">REGION : {{ $region }}</td>
+	</tr>
+	<tr>
+		<td colspan="11">PT : {{ $pt }}</td>
 	</tr>
 	<tr>
 		<td colspan="11">PERIODE : {{ $periode }}</td>
@@ -14,77 +17,105 @@
 		<td colspan="11"></td>
 	</tr>
 	<tr>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>No</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Nama</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Role</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Jumlah Afdeling</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Hari Libur</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Target Inspeksi (per minggu)</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Aktual Inspeksi (jumlah blok)</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Jumlah Genba</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Tanggal Genba</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Total Aktual Inspeksi</b></td>
-		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Achievement Inspeksi</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>PT</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Jumlah Transaksi Berhasil Dihitung AI</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Jumlah Transaksi Tidak Berhasil Dihitung AI</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Janjang Panen versi PIC Sampling</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Janjang Panen versi Sistem - Validasi Otomatis</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>%Akurasi Janjang Panen</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Foto Bagus & Inputan PIC Sesuai</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Foto Bagus tapi Inputan PIC Tidak Sesuai</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Foto Bagus tapi Jumlah Janjang > 30</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Foto Tidak Muncul</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Blur</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Jauh</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Gambar Janjang Terpotong</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Gelap / Tertutup Bayangan</b></td>
+		<td style="text-align:center;color: #FFF; background-color: #043077;"><b>Penyusunan / Angel Pengambilan Tidak Sesuai</b></td>
 	</tr>
 	@if( !empty( $data ) )
 		@foreach( $data as $key=>$dt )
 			<tr>
-				<td>{{ $key+1 }}</td>
 				<td>
-					@isset($dt['employee_name'])
-						{{ $dt['employee_name'] }}
+					@isset($dt['ba_code'])
+						{{ $dt['ba_code'].' - '.$dt['ba_name'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['user_role'])
-						{{ $dt['user_role'] }}
+					@isset($dt['berhasi_dihitung'])
+						{{ $dt['berhasi_dihitung'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['jlh_afd'])
-						{{ $dt['jlh_afd'] }}
+					@isset($dt['tidak_berhasi_dihitung'])
+						{{ $dt['tidak_berhasi_dihitung'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['libur'])
-						{{ $dt['libur'] }}
+					@isset($dt['total_janjang_pic'])
+						{{ $dt['total_janjang_pic'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['target'])
-						{{ $dt['target'] }}
+					@isset($dt['total_janjang_ai'])
+						{{ $dt['total_janjang_ai'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['jlh_inspeksi'])
-						{{ $dt['jlh_inspeksi'] }}
+					@isset($dt['akurasi'])
+						{{ $dt['akurasi'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['jlh_genba'])
-						{{ $dt['jlh_genba'] }}
+					@isset($dt['kondisi_1'])
+						{{ $dt['kondisi_1'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['tgl_genba'])
-						{{ $dt['tgl_genba'] }}
+					@isset($dt['kondisi_2'])
+						{{ $dt['kondisi_2'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['total_actual'])
-						{{ $dt['total_actual'] }}
+					@isset($dt['kondisi_3'])
+						{{ $dt['kondisi_3'] }}
 					@endisset
 				</td>
 				<td>
-					@isset($dt['achievement'])
-						{{ $dt['achievement'] }}
+					@isset($dt['kondisi_4'])
+						{{ $dt['kondisi_4'] }}
+					@endisset
+				</td>
+				<td>
+					@isset($dt['kondisi_5'])
+						{{ $dt['kondisi_5'] }}
+					@endisset
+				</td>
+				<td>
+					@isset($dt['kondisi_6'])
+						{{ $dt['kondisi_6'] }}
+					@endisset
+				</td>
+				<td>
+					@isset($dt['kondisi_7'])
+						{{ $dt['kondisi_7'] }}
+					@endisset
+				</td>
+				<td>
+					@isset($dt['kondisi_8'])
+						{{ $dt['kondisi_8'] }}
+					@endisset
+				</td>
+				<td>
+					@isset($dt['kondisi_9'])
+						{{ $dt['kondisi_9'] }}
 					@endisset
 				</td>
 			</tr>
 		@endforeach
 	@else	
 		<tr>
-			<td colspan="11">Data Not Found</td>
+			<td colspan="15">Data Not Found</td>
 		</tr>
 	@endif
 </table>

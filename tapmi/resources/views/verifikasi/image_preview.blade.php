@@ -179,11 +179,6 @@ tr
 								<button class="btn btn-radio btnselect">
 									<input  type="radio"  name="KONDISI_FOTO" value="Foto Bagus tapi Jumlah Janjang lebih dari 30">Foto Bagus tapi Jumlah Janjang lebih dari 30</button>
 							</div>
-							<div class="col-md-3">
-								<button class="btn btn-radio btnselect">
-									<input  type="radio"  name="KONDISI_FOTO" value="Gambar Terpotong">Gambar Terpotong</button>
-
-							</div>
 							<div class="col-md-12">
 								<h3><br>Tidak Bisa Dihitung Karena : </h3>
 							</div>

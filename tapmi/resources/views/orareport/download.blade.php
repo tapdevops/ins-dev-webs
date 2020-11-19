@@ -34,7 +34,7 @@
 				<select id="report-select" class="form-control m-select2 mi-select2" name="REPORT_TYPE" onchange="return reportGroup( this.value )" data-placeholder="...">
 					<option value="" selected="selected">Semua</option>
 					@if(session('USER_ROLE')=='IT' || session('USER_ROLE')=='ADMIN')
-					<option value="VALIDASI_JANJANG_BY_AI" selected="selected">VALIDASI JANJANG BY AI</option>
+					<option value="VALIDASI_JANJANG_BY_AI">VALIDASI JANJANG BY AI</option>
 					@endif
 					<option value="EBCC_COMPARE_ESTATE">EBCC COMPARE ESTATE</option>
 					<option value="EBCC_COMPARE_MILL">EBCC COMPARE MILL</option>
@@ -303,6 +303,17 @@
 				$("#report-hs-region").show();
 				$("#report-hs-comp").show();
 				$("#report-hs-est").show();
+				$("#report-hs-afd").hide();
+				$("#report-hs-block").hide();
+				break;	
+			case 'VALIDASI_JANJANG_BY_AI':
+				$("#report-date-full").show();
+				$("#report-hs-region").show();
+				$("#report-hs-comp").show();
+				$("#report-date-month").hide();
+				$("#report-start-date").show();
+				$("#report-end-date").show();
+				$("#report-hs-est").hide();
 				$("#report-hs-afd").hide();
 				$("#report-hs-block").hide();
 				break;	

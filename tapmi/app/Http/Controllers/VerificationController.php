@@ -57,7 +57,7 @@ class VerificationController extends Controller {
       }else{
          $day =  date("Y-m-d", strtotime($tgl));
       }
-      $day = '2020-10-31';
+      // $day = '2020-10-31';
       $data['active_menu'] = $this->active_menu;
       $data['tgl_validasi'] = $day;
       $client = new \GuzzleHttp\Client();
@@ -379,8 +379,7 @@ class VerificationController extends Controller {
         date_default_timezone_set('Asia/Jakarta');
         if($request->KONDISI_FOTO=='Foto bagus & Inputan PIC Sesuai' || 
            $request->KONDISI_FOTO=='Foto bagus & tapi Inputan PIC Tidak Sesuai' || 
-           $request->KONDISI_FOTO=='Foto Bagus tapi Jumlah Janjang lebih dari 30' || 
-           $request->KONDISI_FOTO=='Gambar Terpotong')
+           $request->KONDISI_FOTO=='Foto Bagus tapi Jumlah Janjang lebih dari 30'
         {
           $type = 'BISA DIHITUNG';
         }
