@@ -51,6 +51,8 @@ class TRValidasiDetail extends Model
         'insert_time',
         'insert_user',
         'insert_user_fullname',
-        'insert_user_userrole'
+        'insert_user_userrole',
+        'data_source',
+        'val_ebcc_code'
     ];
 }

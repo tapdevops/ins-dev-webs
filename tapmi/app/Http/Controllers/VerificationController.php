@@ -84,137 +84,6 @@ class VerificationController extends Controller {
       return view( 'verifikasi.listheader', $data );
    }
 
-   public function cek_aslap(Request $request){
-      date_default_timezone_set('Asia/Jakarta');
-      set_time_limit(0);
-
-      $result = ( new ValidasiHeader() )->validasi_cek_aslap($request->tanggal);
-      $res = json_encode($result);
-      $data = json_decode($res,true);
-      // dd($data);
-      $day =  date("Y-m-d", strtotime($request->tanggal));
-      foreach ($data as $key => $value) 
-      {
-         //  IF DATA NOT EXPORTED TO SAP
-          if($value['export_status']!='X')
-          {
-            $id_validasi = $value['ebcc_nik_kerani_buah'].'-'.$value['ebcc_nik_mandor'].'-'.str_replace('-','',$day);
-            // $check = TRValidasiDetail::where(['id_validasi'=>$id_validasi,'no_bcc'=>$value['ebcc_no_bcc']])->first();
-            // if(!$check)
-            // {
-              $emp = Employee::where('EMPLOYEE_NIK',session('NIK'))->first();
-              $fullname = $emp['employee_fullname'];
-              TRValidasiDetail::insert([
-                'uuid' => Uuid::uuid1()->toString(),
-                'id_validasi' => $id_validasi,
-                'data_source' => $value['val_sumber'],
-                'val_ebcc_code' => $value['val_ebcc_code'],
-                'tanggal_ebcc' => $value['val_date_time'],
-                'nik_krani_buah' => $value['ebcc_nik_kerani_buah'],
-                'nama_krani_buah' => $value['ebcc_nama_kerani_buah'],
-                'nik_mandor' => $value['ebcc_nik_mandor'],
-                'nama_mandor' => $value['ebcc_nama_mandor'],
-                'ba_code' => $value['val_werks'],
-                'ba_name' => $value['val_est_name'],
-                'afd_code' => $value['val_afd_code'],
-                'block_code' => $value['val_block_code'],
-                'block_name' => $value['val_block_name'],
-                'no_tph' => $value['val_tph_code'],
-                'no_bcc' => $value['ebcc_no_bcc'],
-                'jjg_ebcc_bm' => $value['ebcc_jml_bm'],
-                'jjg_ebcc_bk' => $value['ebcc_jml_bk'],
-                'jjg_ebcc_ms' => $value['ebcc_jml_ms'],
-                'jjg_ebcc_or' => $value['ebcc_jml_or'],
-                'jjg_ebcc_bb' => $value['ebcc_jml_bb'],
-                'jjg_ebcc_jk' => $value['ebcc_jml_jk'],
-                'jjg_ebcc_ba' => $value['ebcc_jml_ba'],
-                'jjg_ebcc_total' => $value['ebcc_jjg_panen'],
-                'jjg_ebcc_1' => NULL,
-                'jjg_ebcc_2' => NULL,
-                'jjg_validate_bm' => $value['val_jml_1'],
-                'jjg_validate_bk' => $value['val_jml_2'],
-                'jjg_validate_ms' => $value['val_jml_3'],
-                'jjg_validate_or' => $value['val_jml_4'],
-                'jjg_validate_bb' => $value['val_jml_6'],
-                'jjg_validate_jk' => $value['val_jml_15'],
-                'jjg_validate_ba' => $value['val_jml_16'],
-                'jjg_validate_total' => $value['val_total_jjg'],
-                'jjg_validate_1' => NULL,
-                'jjg_validate_2' => NULL,
-                'kondisi_foto' => NULL,
-                'insert_time' => date('Y-M-d H.i.s'),
-                'insert_user' => $value['val_nik_validator'],
-                'insert_user_fullname' => $value['val_nama_validator'],
-                'insert_user_userrole' => $value['val_jabatan_validator']
-              ]);
-  
-              // INSERT LOG TO EBCC
-              if(substr($value['val_jabatan_validator'],0,7)=='ASISTEN')
-              {
-                 $this->db_ebcc->table('T_VALIDASI')->insert([
-                    'TANGGAL_EBCC'=>$value['val_date_time'],
-                    'NO_BCC'=>$value['ebcc_no_bcc'],
-                    'TANGGAL_VALIDASI' => date('Y-m-d H:i:s'),
-                    'ROLES' => $value['val_jabatan_validator'],
-                    'NIK' => $value['val_nik_validator'],
-                    'NAMA' => $value['val_nama_validator'],
-                    'NIK_KRANI_BUAH' => $value['ebcc_nik_kerani_buah'],
-                    'NIK_MANDOR' => $value['ebcc_nik_mandor']
-                 ]);
-              }
-              $check_kabun_validation = $this->db_ebcc->table('T_VALIDASI')->
-                                                        where(['NO_BCC'=>$value['ebcc_no_bcc']])->
-                                                        whereIn('ROLES',[ 'KEPALA KEBUN',
-                                                                          'KEPALA_KEBUN',
-                                                                          'ASISTEN KEPALA',
-                                                                          'ASISTEN_KEPALA',
-                                                                          'EM',
-                                                                          'SEM GM',
-                                                                          'SENIOR ESTATE MANAGER'])->first();
-            // NOTE : DISABLE REPLACE DATA PANEN EBCC 2020-10-12
-              // UPDATE BCC HASIL PANEN KUALITAS IF KABUN NEVER VALIDATE
-            //   if(!$check_kabun_validation)
-            //   {                                        
-            //     // UPDATE QUANTITY MENTAH
-            //      $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //         'ID_BCC'=>$value['ebcc_no_bcc'],
-            //         'ID_KUALITAS' => 1
-            //      ])->update(['QTY'=>$value['val_jml_1']]);
-            //     // UPDATE QUANTITY BUSUK
-            //      $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //         'ID_BCC'=>$value['ebcc_no_bcc'],
-            //         'ID_KUALITAS' => 6
-            //      ])->update(['QTY'=>$value['val_jml_6']]);
-            //     // UPDATE QUANTITY JAJANG KOSONG
-            //      $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //         'ID_BCC'=>$value['ebcc_no_bcc'],
-            //         'ID_KUALITAS' => 15
-            //      ])->update(['QTY'=>$value['val_jml_15']]);
-            //     // UPDATE QUANTITY OVERRIPE
-            //      $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //         'ID_BCC'=>$value['ebcc_no_bcc'],
-            //         'ID_KUALITAS' => 4
-            //      ])->update(['QTY'=>$value['val_jml_4']]);
-            //     // UPDATE QUANTITY MASAK
-            //      $this->db_ebcc->table('T_HASILPANEN_KUALTAS')->where([
-            //         'ID_BCC'=>$value['ebcc_no_bcc'],
-            //         'ID_KUALITAS' => 3
-            //      ])->update(['QTY'=>$value['val_jml_3']]);
-            //   }   
-          }
-      }
-   }
-
-
-   public function getEbccValHeader(request $request){
-      $data['active_menu'] = $this->active_menu;
-      $day = $request->tanggal;
-      $res = json_encode(( new ValidasiHeader() )->validasi_header($day));
-      $data['data_header'] = json_decode($res,true);
-      $data['session'] = session();
-      return view( 'verifikasi.listheader', $data );
-   }
-
    public function getValHeader(request $request){
       $data['active_menu'] = $this->active_menu;
       $day = date("Y-m-d", strtotime($request->tanggal));
@@ -312,6 +181,8 @@ class VerificationController extends Controller {
       $data['last_work_daily'] = isset($last_work_daily[0])?$last_work_daily[0]->diff:'-1';
       $res = $client->request( 'GET', APISetup::url()['msa']['ins']['bunchcounting'].'/v1.0/web/bunch-counting', [
         'json' => [
+          'COUNT_EBCC' => true,
+          'WERKS' => true,
           'KETERANGAN' => 'BELUM DIVERIFIKASI',
           'DATE_FROM' => str_replace('-', '', $day).'000000',
           'DATE_TO' => str_replace('-', '', $day).'999999'

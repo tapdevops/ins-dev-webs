@@ -106,7 +106,8 @@ return [
         'tapdw' => [
 			'driver'   => 'oracle',
 			'tns'      =>  '',
-			'host'     => '10.20.1.103',
+            'host'     => 'devdw.tap-agri.com',
+			// 'host'     => '10.20.1.103',
 			'port'     => '1521',
 			'database' => 'tapdw',
 			'username' => 'tap_dw',

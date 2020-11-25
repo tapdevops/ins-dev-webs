@@ -53,7 +53,8 @@ class APISetup extends Model
 						"inspection" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-inspection",
 						"report" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-reports",
 						"ebccvalidation" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-ebccval",
-						"bunchcounting" => "http://apisqa.tap-agri.com/aiqa/ai-msa-qa-bunchcounting",
+						"bunchcounting" => "http://147.139.132.82:3022",
+						// "bunchcounting" => "http://apisqa.tap-agri.com/aiqa/ai-msa-qa-bunchcounting",
 						// "bunchcounting" => "http://localhost:5022",
 						"image" => "http://image.tap-agri.com:5012",
 						"point" => "http://apisqa.tap-agri.com/mobileinspectionqa/ins-msa-qa-point/"

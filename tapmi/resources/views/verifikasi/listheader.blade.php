@@ -89,11 +89,11 @@
 		@foreach($data_header as $data)
 		@if($data->COUNT_DIFF>6 || $data->COUNT_DIFF<-6)
 		<tr>
-			<td>{{$data->WERKS}}</td>
-			<td>{{$data->AFD_CODE}}</td>
+			<td>{{ISSET($data->WERKS)?$data->WERKS:''}}</td>
+			<td>{{ISSET($data->AFD_CODE)?$data->AFD_CODE:''}}</td>
 			<td>{{$data->INSERT_USER}}</td>
 			<td>{{$data->ROLE}}</td>
-			<td>{{$data->COUNT_VALIDATION}}</td>
+			<td>{{ISSET($data->COUNT_VALIDATION)?$data->COUNT_VALIDATION:''}}</td>
 			<td>{{$data->COUNT_AI}}</td>
 			<td>{{$data->COUNT_DIFF}}</td>
 			<td><span class="text-{{$data->KETERANGAN=='BELUM DIVERIFIKASI'?'danger':'success'}}"><b>{{$data->KETERANGAN}}</b></span></td>
