@@ -50,7 +50,6 @@ class VerificationController extends Controller {
     # -------------------------------------------------------------------------------------
    
    public function index(Request $request,$tgl = null){
-      
       $data['nodata'] = $request->nodata?1:0;
       if(empty($tgl)){
          $day =  date("Y-m-d", strtotime("yesterday"));
@@ -70,10 +69,47 @@ class VerificationController extends Controller {
       ]);
       $bunch_counting = json_decode( $res->getBody() );
       $data['data_header'] = array();
+      $data['ba'] = array();
+      $data['afd'] = array();
+      $data['pic'] = array();
+      $data['role'] = array();
+      $data['jjg_aslap'] = array();
+      $data['jjg_ai'] = array();
+      $data['jjg_selisih'] = array();
       if($bunch_counting->status==true)
       {
         $data['data_header'] = $bunch_counting->data;
+        foreach ($data['data_header'] as $value) {
+          if(isset($value->WERKS)){
+            $data['ba'][$value->WERKS] = $value->WERKS;
+          }
+          if(isset($value->AFD_CODE)){
+            $data['afd'][$value->AFD_CODE] = $value->AFD_CODE;
+          }
+          if(isset($value->INSERT_USER)){
+            $data['pic'][$value->INSERT_USER] = $value->INSERT_USER;
+          }
+          if(isset($value->ROLE)){
+            $data['role'][$value->ROLE] = $value->ROLE;
+          }
+          if(isset($value->COUNT_VALIDATION)){
+            $data['jjg_aslap'][$value->COUNT_VALIDATION] = $value->COUNT_VALIDATION;
+          }
+          if(isset($value->COUNT_AI)){
+            $data['jjg_ai'][$value->COUNT_AI] = $value->COUNT_AI;
+          }
+          if(isset($value->COUNT_DIFF)){
+            $data['jjg_selisih'][$value->COUNT_DIFF] = $value->COUNT_DIFF;
+          }
+        }
       }
+      ksort($data['ba']);
+      ksort($data['afd']);
+      ksort($data['pic']);
+      ksort($data['role']);
+      ksort($data['jjg_aslap']);
+      ksort($data['jjg_ai']);
+      ksort($data['jjg_selisih']);
       $last_work_daily = $this->db_mobile_ins->select("SELECT trunc(TANGGAL) - trunc(sysdate) AS DIFF,MIN(FLAG_HK),MIN(NAMA_HARI) 
                                                                FROM TM_TIME_DAILY@DWH_LINK 
                                                                WHERE TANGGAL < trunc(sysdate)
@@ -97,11 +133,60 @@ class VerificationController extends Controller {
         ]
       ]);
       $bunch_counting = json_decode( $res->getBody() );
+      session([
+        'verification_ba'=>$request->ba,
+        'verification_afd'=>$request->afd,
+        'verification_pic'=>$request->pic,
+        'verification_role'=>$request->role,
+        'verification_jjg_aslap_min'=>$request->jjg_aslap_min,
+        'verification_jjg_aslap_max'=>$request->jjg_aslap_max,
+        'verification_jjg_ai_min'=>$request->jjg_ai_min,
+        'verification_jjg_ai_max'=>$request->jjg_ai_max,
+        'verification_jjg_selisih'=>$request->jjg_selisih,
+      ]);
+      $data['request'] = $request;
       $data['data_header'] = array();
+      $data['ba'] = array();
+      $data['afd'] = array();
+      $data['pic'] = array();
+      $data['role'] = array();
+      $data['jjg_aslap'] = array();
+      $data['jjg_ai'] = array();
+      $data['jjg_selisih'] = array();
       if($bunch_counting->status==true)
       {
         $data['data_header'] = $bunch_counting->data;
+        foreach ($data['data_header'] as $value) {
+          if(isset($value->WERKS)){
+            $data['ba'][$value->WERKS] = $value->WERKS;
+          }
+          if(isset($value->AFD_CODE)){
+            $data['afd'][$value->AFD_CODE] = $value->AFD_CODE;
+          }
+          if(isset($value->INSERT_USER)){
+            $data['pic'][$value->INSERT_USER] = $value->INSERT_USER;
+          }
+          if(isset($value->ROLE)){
+            $data['role'][$value->ROLE] = $value->ROLE;
+          }
+          if(isset($value->COUNT_VALIDATION)){
+            $data['jjg_aslap'][$value->COUNT_VALIDATION] = $value->COUNT_VALIDATION;
+          }
+          if(isset($value->COUNT_AI)){
+            $data['jjg_ai'][$value->COUNT_AI] = $value->COUNT_AI;
+          }
+          if(isset($value->COUNT_DIFF)){
+            $data['jjg_selisih'][$value->COUNT_DIFF] = $value->COUNT_DIFF;
+          }
+        }
       }
+      ksort($data['ba']);
+      ksort($data['afd']);
+      ksort($data['pic']);
+      ksort($data['role']);
+      ksort($data['jjg_aslap']);
+      ksort($data['jjg_ai']);
+      ksort($data['jjg_selisih']);
       $last_work_daily = $this->db_mobile_ins->select("SELECT trunc(TANGGAL) - trunc(sysdate) AS DIFF,MIN(FLAG_HK),MIN(NAMA_HARI) 
                                                                FROM TM_TIME_DAILY@DWH_LINK 
                                                                WHERE TANGGAL < trunc(sysdate)
@@ -190,9 +275,33 @@ class VerificationController extends Controller {
       ]);
       $bunch_counting = json_decode( $res->getBody() );
       $data_header = array();
+      $bunch_counting_data = array();
       if($bunch_counting->status==true)
       {
-        $data['data'] = $bunch_counting->data;
+        if(session('verification_ba')){
+          foreach ($bunch_counting->data as $key => $value){
+            if($value->COUNT_DIFF>session('verification_jjg_selisih') || $value->COUNT_DIFF<(0-session('verification_jjg_selisih'))){
+              if(session('verification_ba')=='ALL' || session('verification_ba')==(ISSET($value->WERKS)?$value->WERKS:'')){
+                if(session('verification_afd')=='ALL' || session('verification_afd')==(ISSET($value->AFD_CODE)?$value->AFD_CODE:'')){
+                  if(session('verification_pic')=='ALL' || session('verification_pic')==$value->INSERT_USER){
+                    if(session('verification_role')=='ALL' || session('verification_role')==$value->ROLE){
+                      if(session('verification_jjg_aslap_min')<=(ISSET($value->COUNT_VALIDATION)?$value->COUNT_VALIDATION:0) && session('verification_jjg_aslap_max')>=(ISSET($value->COUNT_VALIDATION)?$value->COUNT_VALIDATION:0)){
+                        if(session('verification_jjg_ai_min')<=$value->COUNT_AI && session('verification_jjg_ai_max')>=$value->COUNT_AI){
+                           $bunch_counting_data[] = $value;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        else 
+        {
+          $bunch_counting_data = $bunch_counting->data;
+        }
+        $data['data'] = $bunch_counting_data;
         $comp = substr($data['data'][0]->WERKS, 0,2);
         $comp = $this->db_mobile_ins->select("SELECT * FROM tap_dw.tm_comp@proddw_link WHERE comp_code = $comp FETCH NEXT 1 ROWS ONLY");
         $data['pt'] = $comp[0]->comp_name;

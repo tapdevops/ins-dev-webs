@@ -1,5 +1,5 @@
 @extends( 'layouts.default.page-normal-main' )
-@section( 'title', 'Validasi BCC oleh Kepala Kebun' )
+@section( 'title', 'Verifikasi Validasi Janjang Otomatis' )
 @section('style')
 <style>
 input[type="radio"]{
@@ -83,6 +83,9 @@ tr
   -webkit-transform: rotate(270deg) translateX(-100%);
   -ms-transform: rotate(270deg) translateX(-100%);
 }
+.m-body .m-content {
+    padding: 0px 0 0 0 !important;
+}
 </style>
 @endsection
 @foreach ( $data as $key )
@@ -134,6 +137,9 @@ tr
 				</td>
 				<td>
 					<table width="100%">
+						<tr>
+							<td colspan="3" style="text-align: center;background: #f4f3f8;font-weight: 600;border: 1px solid;padding: 5px;height: 22px;line-height: 18px;">{{$key->EBCC_CODE}}</td>
+						</tr>
 						<tr>
 							<td style="text-align: center;background: #f4f3f8;font-weight: 600;border: 1px solid;padding: 5px;height: 45px;line-height: 18px;">Janjang Panen<br>versi PIC Sampling</td>
 							<td style="text-align: center;background: #f4f3f8;font-weight: 600;border: 1px solid;padding: 5px;line-height: 18px;">Janjang Panen<br>versi Sistem - Validasi Otomatis</td>
