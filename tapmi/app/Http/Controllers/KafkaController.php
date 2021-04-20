@@ -13,6 +13,53 @@ class KafkaController extends Controller {
     public function __construct() {
 		$this->db_mobile_ins = DB::connection( 'mobile_ins' );
 	}
+
+	public function check_kafka($topic=null){
+		$conf = new RdKafka\Conf();
+		$conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $partitions = null) {
+		    switch ($err) {
+		        case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
+		            echo "Assign: ";
+		            var_dump($partitions);
+		            $kafka->assign($partitions);
+		            break;
+
+		         case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
+		             echo "Revoke: ";
+		             var_dump($partitions);
+		             $kafka->assign(NULL);
+		             break;
+
+		         default:
+		            throw new \Exception($err);
+		    }
+		});
+		$conf->set('group.id', 'INS_MSA_POINT_GROUP');
+		$conf->set('metadata.broker.list', config('app.kafkahost'));
+		$conf->set('auto.offset.reset', 'earliest');
+		$consumer = new RdKafka\KafkaConsumer($conf);
+		$consumer->subscribe(['INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H']);
+		echo "Waiting for partition assignment... (make take some time when\n";
+		echo "quickly re-joining the group after leaving it.)\n";
+		while (true) {
+		    $message = $consumer->consume(120*1000);
+		    switch ($message->err) {
+		        case RD_KAFKA_RESP_ERR_NO_ERROR:
+		            var_dump($message);
+		            break;
+		        case RD_KAFKA_RESP_ERR__PARTITION_EOF:
+		            echo "No more messages; will wait for more\n";
+		            break;
+		        case RD_KAFKA_RESP_ERR__TIMED_OUT:
+		            echo "Timed out\n";
+		            break;
+		        default:
+		            throw new \Exception($message->errstr(), $message->err);
+		            break;
+		    }
+		}
+
+	}
 	
 	public function cek_offset_payload( $topic ) {
 		$get = $this->db_mobile_ins->select( "SELECT * FROM TM_KAFKA_PAYLOADS WHERE TOPIC_NAME = '$topic'" );
@@ -29,7 +76,7 @@ class KafkaController extends Controller {
 	public function RUN_INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H() {
 		// Kafka Config
 		$conf = new RdKafka\Conf();
-		$conf->set( 'group.id', 'myConsumerGroup' );
+		$conf->set( 'group.id', 'MSA_INTERNAL_GROUP' );
 		// $conf->set('security.protocol', 'sasl_plaintext');//sasl_plaintext SASL_SSL
 		// $conf->set('sasl.mechanisms', 'PLAIN');
 		// $conf->set('sasl.username', 'admin' );
@@ -37,17 +84,14 @@ class KafkaController extends Controller {
 		$topic = "INS_MSA_EBCCVAL_TR_EBCC_VALIDATION_H";
 		$Kafka = new RdKafka\Consumer( $conf );
 
-
-
-		//$Kafka->addBrokers( config('app.kafkahost') );
-		$Kafka->addBrokers( '147.139.139.160' );
-
+		$Kafka->addBrokers( config('app.kafkahost') );
 		$topicConf = new RdKafka\TopicConf();
 		$topicConf->set( 'auto.commit.interval.ms', 100 );
 		$topicConf->set( 'auto.offset.reset', 'smallest' );
 
 		$Topic = $Kafka->newTopic( $topic, $topicConf );
 		$Topic->consumeStart( 0, RD_KAFKA_OFFSET_BEGINNING );
+		// $Topic->consumeStart( 0, RD_KAFKA_OFFSET_END );
 
 		while ( true ) {
 			$message = $Topic->consume( 0, 1000 );

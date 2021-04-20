@@ -13,6 +13,7 @@
 Route::group( [ 'middleware' => 'web' ], function() {
 	# Auth
 	Route::get( '/login', 'AuthController@login_form' );
+	Route::get( '/check_kafka', 'KafkaController@check_kafka' );
 	Route::post( '/login', 'AuthController@login_proses' );
 	Route::group( [ 'middleware' => 'session' ], function() {
 		# Auth

@@ -69,7 +69,15 @@ class ReportOracle extends Model{
 					 NVL (detail.jml_6, 0) AS val_jml_6,
 					 NVL (detail.jml_7, 0) AS val_jml_7,
 					 NVL (detail.jml_8, 0) AS val_jml_8,
+					 
 					 NVL (detail.jml_9, 0) AS val_jml_9,
+					 NVL (detail.jml_17, 0) AS val_jml_17,
+					 NVL (detail.jml_18, 0) AS val_jml_18,
+					 NVL (detail.jml_19, 0) AS val_jml_19,
+					 NVL (detail.jml_21, 0) AS val_jml_20,
+					 NVL (detail.jml_21, 0) AS val_jml_21,
+					 NVL (detail.jml_22, 0) AS val_jml_22,
+					 
 					 NVL (detail.jml_10, 0) AS val_jml_10,
 					 NVL (detail.jml_11, 0) AS val_jml_11,
 					 NVL (detail.jml_12, 0) AS val_jml_12,
@@ -205,7 +213,15 @@ class ReportOracle extends Model{
 																															'6' AS jml_6,
 																															'7' AS jml_7,
 																															'8' AS jml_8,
+																															
 																															'9' AS jml_9,
+																															'17' AS jml_17,
+																															'18' AS jml_18,
+																															'19' AS jml_19,
+																															'20' AS jml_20,
+																															'21' AS jml_21,
+																															'22' AS jml_22,
+																															
 																															'10' AS jml_10,
 																															'11' AS jml_11,
 																															'12' AS jml_12,
@@ -225,6 +241,7 @@ class ReportOracle extends Model{
 						   AND TRUNC (header.val_date_time) BETWEEN tph.start_valid AND nvl(tph.end_valid,sysdate)
 			ORDER BY header.val_date_time DESC
 		";
+		// echo $sql;die;
 		$get = $this->db_mobile_ins->select( $sql );
 		return $get;
 	}
