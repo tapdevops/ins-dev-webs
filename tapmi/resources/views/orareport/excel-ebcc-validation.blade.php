@@ -30,12 +30,12 @@
 		<th style="text-align: left;background-color: #ff9933;">a. Parthenocarpic/Abnormal</th>
 		<th style="text-align: left;background-color: #ff9933;">b. Buah Masak Tangkai Panjang</th>
 		<th style="text-align: left;background-color: #ff9933;">c. Dimakan Hama(Tikus/lainnya)</th> 
-		<th style="text-align: left;background-color: #ff9933;">c. Dimakan Tikus Baru</th>
-		<th style="text-align: left;background-color: #ff9933;">d. Dimakan Tikus Lama</th>
-		<th style="text-align: left;background-color: #ff9933;">e. Dimakan Burung</th>
-		<th style="text-align: left;background-color: #ff9933;">f. Dimakan Tupai</th>
-		<th style="text-align: left;background-color: #ff9933;">g. Buah Partheno</th>
-		<th style="text-align: left;background-color: #ff9933;">h. Buah Kempet</th>
+		<th style="text-align: left;background-color: #ff9933;">d. Dimakan Tikus Baru</th>
+		<th style="text-align: left;background-color: #ff9933;">e. Dimakan Tikus Lama</th>
+		<th style="text-align: left;background-color: #ff9933;">f. Dimakan Burung</th>
+		<th style="text-align: left;background-color: #ff9933;">g. Dimakan Tupai</th>
+		<th style="text-align: left;background-color: #ff9933;">h. Buah Partheno</th>
+		<th style="text-align: left;background-color: #ff9933;">i. Buah Kempet</th>
 		<th style="text-align: left;background-color: #ff9933;">Alas Brondolan(TPH)</th>
 
 		
