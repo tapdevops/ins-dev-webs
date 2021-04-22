@@ -29,7 +29,7 @@
 		<th style="text-align: left;background-color: #ff9933;">h. Total Brondolan</th>
 		<th style="text-align: left;background-color: #ff9933;">a. Parthenocarpic/Abnormal</th>
 		<th style="text-align: left;background-color: #ff9933;">b. Buah Masak Tangkai Panjang</th>
-		<!-- <th style="text-align: left;background-color: #ff9933;">c. Dimakan Hama(Tikus/lainnya)</th> -->
+		<th style="text-align: left;background-color: #ff9933;">c. Dimakan Hama(Tikus/lainnya)</th> 
 		<th style="text-align: left;background-color: #ff9933;">c. Dimakan Tikus Baru</th>
 		<th style="text-align: left;background-color: #ff9933;">d. Dimakan Tikus Lama</th>
 		<th style="text-align: left;background-color: #ff9933;">e. Dimakan Burung</th>
@@ -74,7 +74,7 @@
 		<td style="text-align: left;">{{ $dt['val_jml_5'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_8'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_7'] }}</td>
-		<!-- <td style="text-align: left;">{{ $dt['val_jml_9'] }}</td>-->
+		<td style="text-align: left;">{{ $dt['val_jml_9'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_17'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_18'] }}</td>
 		<td style="text-align: left;">{{ $dt['val_jml_19'] }}</td>
